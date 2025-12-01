@@ -5,65 +5,94 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Cute Pastel Shop</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&family=Poppins:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
     body {
         margin: 0;
         font-family: Quicksand, sans-serif;
-        background: #fff;
+        background: #D8DEBA; /* hijau pastel sesuai request */
         color: #333;
     }
 
     .banner {
         width: 100%;
-        height: 200px;
-        background: linear-gradient(90deg, #fcd6e8, #c6e6f5);
+        height: 220px;
+        background: #EECED9; /* pink pastel */
         display: flex;
         align-items: center;
         justify-content: center;
         overflow: hidden;
+        border-bottom: 4px solid #fff;
     }
 
     .banner img {
         width: 90%;
-        max-width: 700px;
+        max-width: 650px;
+        border-radius: 10px;
     }
 
     h2 {
         font-size: 24px;
         margin: 30px 20px 10px;
         font-weight: 700;
+        color: #333;
     }
 
     .divider {
-        height: 1px;
-        background: #ddd;
+        height: 2px;
+        background: #ffffff;
         margin: 0 20px 20px;
+        opacity: 0.6;
     }
 
     .grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
-        gap: 14px;
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 18px;
         padding: 0 20px 30px;
     }
 
     .item {
-        width: 100%;
-        padding-top: 100%;
         position: relative;
-        border-radius: 16px;
-        background: #f7f7f7;
+        border-radius: 14px;
+        background: #fff;
         overflow: hidden;
-        box-shadow: 0 6px 14px rgba(0,0,0,0.08);
+        box-shadow: 0 6px 14px rgba(0,0,0,0.12);
+        transition: 0.25s;
     }
 
     .item img {
-        position: absolute;
         width: 100%;
-        height: 100%;
+        height: 120px;
         object-fit: cover;
+    }
+
+    .info {
+        padding: 8px 10px;
+    }
+
+    .price {
+        font-weight: 700;
+        color: #e67aa9;
+        font-size: 15px;
+    }
+
+    .cart {
+        position: absolute;
+        bottom: 8px;
+        right: 8px;
+        background: #EECED9;
+        padding: 6px 8px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 700;
+        cursor: pointer;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+
+    .item:hover {
+        transform: translateY(-4px);
     }
 </style>
 </head>
@@ -79,32 +108,99 @@
 <!-- NEW ARRIVALS -->
 <h2>New Arrivals</h2>
 <div class="divider"></div>
+
 <div class="grid">
-    <div class="item"><img src="https://i.ibb.co/7JHp96z/image.png"></div>
-    <div class="item"><img src="https://i.ibb.co/7JHp96z/image.png"></div>
-    <div class="item"><img src="https://i.ibb.co/7JHp96z/image.png"></div>
+    <!-- gunakan foto kamu tadi -->
+    <div class="item">
+        <img src="https://i.ibb.co/7JHp96z/image.png">
+        <div class="info">
+            <div class="price">Rp 25.000</div>
+            <div class="cart">🛒</div>
+        </div>
+    </div>
+
+    <div class="item">
+        <img src="https://i.ibb.co/7JHp96z/image.png">
+        <div class="info">
+            <div class="price">Rp 22.000</div>
+            <div class="cart">🛒</div>
+        </div>
+    </div>
+
+    <div class="item">
+        <img src="https://i.ibb.co/7JHp96z/image.png">
+        <div class="info">
+            <div class="price">Rp 19.000</div>
+            <div class="cart">🛒</div>
+        </div>
+    </div>
 </div>
+
 
 
 <!-- BESTSELLERS -->
 <h2>Bestsellers</h2>
 <div class="divider"></div>
+
 <div class="grid">
-    <div class="item"><img src="https://i.ibb.co/pjT363g/Whats-App-Image-2025-12-01-at-19-58-07-1.jpg"></div>
-    <div class="item"><img src="https://i.ibb.co/7JHp96z/image.png"></div>
-    <div class="item"><img src="https://i.ibb.co/7JHp96z/image.png"></div>
-    <div class="item"><img src="https://i.ibb.co/7JHp96z/image.png"></div>
+    <!-- FOTO 2 -->
+    <div class="item">
+        <img src="https://i.ibb.co/pjT363g/Whats-App-Image-2025-12-01-at-19-58-07-1.jpg">
+        <div class="info">
+            <div class="price">Rp 30.000</div>
+            <div class="cart">🛒</div>
+        </div>
+    </div>
+
+    <!-- FOTO 3 -->
+    <div class="item">
+        <img src="https://i.ibb.co/0pbLcy8/Whats-App-Image-2025-12-01-at-19-58-07-2.jpg">
+        <div class="info">
+            <div class="price">Rp 28.000</div>
+            <div class="cart">🛒</div>
+        </div>
+    </div>
+
+    <!-- tambahan slot gambar default -->
+    <div class="item">
+        <img src="https://i.ibb.co/7JHp96z/image.png">
+        <div class="info">
+            <div class="price">Rp 20.000</div>
+            <div class="cart">🛒</div>
+        </div>
+    </div>
 </div>
+
 
 
 <!-- BUY NOW -->
 <h2>Buy Now</h2>
 <div class="divider"></div>
+
 <div class="grid">
-    <div class="item"><img src="https://i.ibb.co/0pbLcy8/Whats-App-Image-2025-12-01-at-19-58-07-2.jpg"></div>
-    <div class="item"><img src="https://i.ibb.co/7JHp96z/image.png"></div>
-    <div class="item"><img src="https://i.ibb.co/7JHp96z/image.png"></div>
-    <div class="item"><img src="https://i.ibb.co/7JHp96z/image.png"></div>
+    <div class="item">
+        <img src="https://i.ibb.co/7JHp96z/image.png">
+        <div class="info">
+            <div class="price">Rp 18.000</div>
+            <div class="cart">🛒</div>
+        </div>
+    </div>
+
+    <div class="item">
+        <img src="https://i.ibb.co/7JHp96z/image.png">
+        <div class="info">
+            <div class="price">Rp 21.000</div>
+            <div class="cart">🛒</div>
+        </div>
+    </div>
+
+    <div class="item">
+        <img src="https://i.ibb.co/7JHp96z/image.png">
+        <div class="info">
+            <div class="price">Rp 23.000</div>
+            <div class="cart">🛒</div>
+        </div>
+    </div>
 </div>
 
 </body>
