@@ -1,130 +1,109 @@
 <!doctype html>
 <html lang="id">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Cute Pastel Request — Template</title>
-  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&family=Poppins:wght@300;500&display=swap" rel="stylesheet">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cute Pastel Shop</title>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&family=Poppins:wght@400;500&display=swap" rel="stylesheet">
 
-  <style>
-    :root{
-      --pink: #EAC7D8;
-      --green: #D9E5C1;
-      --pink-strong: #e1a9bf;
-      --muted: #f7f7f7;
-      --card-shadow: 0 10px 20px rgba(21,21,21,0.06);
-      --round: 18px;
+<style>
+    body {
+        margin: 0;
+        font-family: Quicksand, sans-serif;
+        background: #fff;
+        color: #333;
     }
 
-    *{box-sizing:border-box}
-    html,body{
-      height:100%;
-      margin:0;
-      font-family:Quicksand, Poppins, system-ui, -apple-system, 'Segoe UI', Roboto;
-      line-height:1.4;color:#222
-    }
-    body{background:linear-gradient(180deg, #fff 0%, #fff 40%, var(--muted) 40%);}
-
-    .wrap{max-width:980px;margin:28px auto;padding:28px}
-
-    header{display:flex;align-items:center;justify-content:space-between;gap:16px}
-    .logo{display:flex;align-items:center;gap:12px}
-    .logo .mark{
-      width:54px;height:54px;border-radius:14px;
-      background:linear-gradient(180deg,var(--pink),#f8e7ef);
-      box-shadow:var(--card-shadow);
-      display:flex;align-items:center;justify-content:center;
-      font-weight:700
+    .banner {
+        width: 100%;
+        height: 200px;
+        background: linear-gradient(90deg, #fcd6e8, #c6e6f5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px;
+        overflow: hidden;
     }
 
-    h1{margin:0;font-size:30px;font-weight:700;color:#333}
-    p.subtitle{margin:4px 0 0;color:#555;font-size:15px}
-
-    .grid{
-      margin-top:40px;
-      display:grid;
-      grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
-      gap:24px;
+    .banner img {
+        width: 80%;
+        max-width: 600px;
+        object-fit: contain;
     }
 
-    .card{
-      background:#fff;
-      border-radius:var(--round);
-      padding:18px;
-      box-shadow:var(--card-shadow);
-      transition:.25s;
-    }
-    .card:hover{transform:translateY(-4px)}
-
-    .thumb{
-      width:100%;
-      height:170px;
-      border-radius:var(--round);
-      background:#eee;
-      background-size:cover;
-      background-position:center;
-      margin-bottom:14px;
+    h2 {
+        font-size: 24px;
+        margin: 30px 20px 10px;
+        font-weight: 700;
     }
 
-    button{
-      background:var(--pink);
-      border:0;
-      padding:10px 20px;
-      border-radius:var(--round);
-      font-weight:600;
-      cursor:pointer;
-      transition:.2s;
+    .divider {
+        height: 1px;
+        background: #ddd;
+        margin: 0 20px 20px;
     }
-    button:hover{background:var(--pink-strong)}
-  </style>
+
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+        gap: 14px;
+        padding: 0 20px 30px;
+    }
+
+    .item {
+        width: 100%;
+        padding-top: 100%;
+        position: relative;
+        border-radius: 16px;
+        background: #f7f7f7;
+        overflow: hidden;
+        box-shadow: 0 6px 14px rgba(0,0,0,0.08);
+    }
+
+    .item img {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+</style>
 </head>
+
 <body>
-  <div class="wrap">
 
-    <header>
-      <div class="logo">
-        <div class="mark">★</div>
-        <div>
-          <h1>Cute Request</h1>
-          <p class="subtitle">Tempat pelanggan kirim request gambar lucu ♡</p>
-        </div>
-      </div>
-    </header>
+<!-- HEADER BANNER -->
+<div class="banner">
+    <img src="https://i.ibb.co/gMGWnB7S/Whats-App-Image-2025-12-01-at-19-58-07.jpg">
+</div>
 
-    <div class="grid">
+<!-- NEW ARRIVALS -->
+<h2>New Arrivals</h2>
+<div class="divider"></div>
+<div class="grid">
+    <div class="item"><img src="https://i.ibb.co/gMGWnB7S/Whats-App-Image-2025-12-01-at-19-58-07.jpg"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+</div>
 
-      <!-- Contoh 1 -->
-      <div class="card">
-        <div class="thumb"
-             style="background-image:url('https://i.ibb.co/gMGWnB7S/Whats-App-Image-2025-12-01-at-19-58-07.jpg');">
-        </div>
-        <h3>Contoh 1 — Character Portrait</h3>
-        <p>Wajah kawaii, background soft, cocok untuk avatar.</p>
-        <button>Pilih Contoh Ini</button>
-      </div>
+<!-- BESTSELLERS -->
+<h2>Bestsellers</h2>
+<div class="divider"></div>
+<div class="grid">
+    <div class="item"><img src="https://i.ibb.co/pjT363g4/Whats-App-Image-2025-12-01-at-19-58-07-1.jpg"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+</div>
 
-      <!-- Contoh 2 (gambar baru) -->
-      <div class="card">
-        <div class="thumb"
-             style="background-image:url('https://i.ibb.co/pjT363g4/Whats-App-Image-2025-12-01-at-19-58-07-1.jpg');">
-        </div>
-        <h3>Contoh 2 — Pastel Product</h3>
-        <p>Produk lucu dengan warna pastel aesthetic.</p>
-        <button>Pilih Contoh Ini</button>
-      </div>
+<!-- BUY NOW -->
+<h2>Buy Now</h2>
+<div class="divider"></div>
+<div class="grid">
+    <div class="item"><img src="https://i.ibb.co/0pbLcy8q/Whats-App-Image-2025-12-01-at-19-58-07-2.jpg"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+</div>
 
-      <!-- Contoh 3 (gambar baru) -->
-      <div class="card">
-        <div class="thumb"
-             style="background-image:url('https://i.ibb.co/0pbLcy8q/Whats-App-Image-2025-12-01-at-19-58-07-2.jpg');">
-        </div>
-        <h3>Contoh 3 — Cute Sticker</h3>
-        <p>Style stiker gemes dengan outline lembut.</p>
-        <button>Pilih Contoh Ini</button>
-      </div>
-
-    </div>
-
-  </div>
 </body>
 </html>
