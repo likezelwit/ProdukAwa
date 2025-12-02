@@ -112,12 +112,9 @@
       transition: width 0.3s;
     }
 
-    .nav-links a:hover::after {
+    .nav-links a:hover::after,
+    .nav-links a.active::after {
       width: 100%;
-    }
-
-    .nav-links a.active {
-      color: var(--pink-strong);
     }
 
     .wrap{max-width:980px;margin:28px auto;padding:28px}
@@ -168,14 +165,14 @@
     h1{margin:0;font-size:30px;font-weight:700;color:var(--dark)}
     p.subtitle{margin:4px 0 0;color:#555;font-size:15px}
 
-    /* Page Content */
+    /* Page Container */
     .page {
       display: none;
+      animation: fadeIn 0.5s ease-out;
     }
     
     .page.active {
       display: block;
-      animation: fadeIn 0.5s ease-out;
     }
     
     @keyframes fadeIn {
@@ -456,6 +453,312 @@
       margin: 0;
     }
 
+    /* FAQ Section */
+    .faq-section {
+      margin-top: 40px;
+    }
+    
+    .faq-title {
+      font-size: 28px;
+      margin-bottom: 30px;
+      color: var(--dark);
+      text-align: center;
+    }
+    
+    .faq-item {
+      background: var(--light);
+      border-radius: var(--round);
+      margin-bottom: 15px;
+      overflow: hidden;
+      box-shadow: var(--card-shadow);
+    }
+    
+    .faq-question {
+      padding: 20px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: var(--transition);
+    }
+    
+    .faq-question:hover {
+      background: var(--muted);
+    }
+    
+    .faq-question i {
+      transition: var(--transition);
+    }
+    
+    .faq-item.active .faq-question i {
+      transform: rotate(180deg);
+    }
+    
+    .faq-answer {
+      padding: 0 20px;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+    }
+    
+    .faq-item.active .faq-answer {
+      padding: 0 20px 20px;
+      max-height: 500px;
+    }
+
+    /* Cart Section */
+    .cart-section {
+      margin-top: 40px;
+    }
+    
+    .cart-title {
+      font-size: 28px;
+      margin-bottom: 30px;
+      color: var(--dark);
+      text-align: center;
+    }
+    
+    .cart-empty {
+      text-align: center;
+      padding: 40px;
+      background: var(--light);
+      border-radius: var(--round);
+      box-shadow: var(--card-shadow);
+    }
+    
+    .cart-empty i {
+      font-size: 48px;
+      color: var(--pink);
+      margin-bottom: 20px;
+    }
+    
+    .cart-items {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    
+    .cart-item {
+      display: flex;
+      background: var(--light);
+      border-radius: var(--round);
+      overflow: hidden;
+      box-shadow: var(--card-shadow);
+    }
+    
+    .cart-item-image {
+      width: 120px;
+      height: 120px;
+      background-size: cover;
+      background-position: center;
+    }
+    
+    .cart-item-details {
+      flex: 1;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    
+    .cart-item-title {
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+    
+    .cart-item-price {
+      color: var(--pink-strong);
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+    
+    .cart-item-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .quantity-selector {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .quantity-btn {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: var(--muted);
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    
+    .quantity-btn:hover {
+      background: var(--pink);
+      color: white;
+    }
+    
+    .cart-summary {
+      margin-top: 30px;
+      background: var(--light);
+      border-radius: var(--round);
+      padding: 20px;
+      box-shadow: var(--card-shadow);
+    }
+    
+    .cart-summary-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 15px;
+    }
+    
+    .cart-summary-row.total {
+      font-weight: 600;
+      font-size: 18px;
+      padding-top: 15px;
+      border-top: 1px solid var(--muted);
+    }
+    
+    .checkout-btn {
+      width: 100%;
+      padding: 15px;
+      background: var(--pink);
+      color: white;
+      border: none;
+      border-radius: var(--round);
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      transition: var(--transition);
+      margin-top: 20px;
+    }
+    
+    .checkout-btn:hover {
+      background: var(--pink-strong);
+    }
+
+    /* Request Section */
+    .request-section {
+      margin-top: 40px;
+    }
+    
+    .request-title {
+      font-size: 28px;
+      margin-bottom: 30px;
+      color: var(--dark);
+      text-align: center;
+    }
+    
+    .request-form {
+      background: var(--light);
+      border-radius: var(--round);
+      padding: 30px;
+      box-shadow: var(--card-shadow);
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+    
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--muted);
+      border-radius: var(--round);
+      font-family: inherit;
+      font-size: 14px;
+      transition: var(--transition);
+    }
+    
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--pink);
+      box-shadow: 0 0 0 3px rgba(234, 199, 216, 0.3);
+    }
+    
+    .form-group textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+    
+    .file-upload {
+      position: relative;
+      display: inline-block;
+      cursor: pointer;
+      width: 100%;
+    }
+    
+    .file-upload input[type=file] {
+      position: absolute;
+      left: -9999px;
+    }
+    
+    .file-upload label {
+      display: block;
+      padding: 12px;
+      background: var(--muted);
+      border-radius: var(--round);
+      text-align: center;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    
+    .file-upload label:hover {
+      background: var(--pink);
+      color: white;
+    }
+    
+    .submit-btn {
+      width: 100%;
+      padding: 15px;
+      background: var(--pink);
+      color: white;
+      border: none;
+      border-radius: var(--round);
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    
+    .submit-btn:hover {
+      background: var(--pink-strong);
+    }
+
+    /* Complaint Section */
+    .complaint-section {
+      margin-top: 40px;
+    }
+    
+    .complaint-title {
+      font-size: 28px;
+      margin-bottom: 30px;
+      color: var(--dark);
+      text-align: center;
+    }
+    
+    .complaint-form {
+      background: var(--light);
+      border-radius: var(--round);
+      padding: 30px;
+      box-shadow: var(--card-shadow);
+    }
+
     /* Footer */
     footer {
       margin-top: 60px;
@@ -536,7 +839,7 @@
       right: 30px;
       width: 50px;
       height: 50px;
-      background: var(--green);
+      background: #25D366; /* WhatsApp color */
       border-radius: 50%;
       display: flex;
       align-items: center;
@@ -544,16 +847,71 @@
       color: white;
       font-size: 20px;
       cursor: pointer;
-      opacity: 1;
-      visibility: visible;
       transition: var(--transition);
       z-index: 1000;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     }
     
     .cs-button:hover {
-      background: #c5d9a0;
       transform: translateY(-5px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+    }
+    
+    .cs-options {
+      position: fixed;
+      bottom: 150px;
+      right: 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      opacity: 0;
+      visibility: hidden;
+      transition: var(--transition);
+      z-index: 999;
+    }
+    
+    .cs-options.show {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .cs-option {
+      display: flex;
+      align-items: center;
+      background: white;
+      border-radius: 30px;
+      padding: 10px 15px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      transform: translateX(10px);
+      transition: var(--transition);
+    }
+    
+    .cs-options.show .cs-option {
+      transform: translateX(0);
+    }
+    
+    .cs-option i {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 10px;
+      color: white;
+    }
+    
+    .cs-option.whatsapp i {
+      background: #25D366;
+    }
+    
+    .cs-option.telegram i {
+      background: #0088cc;
+    }
+    
+    .cs-option span {
+      font-weight: 500;
+      color: var(--dark);
     }
 
     /* Back to Top Button */
@@ -633,248 +991,6 @@
       border-radius: var(--round);
     }
 
-    /* Form Styles */
-    .form-container {
-      max-width: 600px;
-      margin: 0 auto;
-      background: var(--light);
-      padding: 30px;
-      border-radius: var(--round);
-      box-shadow: var(--card-shadow);
-    }
-
-    .form-group {
-      margin-bottom: 20px;
-    }
-
-    .form-group label {
-      display: block;
-      margin-bottom: 8px;
-      font-weight: 600;
-      color: var(--dark);
-    }
-
-    .form-group input,
-    .form-group textarea,
-    .form-group select {
-      width: 100%;
-      padding: 12px 15px;
-      border: 1px solid var(--muted);
-      border-radius: var(--round);
-      font-family: inherit;
-      font-size: 14px;
-      transition: var(--transition);
-    }
-
-    .form-group input:focus,
-    .form-group textarea:focus,
-    .form-group select:focus {
-      outline: none;
-      border-color: var(--pink);
-      box-shadow: 0 0 0 3px rgba(234, 199, 216, 0.3);
-    }
-
-    .form-group textarea {
-      resize: vertical;
-      min-height: 120px;
-    }
-
-    .submit-btn {
-      background: var(--pink);
-      color: white;
-      border: none;
-      padding: 12px 25px;
-      border-radius: var(--round);
-      font-weight: 600;
-      cursor: pointer;
-      transition: var(--transition);
-      font-size: 16px;
-      width: 100%;
-    }
-
-    .submit-btn:hover {
-      background: var(--pink-strong);
-      transform: translateY(-2px);
-      box-shadow: 0 5px 10px rgba(225, 169, 191, 0.3);
-    }
-
-    /* FAQ Styles */
-    .faq-container {
-      max-width: 800px;
-      margin: 0 auto;
-    }
-
-    .faq-item {
-      background: var(--light);
-      margin-bottom: 15px;
-      border-radius: var(--round);
-      overflow: hidden;
-      box-shadow: var(--card-shadow);
-    }
-
-    .faq-question {
-      padding: 20px;
-      cursor: pointer;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-weight: 600;
-      color: var(--dark);
-      transition: var(--transition);
-    }
-
-    .faq-question:hover {
-      background: var(--muted);
-    }
-
-    .faq-question i {
-      transition: var(--transition);
-    }
-
-    .faq-question.active i {
-      transform: rotate(180deg);
-    }
-
-    .faq-answer {
-      padding: 0 20px;
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.3s ease-out, padding 0.3s ease-out;
-    }
-
-    .faq-answer.active {
-      padding: 0 20px 20px;
-      max-height: 500px;
-    }
-
-    /* Cart Styles */
-    .cart-container {
-      max-width: 800px;
-      margin: 0 auto;
-    }
-
-    .cart-items {
-      background: var(--light);
-      border-radius: var(--round);
-      padding: 20px;
-      margin-bottom: 30px;
-      box-shadow: var(--card-shadow);
-    }
-
-    .cart-item {
-      display: flex;
-      align-items: center;
-      padding: 15px 0;
-      border-bottom: 1px solid var(--muted);
-    }
-
-    .cart-item:last-child {
-      border-bottom: none;
-    }
-
-    .cart-item-image {
-      width: 80px;
-      height: 80px;
-      background-size: cover;
-      background-position: center;
-      border-radius: var(--round);
-      margin-right: 15px;
-    }
-
-    .cart-item-details {
-      flex-grow: 1;
-    }
-
-    .cart-item-title {
-      font-weight: 600;
-      margin-bottom: 5px;
-    }
-
-    .cart-item-price {
-      color: var(--pink-strong);
-      font-weight: 600;
-    }
-
-    .cart-item-quantity {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .quantity-btn {
-      width: 30px;
-      height: 30px;
-      border-radius: 50%;
-      background: var(--muted);
-      border: none;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: var(--transition);
-    }
-
-    .quantity-btn:hover {
-      background: var(--pink);
-      color: white;
-    }
-
-    .cart-summary {
-      background: var(--light);
-      border-radius: var(--round);
-      padding: 20px;
-      box-shadow: var(--card-shadow);
-    }
-
-    .summary-row {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 15px;
-    }
-
-    .summary-row.total {
-      font-weight: 700;
-      font-size: 18px;
-      color: var(--pink-strong);
-      padding-top: 15px;
-      border-top: 1px solid var(--muted);
-    }
-
-    .checkout-btn {
-      background: var(--pink);
-      color: white;
-      border: none;
-      padding: 15px;
-      border-radius: var(--round);
-      font-weight: 600;
-      cursor: pointer;
-      transition: var(--transition);
-      font-size: 16px;
-      width: 100%;
-      margin-top: 20px;
-    }
-
-    .checkout-btn:hover {
-      background: var(--pink-strong);
-      transform: translateY(-2px);
-      box-shadow: 0 5px 10px rgba(225, 169, 191, 0.3);
-    }
-
-    /* Empty Cart Message */
-    .empty-cart {
-      text-align: center;
-      padding: 40px;
-      background: var(--light);
-      border-radius: var(--round);
-      box-shadow: var(--card-shadow);
-    }
-
-    .empty-cart i {
-      font-size: 48px;
-      color: var(--pink);
-      margin-bottom: 20px;
-    }
-
     /* Responsive Design */
     @media (max-width: 768px) {
       .nav-container {
@@ -905,12 +1021,11 @@
       
       .cart-item {
         flex-direction: column;
-        align-items: flex-start;
       }
       
       .cart-item-image {
-        margin-right: 0;
-        margin-bottom: 10px;
+        width: 100%;
+        height: 200px;
       }
     }
   </style>
@@ -931,20 +1046,19 @@
         </div>
       </div>
       <div class="nav-links">
-        <a class="nav-link active" data-page="home">Beranda</a>
-        <a class="nav-link" data-page="portfolio">Portfolio</a>
-        <a class="nav-link" data-page="cart">Keranjang</a>
-        <a class="nav-link" data-page="request">Request</a>
-        <a class="nav-link" data-page="complaint">Keluhan</a>
-        <a class="nav-link" data-page="faq">FAQ</a>
-        <a class="nav-link" data-page="testimonials">Testimoni</a>
+        <a href="#" data-page="home" class="nav-link active">Beranda</a>
+        <a href="#" data-page="portfolio" class="nav-link">Portfolio</a>
+        <a href="#" data-page="faq" class="nav-link">FAQ</a>
+        <a href="#" data-page="cart" class="nav-link">Keranjang</a>
+        <a href="#" data-page="request" class="nav-link">Request</a>
+        <a href="#" data-page="complaint" class="nav-link">Keluhan</a>
       </div>
     </div>
   </nav>
 
   <div class="wrap">
     <!-- Home Page -->
-    <div class="page active" id="home">
+    <div id="home" class="page active">
       <header>
         <div class="logo">
           <div class="mark">★</div>
@@ -955,136 +1069,7 @@
         </div>
       </header>
 
-      <!-- Search and Filter Section -->
-      <div class="filter-section">
-        <div class="search-box">
-          <input type="text" placeholder="Cari contoh gambar..." id="searchInput">
-          <button type="button"><i class="fas fa-search"></i></button>
-        </div>
-        <div class="filter-buttons">
-          <button class="filter-btn active" data-filter="all">Semua</button>
-          <button class="filter-btn" data-filter="portrait">Portrait</button>
-          <button class="filter-btn" data-filter="product">Product</button>
-          <button class="filter-btn" data-filter="sticker">Sticker</button>
-        </div>
-      </div>
-
-      <div class="grid" id="portfolio">
-        <!-- Card 1 -->
-        <div class="card" data-category="portrait">
-          <div class="thumb"
-               style="background-image:url('https://i.ibb.co/gMGWnB7S/Whats-App-Image-2025-12-01-at-19-58-07.jpg');">
-            <div class="thumb-overlay">
-              <i class="fas fa-expand"></i>
-            </div>
-          </div>
-          <div class="card-content">
-            <span class="card-category">Portrait</span>
-            <h3>Contoh 1 — Character Portrait</h3>
-            <p>Wajah kawaii, background soft, cocok untuk avatar.</p>
-            <div class="card-footer">
-              <span class="card-price">Rp 50.000</span>
-              <button class="add-to-cart" data-id="1" data-name="Character Portrait" data-price="50000">Tambah ke Keranjang</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Card 2 -->
-        <div class="card" data-category="product">
-          <div class="thumb"
-               style="background-image:url('https://i.ibb.co/pjT363g4/Whats-App-Image-2025-12-01-at-19-58-07-1.jpg');">
-            <div class="thumb-overlay">
-              <i class="fas fa-expand"></i>
-            </div>
-          </div>
-          <div class="card-content">
-            <span class="card-category">Product</span>
-            <h3>Contoh 2 — Pastel Product</h3>
-            <p>Produk lucu dengan warna pastel aesthetic.</p>
-            <div class="card-footer">
-              <span class="card-price">Rp 75.000</span>
-              <button class="add-to-cart" data-id="2" data-name="Pastel Product" data-price="75000">Tambah ke Keranjang</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Card 3 -->
-        <div class="card" data-category="sticker">
-          <div class="thumb"
-               style="background-image:url('https://i.ibb.co/0pbLcy8q/Whats-App-Image-2025-12-01-at-19-58-07-2.jpg');">
-            <div class="thumb-overlay">
-              <i class="fas fa-expand"></i>
-            </div>
-          </div>
-          <div class="card-content">
-            <span class="card-category">Sticker</span>
-            <h3>Contoh 3 — Cute Sticker</h3>
-            <p>Style stiker gemes dengan outline lembut.</p>
-            <div class="card-footer">
-              <span class="card-price">Rp 30.000</span>
-              <button class="add-to-cart" data-id="3" data-name="Cute Sticker" data-price="30000">Tambah ke Keranjang</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Additional Cards -->
-        <div class="card" data-category="portrait">
-          <div class="thumb"
-               style="background-image:url('https://i.ibb.co/gMGWnB7S/Whats-App-Image-2025-12-01-at-19-58-07.jpg');">
-            <div class="thumb-overlay">
-              <i class="fas fa-expand"></i>
-            </div>
-          </div>
-          <div class="card-content">
-            <span class="card-category">Portrait</span>
-            <h3>Contoh 4 — Chibi Character</h3>
-            <p>Karakter chibi dengan ekspresi lucu dan warna cerah.</p>
-            <div class="card-footer">
-              <span class="card-price">Rp 45.000</span>
-              <button class="add-to-cart" data-id="4" data-name="Chibi Character" data-price="45000">Tambah ke Keranjang</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="card" data-category="product">
-          <div class="thumb"
-               style="background-image:url('https://i.ibb.co/pjT363g4/Whats-App-Image-2025-12-01-at-19-58-07-1.jpg');">
-            <div class="thumb-overlay">
-              <i class="fas fa-expand"></i>
-            </div>
-          </div>
-          <div class="card-content">
-            <span class="card-category">Product</span>
-            <h3>Contoh 5 — Cute Packaging</h3>
-            <p>Desain kemasan produk dengan tema kartun yang menarik.</p>
-            <div class="card-footer">
-              <span class="card-price">Rp 85.000</span>
-              <button class="add-to-cart" data-id="5" data-name="Cute Packaging" data-price="85000">Tambah ke Keranjang</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="card" data-category="sticker">
-          <div class="thumb"
-               style="background-image:url('https://i.ibb.co/0pbLcy8q/Whats-App-Image-2025-12-01-at-19-58-07-2.jpg');">
-            <div class="thumb-overlay">
-              <i class="fas fa-expand"></i>
-            </div>
-          </div>
-          <div class="card-content">
-            <span class="card-category">Sticker</span>
-            <h3>Contoh 6 — Emoji Set</h3>
-            <p>Set emoji kustom dengan karakter yang konsisten.</p>
-            <div class="card-footer">
-              <span class="card-price">Rp 60.000</span>
-              <button class="add-to-cart" data-id="6" data-name="Emoji Set" data-price="60000">Tambah ke Keranjang</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Testimonial Section -->
-      <section class="testimonial-section" id="testimonials">
+      <div class="testimonial-section">
         <div class="testimonial-container">
           <h2 class="testimonial-title">Apa Kata Pelanggan Kami</h2>
           <div class="testimonial-cards">
@@ -1120,17 +1105,17 @@
             </div>
           </div>
         </div>
-      </section>
+      </div>
     </div>
 
     <!-- Portfolio Page -->
-    <div class="page" id="portfolio">
+    <div id="portfolio" class="page">
       <header>
         <div class="logo">
           <div class="mark">★</div>
           <div>
             <h1>Portfolio</h1>
-            <p class="subtitle">Koleksi karya terbaik kami</p>
+            <p class="subtitle">Koleksi contoh gambar lucu kami</p>
           </div>
         </div>
       </header>
@@ -1138,7 +1123,7 @@
       <!-- Search and Filter Section -->
       <div class="filter-section">
         <div class="search-box">
-          <input type="text" placeholder="Cari contoh gambar..." id="searchInputPortfolio">
+          <input type="text" placeholder="Cari contoh gambar..." id="searchInput">
           <button type="button"><i class="fas fa-search"></i></button>
         </div>
         <div class="filter-buttons">
@@ -1264,165 +1249,8 @@
       </div>
     </div>
 
-    <!-- Cart Page -->
-    <div class="page" id="cart">
-      <header>
-        <div class="logo">
-          <div class="mark">★</div>
-          <div>
-            <h1>Keranjang</h1>
-            <p class="subtitle">Kelola pesanan Anda</p>
-          </div>
-        </div>
-      </header>
-
-      <div class="cart-container">
-        <div class="cart-items" id="cartItems">
-          <!-- Cart items will be dynamically added here -->
-        </div>
-        
-        <div class="empty-cart" id="emptyCartMessage" style="display: none;">
-          <i class="fas fa-shopping-cart"></i>
-          <h3>Keranjang Anda Kosong</h3>
-          <p>Belum ada item di keranjang Anda. Mulai belanja sekarang!</p>
-          <button class="submit-btn" onclick="showPage('portfolio')">Lihat Portfolio</button>
-        </div>
-        
-        <div class="cart-summary">
-          <div class="summary-row">
-            <span>Subtotal:</span>
-            <span id="subtotal">Rp 0</span>
-          </div>
-          <div class="summary-row">
-            <span>Pajak (10%):</span>
-            <span id="tax">Rp 0</span>
-          </div>
-          <div class="summary-row total">
-            <span>Total:</span>
-            <span id="total">Rp 0</span>
-          </div>
-          <button class="checkout-btn">Checkout</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Request Page -->
-    <div class="page" id="request">
-      <header>
-        <div class="logo">
-          <div class="mark">★</div>
-          <div>
-            <h1>Request Gambar</h1>
-            <p class="subtitle">Buat permintaan gambar kustom Anda</p>
-          </div>
-        </div>
-      </header>
-
-      <div class="form-container">
-        <form id="requestForm">
-          <div class="form-group">
-            <label for="name">Nama Lengkap</label>
-            <input type="text" id="name" name="name" required>
-          </div>
-          
-          <div class="form-group">
-            <label for="email">Email</label>
-            <input type="email" id="email" name="email" required>
-          </div>
-          
-          <div class="form-group">
-            <label for="phone">Nomor WhatsApp</label>
-            <input type="tel" id="phone" name="phone" required>
-          </div>
-          
-          <div class="form-group">
-            <label for="type">Jenis Gambar</label>
-            <select id="type" name="type" required>
-              <option value="">Pilih jenis gambar</option>
-              <option value="portrait">Character Portrait</option>
-              <option value="product">Pastel Product</option>
-              <option value="sticker">Cute Sticker</option>
-              <option value="custom">Custom Design</option>
-            </select>
-          </div>
-          
-          <div class="form-group">
-            <label for="reference">Referensi (opsional)</label>
-            <input type="text" id="reference" name="reference" placeholder="Link gambar referensi">
-          </div>
-          
-          <div class="form-group">
-            <label for="description">Deskripsi Permintaan</label>
-            <textarea id="description" name="description" placeholder="Jelaskan detail permintaan Anda..." required></textarea>
-          </div>
-          
-          <div class="form-group">
-            <label for="deadline">Deadline (opsional)</label>
-            <input type="date" id="deadline" name="deadline">
-          </div>
-          
-          <button type="submit" class="submit-btn">Kirim Permintaan</button>
-        </form>
-      </div>
-    </div>
-
-    <!-- Complaint Page -->
-    <div class="page" id="complaint">
-      <header>
-        <div class="logo">
-          <div class="mark">★</div>
-          <div>
-            <h1>Keluhan</h1>
-            <p class="subtitle">Kami siap mendengar masukan Anda</p>
-          </div>
-        </div>
-      </header>
-
-      <div class="form-container">
-        <form id="complaintForm">
-          <div class="form-group">
-            <label for="complaintName">Nama Lengkap</label>
-            <input type="text" id="complaintName" name="complaintName" required>
-          </div>
-          
-          <div class="form-group">
-            <label for="complaintEmail">Email</label>
-            <input type="email" id="complaintEmail" name="complaintEmail" required>
-          </div>
-          
-          <div class="form-group">
-            <label for="orderId">ID Pesanan (jika ada)</label>
-            <input type="text" id="orderId" name="orderId">
-          </div>
-          
-          <div class="form-group">
-            <label for="complaintType">Jenis Keluhan</label>
-            <select id="complaintType" name="complaintType" required>
-              <option value="">Pilih jenis keluhan</option>
-              <option value="quality">Kualitas gambar tidak sesuai</option>
-              <option value="deadline">Pengerjaan terlambat</option>
-              <option value="service">Pelayanan tidak memuaskan</option>
-              <option value="other">Lainnya</option>
-            </select>
-          </div>
-          
-          <div class="form-group">
-            <label for="complaintDetail">Detail Keluhan</label>
-            <textarea id="complaintDetail" name="complaintDetail" placeholder="Jelaskan detail keluhan Anda..." required></textarea>
-          </div>
-          
-          <div class="form-group">
-            <label for="solution">Solusi yang Diinginkan</label>
-            <textarea id="solution" name="solution" placeholder="Apa solusi yang Anda harapkan dari kami?"></textarea>
-          </div>
-          
-          <button type="submit" class="submit-btn">Kirim Keluhan</button>
-        </form>
-      </div>
-    </div>
-
     <!-- FAQ Page -->
-    <div class="page" id="faq">
+    <div id="faq" class="page">
       <header>
         <div class="logo">
           <div class="mark">★</div>
@@ -1433,490 +1261,199 @@
         </div>
       </header>
 
-      <div class="faq-container">
-        <div class="faq-item">
-          <div class="faq-question">
-            <span>Bagaimana cara memesan gambar di Cute Request?</span>
-            <i class="fas fa-chevron-down"></i>
+      <div class="faq-section">
+        <div class="faq-container">
+          <div class="faq-item">
+            <div class="faq-question">
+              <span>Bagaimana cara memesan gambar?</span>
+              <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+              <p>Anda bisa memesan gambar melalui halaman "Request" pada website kami. Isi form yang tersedia dengan detail permintaan Anda, dan kami akan segera menghubungi Anda untuk konfirmasi lebih lanjut.</p>
+            </div>
           </div>
-          <div class="faq-answer">
-            <p>Untuk memesan gambar, Anda dapat mengisi formulir permintaan di halaman "Request" atau langsung menghubungi CS kami melalui WhatsApp. Pilih contoh gambar yang Anda suka, jelaskan kebutuhan Anda, dan tim kami akan segera menghubungi Anda untuk konfirmasi lebih lanjut.</p>
-          </div>
-        </div>
 
-        <div class="faq-item">
-          <div class="faq-question">
-            <span>Berapa lama waktu pengerjaan gambar?</span>
-            <i class="fas fa-chevron-down"></i>
+          <div class="faq-item">
+            <div class="faq-question">
+              <span>Berapa lama waktu pengerjaan gambar?</span>
+              <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+              <p>Waktu pengerjaan tergantung pada kompleksitas permintaan Anda. Untuk gambar sederhana, biasanya memakan waktu 1-3 hari. Untuk gambar yang lebih kompleks, bisa memakan waktu 3-7 hari. Kami akan memberikan estimasi waktu setelah menerima detail permintaan Anda.</p>
+            </div>
           </div>
-          <div class="faq-answer">
-            <p>Waktu pengerjaan tergantung pada kompleksitas permintaan Anda. Untuk gambar sederhana, biasanya membutuhkan waktu 1-3 hari. Untuk permintaan yang lebih kompleks, bisa memakan waktu hingga 7 hari. Tim kami akan memberikan estimasi waktu yang lebih tepat setelah menerima detail permintaan Anda.</p>
-          </div>
-        </div>
 
-        <div class="faq-item">
-          <div class="faq-question">
-            <span>Apakah saya bisa melakukan revisi jika hasil tidak sesuai?</span>
-            <i class="fas fa-chevron-down"></i>
+          <div class="faq-item">
+            <div class="faq-question">
+              <span>Apakah saya bisa request revisi?</span>
+              <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+              <p>Tentu saja! Kami menyediakan 2 kali revisi gratis untuk setiap gambar yang dipesan. Jika Anda membutuhkan revisi tambahan, akan ada biaya tambahan yang disesuaikan dengan kompleksitas revisi yang diminta.</p>
+            </div>
           </div>
-          <div class="faq-answer">
-            <p>Tentu saja! Kami menyediakan 2 kali revisi gratis untuk setiap pesanan. Jika Anda masih memerlukan revisi tambahan, akan ada biaya tambahan yang disesuaikan dengan kompleksitas perubahan yang diminta.</p>
-          </div>
-        </div>
 
-        <div class="faq-item">
-          <div class="faq-question">
-            <span>Format file apa yang akan saya terima?</span>
-            <i class="fas fa-chevron-down"></i>
+          <div class="faq-item">
+            <div class="faq-question">
+              <span>Format file apa yang saya dapatkan?</span>
+              <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+              <p>Anda akan mendapatkan file dalam format PNG dengan background transparan dan format JPG dengan background putih. Jika Anda membutuhkan format lain seperti SVG atau AI, silakan sebutkan pada form permintaan.</p>
+            </div>
           </div>
-          <div class="faq-answer">
-            <p>Anda akan menerima file dalam format PNG dengan transparansi background dan format JPG. Jika Anda memerlukan format lain seperti SVG atau PSD, silakan informasikan kepada tim kami saat pemesanan.</p>
-          </div>
-        </div>
 
-        <div class="faq-item">
-          <div class="faq-question">
-            <span>Bagaimana sistem pembayarannya?</span>
-            <i class="fas fa-chevron-down"></i>
-          </div>
-          <div class="faq-answer">
-            <p>Kami menggunakan sistem pembayaran 50% di muka dan 50% setelah desain selesai. Pembayaran dapat dilakukan melalui transfer bank atau e-wallet. Setelah pembayaran pertama diterima, tim kami akan mulai mengerjakan desain Anda.</p>
-          </div>
-        </div>
-
-        <div class="faq-item">
-          <div class="faq-question">
-            <span>Apakah ada garansi kepuasan?</span>
-            <i class="fas fa-chevron-down"></i>
-          </div>
-          <div class="faq-answer">
-            <p>Ya, kami berkomitmen untuk memberikan hasil terbaik. Jika setelah revisi maksimal Anda masih tidak puas dengan hasilnya, kami akan mengembalikan 50% dari pembayaran yang telah Anda lakukan.</p>
-          </div>
-        </div>
-
-        <div class="faq-item">
-          <div class="faq-question">
-            <span>Bisakah saya menggunakan gambar untuk tujuan komersial?</span>
-            <i class="fas fa-chevron-down"></i>
-          </div>
-          <div class="faq-answer">
-            <p>Ya, setelah pembayaran penuh, Anda memiliki hak penuh untuk menggunakan gambar untuk tujuan pribadi atau komersial. Namun, kami tetap meminta untuk menyertakan kredit kepada Cute Request saat menggunakan gambar tersebut.</p>
+          <div class="faq-item">
+            <div class="faq-question">
+              <span>Bagaimana sistem pembayarannya?</span>
+              <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+              <p>Kami menggunakan sistem pembayaran 50% di muka dan 50% setelah gambar selesai. Pembayaran dapat dilakukan melalui transfer bank atau e-wallet. Setelah pembayaran pertama diterima, kami akan mulai mengerjakan permintaan Anda.</p>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Testimonials Page -->
-    <div class="page" id="testimonials">
+    <!-- Cart Page -->
+    <div id="cart" class="page">
       <header>
         <div class="logo">
           <div class="mark">★</div>
           <div>
-            <h1>Testimoni</h1>
-            <p class="subtitle">Apa kata pelanggan kami</p>
+            <h1>Keranjang</h1>
+            <p class="subtitle">Lihat dan kelola pesanan Anda</p>
           </div>
         </div>
       </header>
 
-      <div class="testimonial-container">
-        <div class="testimonial-cards">
-          <div class="testimonial-card">
-            <p class="testimonial-text">"Gambar yang dihasilkan sangat lucu dan sesuai dengan yang saya inginkan. Pelayanan sangat ramah!"</p>
-            <div class="testimonial-author">
-              <div class="author-avatar">A</div>
-              <div class="author-info">
-                <h4 class="author-name">Andi</h4>
-                <p class="author-title">Content Creator</p>
-              </div>
-            </div>
+      <div class="cart-section">
+        <div class="cart-empty" id="cartEmpty">
+          <i class="fas fa-shopping-cart"></i>
+          <h3>Keranjang Anda Kosong</h3>
+          <p>Tambahkan beberapa contoh gambar ke keranjang Anda untuk memulai</p>
+          <button class="back-to-portfolio-btn">Lihat Portfolio</button>
+        </div>
+
+        <div class="cart-items" id="cartItems" style="display: none;">
+          <!-- Cart items will be dynamically added here -->
+        </div>
+
+        <div class="cart-summary" id="cartSummary" style="display: none;">
+          <div class="cart-summary-row">
+            <span>Subtotal:</span>
+            <span id="subtotal">Rp 0</span>
           </div>
-          <div class="testimonial-card">
-            <p class="testimonial-text">"Sangat puas dengan hasilnya! Proses pengerjaan cepat dan hasilnya melebihi ekspektasi."</p>
-            <div class="testimonial-author">
-              <div class="author-avatar">S</div>
-              <div class="author-info">
-                <h4 class="author-name">Siti</h4>
-                <p class="author-title">Online Shop Owner</p>
-              </div>
-            </div>
+          <div class="cart-summary-row">
+            <span>Biaya Layanan:</span>
+            <span id="serviceFee">Rp 5.000</span>
           </div>
-          <div class="testimonial-card">
-            <p class="testimonial-text">"Desain sticker yang saya pesan sangat unik dan disukai pelanggan saya. Recommended!"</p>
-            <div class="testimonial-author">
-              <div class="author-avatar">R</div>
-              <div class="author-info">
-                <h4 class="author-name">Rina</h4>
-                <p class="author-title">Entrepreneur</p>
-              </div>
-            </div>
+          <div class="cart-summary-row total">
+            <span>Total:</span>
+            <span id="total">Rp 0</span>
           </div>
-          <div class="testimonial-card">
-            <p class="testimonial-text">"Pelayanan yang sangat memuaskan! Tim designer sangat responsif dan mau mendengar masukan saya."</p>
-            <div class="testimonial-author">
-              <div class="author-avatar">B</div>
-              <div class="author-info">
-                <h4 class="author-name">Budi</h4>
-                <p class="author-title">Illustrator</p>
-              </div>
-            </div>
-          </div>
-          <div class="testimonial-card">
-            <p class="testimonial-text">"Harga yang sangat terjangkau untuk kualitas sebaik ini. Pasti akan pesan lagi!"</p>
-            <div class="testimonial-author">
-              <div class="author-avatar">D</div>
-              <div class="author-info">
-                <h4 class="author-name">Dewi</h4>
-                <p class="author-title">Small Business Owner</p>
-              </div>
-            </div>
-          </div>
-          <div class="testimonial-card">
-            <p class="testimonial-text">"Proses pemesanan yang mudah dan hasil yang selalu memuaskan. Sudah 3 kali pesan di sini!"</p>
-            <div class="testimonial-author">
-              <div class="author-avatar">F</div>
-              <div class="author-info">
-                <h4 class="author-name">Fajar</h4>
-                <p class="author-title">Digital Marketer</p>
-              </div>
-            </div>
-          </div>
+          <button class="checkout-btn">Checkout</button>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- Footer -->
-  <footer>
-    <div class="wrap">
-      <div class="footer-content">
-        <div class="footer-section">
-          <h3>Tentang Kami</h3>
-          <p>Cute Request adalah platform untuk memesan gambar lucu dengan gaya pastel yang aesthetic. Kami siap mewujudkan ide kreatif Anda.</p>
-        </div>
-        <div class="footer-section">
-          <h3>Layanan</h3>
-          <ul>
-            <li><a href="#" onclick="showPage('portfolio')">Character Portrait</a></li>
-            <li><a href="#" onclick="showPage('portfolio')">Pastel Product</a></li>
-            <li><a href="#" onclick="showPage('portfolio')">Cute Sticker</a></li>
-            <li><a href="#" onclick="showPage('request')">Custom Design</a></li>
-          </ul>
-        </div>
-        <div class="footer-section">
-          <h3>Ikuti Kami</h3>
-          <div class="social-links">
-            <a href="#"><i class="fab fa-instagram"></i></a>
-            <a href="#"><i class="fab fa-telegram"></i></a>
-            <a href="#"><i class="fab fa-tiktok"></i></a>
+    <!-- Request Page -->
+    <div id="request" class="page">
+      <header>
+        <div class="logo">
+          <div class="mark">★</div>
+          <div>
+            <h1>Request Gambar</h1>
+            <p class="subtitle">Kirim detail permintaan gambar Anda</p>
           </div>
         </div>
-      </div>
-      <div class="footer-bottom">
-        <p>&copy; 2023 Cute Request. All rights reserved.</p>
+      </header>
+
+      <div class="request-section">
+        <div class="request-form">
+          <div class="form-group">
+            <label for="requestName">Nama Lengkap</label>
+            <input type="text" id="requestName" placeholder="Masukkan nama lengkap Anda">
+          </div>
+
+          <div class="form-group">
+            <label for="requestEmail">Email</label>
+            <input type="email" id="requestEmail" placeholder="Masukkan email Anda">
+          </div>
+
+          <div class="form-group">
+            <label for="requestPhone">Nomor WhatsApp</label>
+            <input type="tel" id="requestPhone" placeholder="Masukkan nomor WhatsApp Anda">
+          </div>
+
+          <div class="form-group">
+            <label for="requestType">Jenis Permintaan</label>
+            <select id="requestType">
+              <option value="">Pilih jenis permintaan</option>
+              <option value="portrait">Character Portrait</option>
+              <option value="product">Product Design</option>
+              <option value="sticker">Sticker Design</option>
+              <option value="other">Lainnya</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="requestDetails">Detail Permintaan</label>
+            <textarea id="requestDetails" placeholder="Jelaskan detail permintaan gambar Anda (warna, gaya, ukuran, dll)"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>Referensi (Opsional)</label>
+            <div class="file-upload">
+              <input type="file" id="requestReference">
+              <label for="requestReference">
+                <i class="fas fa-cloud-upload-alt"></i> Unggah File Referensi
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="requestDeadline">Deadline (Opsional)</label>
+            <input type="date" id="requestDeadline">
+          </div>
+
+          <button class="submit-btn">Kirim Permintaan</button>
+        </div>
       </div>
     </div>
-  </footer>
 
-  <!-- CS Button -->
-  <div class="cs-button" id="csButton">
-    <i class="fas fa-headset"></i>
-  </div>
-
-  <!-- Back to Top Button -->
-  <div class="back-to-top" id="backToTop">
-    <i class="fas fa-arrow-up"></i>
-  </div>
-
-  <!-- Image Modal -->
-  <div class="modal" id="imageModal">
-    <div class="modal-content">
-      <div class="modal-close" id="modalClose">
-        <i class="fas fa-times"></i>
-      </div>
-      <img src="" alt="Expanded view" class="modal-image" id="modalImage">
-    </div>
-  </div>
-
-  <script>
-    // Cart data
-    let cart = [];
-    
-    // Page navigation
-    function showPage(pageId) {
-      // Hide all pages
-      document.querySelectorAll('.page').forEach(page => {
-        page.classList.remove('active');
-      });
-      
-      // Show selected page
-      document.getElementById(pageId).classList.add('active');
-      
-      // Update active nav link
-      document.querySelectorAll('.nav-link').forEach(link => {
-        link.classList.remove('active');
-        if (link.getAttribute('data-page') === pageId) {
-          link.classList.add('active');
-        }
-      });
-      
-      // Scroll to top
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      });
-      
-      // Update cart if cart page is selected
-      if (pageId === 'cart') {
-        updateCartDisplay();
-      }
-    }
-    
-    // Initialize navigation
-    document.querySelectorAll('.nav-link').forEach(link => {
-      link.addEventListener('click', function(e) {
-        e.preventDefault();
-        const pageId = this.getAttribute('data-page');
-        showPage(pageId);
-      });
-    });
-    
-    // Cart functionality
-    function addToCart(id, name, price) {
-      // Check if item already exists in cart
-      const existingItem = cart.find(item => item.id === id);
-      
-      if (existingItem) {
-        existingItem.quantity += 1;
-      } else {
-        cart.push({
-          id: id,
-          name: name,
-          price: price,
-          quantity: 1
-        });
-      }
-      
-      // Show notification
-      showNotification('Produk berhasil ditambahkan ke keranjang!');
-    }
-    
-    function removeFromCart(id) {
-      cart = cart.filter(item => item.id !== id);
-      updateCartDisplay();
-    }
-    
-    function updateQuantity(id, change) {
-      const item = cart.find(item => item.id === id);
-      if (item) {
-        item.quantity += change;
-        if (item.quantity <= 0) {
-          removeFromCart(id);
-        } else {
-          updateCartDisplay();
-        }
-      }
-    }
-    
-    function updateCartDisplay() {
-      const cartItemsContainer = document.getElementById('cartItems');
-      const emptyCartMessage = document.getElementById('emptyCartMessage');
-      
-      if (cart.length === 0) {
-        cartItemsContainer.style.display = 'none';
-        emptyCartMessage.style.display = 'block';
-        document.getElementById('subtotal').textContent = 'Rp 0';
-        document.getElementById('tax').textContent = 'Rp 0';
-        document.getElementById('total').textContent = 'Rp 0';
-        return;
-      }
-      
-      cartItemsContainer.style.display = 'block';
-      emptyCartMessage.style.display = 'none';
-      
-      // Clear cart items
-      cartItemsContainer.innerHTML = '';
-      
-      let subtotal = 0;
-      
-      // Add cart items
-      cart.forEach(item => {
-        subtotal += item.price * item.quantity;
-        
-        const cartItem = document.createElement('div');
-        cartItem.className = 'cart-item';
-        
-        cartItem.innerHTML = `
-          <div class="cart-item-image" style="background-image: url('https://picsum.photos/seed/${item.id}/200/200.jpg')"></div>
-          <div class="cart-item-details">
-            <div class="cart-item-title">${item.name}</div>
-            <div class="cart-item-price">Rp ${item.price.toLocaleString('id-ID')}</div>
+    <!-- Complaint Page -->
+    <div id="complaint" class="page">
+      <header>
+        <div class="logo">
+          <div class="mark">★</div>
+          <div>
+            <h1>Keluhan</h1>
+            <p class="subtitle">Kirim keluhan atau masukan Anda</p>
           </div>
-          <div class="cart-item-quantity">
-            <button class="quantity-btn" onclick="updateQuantity(${item.id}, -1)">-</button>
-            <span>${item.quantity}</span>
-            <button class="quantity-btn" onclick="updateQuantity(${item.id}, 1)">+</button>
+        </div>
+      </header>
+
+      <div class="complaint-section">
+        <div class="complaint-form">
+          <div class="form-group">
+            <label for="complaintName">Nama Lengkap</label>
+            <input type="text" id="complaintName" placeholder="Masukkan nama lengkap Anda">
           </div>
-          <button class="remove-item" onclick="removeFromCart(${item.id})">
-            <i class="fas fa-trash"></i>
-          </button>
-        `;
-        
-        cartItemsContainer.appendChild(cartItem);
-      });
-      
-      // Update totals
-      const tax = subtotal * 0.1;
-      const total = subtotal + tax;
-      
-      document.getElementById('subtotal').textContent = `Rp ${subtotal.toLocaleString('id-ID')}`;
-      document.getElementById('tax').textContent = `Rp ${tax.toLocaleString('id-ID')}`;
-      document.getElementById('total').textContent = `Rp ${total.toLocaleString('id-ID')}`;
-    }
-    
-    // Notification
-    function showNotification(message) {
-      const notification = document.createElement('div');
-      notification.className = 'cart-notification';
-      notification.innerHTML = `
-        <i class="fas fa-check-circle"></i>
-        <span>${message}</span>
-      `;
-      
-      notification.style.cssText = `
-        position: fixed;
-        bottom: 100px;
-        right: 30px;
-        background: var(--green);
-        color: white;
-        padding: 15px 20px;
-        border-radius: var(--round);
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        opacity: 0;
-        transform: translateY(20px);
-        transition: var(--transition);
-        z-index: 1000;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-      `;
-      
-      document.body.appendChild(notification);
-      
-      // Show notification
-      setTimeout(() => {
-        notification.style.opacity = '1';
-        notification.style.transform = 'translateY(0)';
-      }, 100);
-      
-      // Hide notification after 3 seconds
-      setTimeout(() => {
-        notification.style.opacity = '0';
-        notification.style.transform = 'translateY(20px)';
-        
-        setTimeout(() => {
-          document.body.removeChild(notification);
-        }, 500);
-      }, 3000);
-    }
-    
-    // Loader
-    window.addEventListener('load', function() {
-      setTimeout(function() {
-        document.querySelector('.loader-wrapper').classList.add('fade-out');
-      }, 1000);
-    });
 
-    // Back to Top Button
-    const backToTopButton = document.getElementById('backToTop');
-    
-    window.addEventListener('scroll', () => {
-      if (window.pageYOffset > 300) {
-        backToTopButton.classList.add('show');
-      } else {
-        backToTopButton.classList.remove('show');
-      }
-    });
-    
-    backToTopButton.addEventListener('click', () => {
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      });
-    });
+          <div class="form-group">
+            <label for="complaintEmail">Email</label>
+            <input type="email" id="complaintEmail" placeholder="Masukkan email Anda">
+          </div>
 
-    // CS Button
-    const csButton = document.getElementById('csButton');
-    csButton.addEventListener('click', () => {
-      window.open('https://wa.me/6285776614421', '_blank');
-    });
+          <div class="form-group">
+            <label for="complaintOrderID">ID Pesanan (Jika Ada)</label>
+            <input type="text" id="complaintOrderID" placeholder="Masukkan ID pesanan Anda">
+          </div>
 
-    // Image Modal
-    const modal = document.getElementById('imageModal');
-    const modalImage = document.getElementById('modalImage');
-    const modalClose = document.getElementById('modalClose');
-    
-    // Add click event to all thumb overlays
-    document.addEventListener('click', function(e) {
-      if (e.target.closest('.thumb-overlay')) {
-        const card = e.target.closest('.card');
-        const thumb = card.querySelector('.thumb');
-        const imageUrl = thumb.style.backgroundImage.slice(5, -2);
-        
-        modalImage.src = imageUrl;
-        modal.classList.add('active');
-      }
-    });
-    
-    modalClose.addEventListener('click', () => {
-      modal.classList.remove('active');
-    });
-    
-    modal.addEventListener('click', (e) => {
-      if (e.target === modal) {
-        modal.classList.remove('active');
-      }
-    });
-
-    // Add to cart buttons
-    document.addEventListener('click', function(e) {
-      if (e.target.classList.contains('add-to-cart')) {
-        const id = parseInt(e.target.getAttribute('data-id'));
-        const name = e.target.getAttribute('data-name');
-        const price = parseInt(e.target.getAttribute('data-price'));
-        
-        addToCart(id, name, price);
-      }
-    });
-
-    // Filter Functionality
-    document.addEventListener('click', function(e) {
-      if (e.target.classList.contains('filter-btn')) {
-        // Remove active class from all buttons
-        document.querySelectorAll('.filter-btn').forEach(btn => {
-          btn.classList.remove('active');
-        });
-        
-        // Add active class to clicked button
-        e.target.classList.add('active');
-        
-        const filter = e.target.getAttribute('data-filter');
-        
-        // Get all cards on current page
-        const currentPage = document.querySelector('.page.active');
-        const cards = currentPage.querySelectorAll('.card');
-        
-        cards.forEach(card => {
-          if (filter === 'all' || card.getAttribute('data-category') === filter) {
-            card.style.display = 'block';
-            // Add animation
-            card.style.animation = 'fadeInUp 0.5s ease-out';
-          } else {
-            card.style.display = 'none';
-          }
-        });
-      }
-    });
-
-    // Search Functionality
-    document.addEventListener('keyup', function(e) {
-      if (e.target.id === 'searchInput'
+          <div class="form-group">
+            <label for="complaintType">Jenis Keluhan</label>
+            <select id="complaintType">
+              <option value="">Pilih jenis keluhan</option>
+              <option value="quality">Kual
