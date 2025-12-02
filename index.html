@@ -3,14 +3,16 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Cute Pastel Request — Professional Template</title>
+  <title>Cute Request — Pastel Store</title>
   <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&family=Poppins:wght@300;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <style>
     :root{
       --pink: #EAC7D8;
+      --pink-hover: #e0b0c6;
       --green: #D9E5C1;
+      --green-hover: #c5d6a4;
       --pink-strong: #e1a9bf;
       --muted: #f7f7f7;
       --card-shadow: 0 10px 20px rgba(21,21,21,0.06);
@@ -25,48 +27,18 @@
       height:100%;
       margin:0;
       font-family:Quicksand, Poppins, system-ui, -apple-system, 'Segoe UI', Roboto;
-      line-height:1.4;color:var(--dark)
+      line-height:1.6;color:var(--dark);
+      scroll-behavior: smooth;
     }
     body{
       background:linear-gradient(180deg, #fff 0%, #fff 40%, var(--muted) 40%);
       overflow-x: hidden;
-    }
-
-    /* Loading Animation */
-    .loader-wrapper {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: var(--light);
       display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 9999;
-      transition: opacity 0.5s, visibility 0.5s;
-    }
-    
-    .loader {
-      width: 50px;
-      height: 50px;
-      border: 5px solid var(--muted);
-      border-top: 5px solid var(--pink);
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-    }
-    
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-    
-    .loader-wrapper.fade-out {
-      opacity: 0;
-      visibility: hidden;
+      flex-direction: column;
+      min-height: 100vh;
     }
 
-    /* Navigation */
+    /* --- Navigation --- */
     nav {
       background: rgba(255, 255, 255, 0.95);
       backdrop-filter: blur(10px);
@@ -75,11 +47,10 @@
       top: 0;
       z-index: 1000;
       box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-      transition: var(--transition);
     }
 
     .nav-container {
-      max-width: 980px;
+      max-width: 1100px;
       margin: 0 auto;
       padding: 0 28px;
       display: flex;
@@ -90,1683 +61,811 @@
     .nav-links {
       display: flex;
       gap: 20px;
+      align-items: center;
     }
 
-    .nav-links a {
+    .nav-links button {
+      background: none;
+      border: none;
       color: var(--dark);
-      text-decoration: none;
-      font-weight: 500;
-      transition: var(--transition);
-      position: relative;
+      font-family: inherit;
+      font-weight: 600;
+      font-size: 15px;
       cursor: pointer;
+      padding: 5px 0;
+      position: relative;
+      transition: var(--transition);
     }
 
-    .nav-links a::after {
+    .nav-links button::after {
       content: '';
       position: absolute;
-      bottom: -5px;
+      bottom: -2px;
       left: 0;
       width: 0;
-      height: 2px;
+      height: 3px;
       background: var(--pink);
+      border-radius: 2px;
       transition: width 0.3s;
     }
 
-    .nav-links a:hover::after, .nav-links a.active::after {
+    .nav-links button:hover::after,
+    .nav-links button.active::after {
       width: 100%;
     }
+    
+    .nav-links button.active {
+      color: var(--pink-strong);
+    }
 
-    .wrap{max-width:980px;margin:28px auto;padding:28px}
-
-    header{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:16px;
-      margin-bottom: 40px;
-      animation: fadeInDown 0.8s ease-out;
+    .cart-btn-nav {
+      background: var(--pink) !important;
+      color: white !important;
+      padding: 8px 16px !important;
+      border-radius: 20px;
     }
     
-    @keyframes fadeInDown {
-      from {
-        opacity: 0;
-        transform: translateY(-20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .logo{
-      display:flex;
-      align-items:center;
-      gap:12px;
+    .cart-btn-nav:hover {
+      background: var(--pink-hover) !important;
+      transform: translateY(-2px);
     }
     
-    .logo .mark{
-      width:54px;
-      height:54px;
-      border-radius:14px;
-      background:linear-gradient(180deg,var(--pink),#f8e7ef);
-      box-shadow:var(--card-shadow);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-weight:700;
-      transition: var(--transition);
-    }
-    
-    .logo:hover .mark {
-      transform: rotate(10deg) scale(1.1);
+    .cart-btn-nav::after { display: none; }
+
+    /* --- Layout & Pages --- */
+    .wrap {
+      max-width: 980px;
+      margin: 28px auto;
+      padding: 28px;
+      flex: 1; /* Pushes footer down */
     }
 
-    h1{margin:0;font-size:30px;font-weight:700;color:var(--dark)}
-    p.subtitle{margin:4px 0 0;color:#555;font-size:15px}
-
-    /* Page Container */
-    .page {
+    /* Page Switching Logic */
+    .page-section {
       display: none;
       animation: fadeIn 0.5s ease-out;
     }
     
-    .page.active {
+    .page-section.active {
       display: block;
     }
     
     @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Search and Filter Section */
-    .filter-section {
+    /* --- Header & Logo --- */
+    header {
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      gap: 16px;
       margin-bottom: 30px;
-      flex-wrap: wrap;
-      gap: 15px;
-      animation: fadeIn 1s ease-out 0.2s both;
     }
-    
-    .search-box {
-      position: relative;
-      width: 300px;
+    .logo { display: flex; align-items: center; gap: 12px; cursor: pointer; }
+    .logo .mark {
+      width: 50px; height: 50px;
+      border-radius: 14px;
+      background: linear-gradient(180deg,var(--pink),#f8e7ef);
+      box-shadow: var(--card-shadow);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 20px; color: #fff;
     }
-    
-    .search-box input {
-      width: 100%;
-      padding: 10px 40px 10px 15px;
-      border: 1px solid var(--muted);
-      border-radius: var(--round);
-      font-family: inherit;
-      font-size: 14px;
-      transition: var(--transition);
-    }
-    
-    .search-box input:focus {
-      outline: none;
-      border-color: var(--pink);
-      box-shadow: 0 0 0 3px rgba(234, 199, 216, 0.3);
-    }
-    
-    .search-box button {
-      position: absolute;
-      right: 5px;
-      top: 50%;
-      transform: translateY(-50%);
-      background: none;
-      border: none;
-      color: var(--pink);
-      cursor: pointer;
-      padding: 5px;
-    }
+    h1 { margin: 0; font-size: 28px; font-weight: 700; color: var(--dark); }
+    p.subtitle { margin: 4px 0 0; color: #666; font-size: 14px; }
 
-    .filter-buttons {
+    /* --- Portfolio Grid --- */
+    .filter-section {
+      margin-bottom: 30px;
       display: flex;
       gap: 10px;
+      flex-wrap: wrap;
     }
     
     .filter-btn {
-      padding: 8px 15px;
+      padding: 8px 20px;
       background: var(--light);
-      border: 1px solid var(--muted);
+      border: 1px solid #eee;
       border-radius: 20px;
-      font-size: 14px;
       cursor: pointer;
       transition: var(--transition);
     }
     
     .filter-btn:hover, .filter-btn.active {
       background: var(--pink);
-      border-color: var(--pink);
       color: white;
+      border-color: var(--pink);
     }
 
-    .grid{
-      margin-top:40px;
-      display:grid;
-      grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
-      gap:24px;
-      animation: fadeInUp 0.8s ease-out 0.4s both;
-    }
-    
-    @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 24px;
     }
 
-    .card{
-      background:var(--light);
-      border-radius:var(--round);
-      overflow: hidden;
-      box-shadow:var(--card-shadow);
-      transition: var(--transition);
-      position: relative;
-    }
-    
-    .card:hover{
-      transform:translateY(-8px);
-      box-shadow: 0 15px 30px rgba(21,21,21,0.1);
-    }
-
-    .thumb{
-      width:100%;
-      height:200px;
-      background:#eee;
-      background-size:cover;
-      background-position:center;
-      position: relative;
-      overflow: hidden;
-    }
-    
-    .thumb::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(0deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0) 50%);
-      opacity: 0;
-      transition: var(--transition);
-    }
-    
-    .card:hover .thumb::after {
-      opacity: 1;
-    }
-    
-    .thumb-overlay {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      background: rgba(255,255,255,0.9);
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0;
-      transform: scale(0.8);
-      transition: var(--transition);
-      cursor: pointer;
-    }
-    
-    .card:hover .thumb-overlay {
-      opacity: 1;
-      transform: scale(1);
-    }
-    
-    .card-content {
-      padding: 20px;
-    }
-    
-    .card-category {
-      display: inline-block;
-      padding: 4px 10px;
-      background: var(--muted);
-      border-radius: 15px;
-      font-size: 12px;
-      margin-bottom: 10px;
-      color: var(--pink-strong);
-      font-weight: 600;
-    }
-
-    h3{margin:0 0 10px;font-size:18px;font-weight:600;color:var(--dark)}
-    p{margin:0 0 15px;color:#555;font-size:14px;line-height:1.5}
-
-    .card-footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    
-    .card-price {
-      font-weight: 600;
-      color: var(--pink-strong);
-    }
-    
-    button{
-      background:var(--pink);
-      border:0;
-      padding:10px 20px;
-      border-radius:var(--round);
-      font-weight:600;
-      cursor:pointer;
-      transition: var(--transition);
-      font-size: 14px;
-    }
-    
-    button:hover{
-      background:var(--pink-strong);
-      transform: translateY(-2px);
-      box-shadow: 0 5px 10px rgba(225, 169, 191, 0.3);
-    }
-
-    /* FAQ Section */
-    .faq-section {
-      margin-top: 40px;
-    }
-    
-    .faq-item {
+    .card {
       background: var(--light);
       border-radius: var(--round);
-      margin-bottom: 15px;
       overflow: hidden;
       box-shadow: var(--card-shadow);
       transition: var(--transition);
-    }
-    
-    .faq-question {
-      padding: 20px;
-      cursor: pointer;
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-weight: 600;
+      flex-direction: column;
     }
     
-    .faq-question i {
-      transition: var(--transition);
-    }
-    
-    .faq-item.active .faq-question i {
-      transform: rotate(180deg);
-    }
-    
-    .faq-answer {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.3s ease-out;
-      padding: 0 20px;
-    }
-    
-    .faq-item.active .faq-answer {
-      max-height: 500px;
-      padding: 0 20px 20px;
-    }
+    .card:hover { transform: translateY(-8px); }
 
-    /* Cart Section */
-    .cart-section {
-      margin-top: 40px;
-    }
-    
-    .cart-empty {
-      text-align: center;
-      padding: 40px;
-      background: var(--light);
-      border-radius: var(--round);
-      box-shadow: var(--card-shadow);
-    }
-    
-    .cart-items {
-      margin-bottom: 30px;
-    }
-    
-    .cart-item {
-      display: flex;
-      align-items: center;
-      padding: 15px;
-      background: var(--light);
-      border-radius: var(--round);
-      margin-bottom: 15px;
-      box-shadow: var(--card-shadow);
-    }
-    
-    .cart-item-image {
-      width: 80px;
-      height: 80px;
-      border-radius: var(--round);
+    .thumb {
+      height: 200px;
       background-size: cover;
       background-position: center;
-      margin-right: 15px;
+      background-color: #eee;
     }
+
+    .card-content { padding: 20px; flex: 1; display: flex; flex-direction: column; }
+    .card h3 { margin: 0 0 10px; font-size: 18px; }
+    .card p { font-size: 14px; color: #666; margin-bottom: 15px; flex: 1; }
+    .card-footer { display: flex; justify-content: space-between; align-items: center; margin-top: auto; }
+    .card-price { font-weight: 700; color: var(--pink-strong); }
     
-    .cart-item-details {
-      flex-grow: 1;
-    }
-    
-    .cart-item-title {
-      font-weight: 600;
-      margin-bottom: 5px;
-    }
-    
-    .cart-item-price {
-      color: var(--pink-strong);
-      font-weight: 600;
-    }
-    
-    .cart-item-quantity {
-      display: flex;
-      align-items: center;
-      margin-top: 10px;
-    }
-    
-    .quantity-btn {
-      width: 30px;
-      height: 30px;
-      border-radius: 50%;
-      background: var(--muted);
-      border: none;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    .btn-buy {
+      background: var(--pink);
+      color: #fff;
+      border: 0; padding: 8px 16px;
+      border-radius: 12px;
       cursor: pointer;
+      font-weight: 600;
       transition: var(--transition);
     }
+    .btn-buy:hover { background: var(--pink-hover); }
+
+    /* --- Forms (Request, Complaint) --- */
+    .form-box {
+      background: var(--light);
+      padding: 40px;
+      border-radius: var(--round);
+      box-shadow: var(--card-shadow);
+      max-width: 600px;
+      margin: 0 auto;
+    }
     
-    .quantity-btn:hover {
+    .form-group { margin-bottom: 20px; }
+    .form-group label { display: block; margin-bottom: 8px; font-weight: 600; }
+    .form-group input, .form-group textarea, .form-group select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #eee;
+      border-radius: 12px;
+      font-family: inherit;
+      background: #fafafa;
+    }
+    .form-group input:focus, .form-group textarea:focus {
+      outline: none; border-color: var(--pink);
+      background: #fff;
+    }
+    
+    .btn-submit {
+      width: 100%;
       background: var(--pink);
       color: white;
+      border: none;
+      padding: 14px;
+      border-radius: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 16px;
+      transition: var(--transition);
     }
-    
-    .quantity-value {
-      margin: 0 10px;
-      font-weight: 600;
-    }
-    
-    .cart-summary {
+    .btn-submit:hover { background: var(--pink-hover); }
+
+    /* --- FAQ --- */
+    .faq-item {
       background: var(--light);
-      border-radius: var(--round);
-      padding: 20px;
-      box-shadow: var(--card-shadow);
+      margin-bottom: 15px;
+      border-radius: 12px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      overflow: hidden;
     }
-    
-    .summary-row {
+    .faq-question {
+      padding: 20px;
+      font-weight: 600;
+      cursor: pointer;
       display: flex;
       justify-content: space-between;
-      margin-bottom: 10px;
+      align-items: center;
+      background: #fff;
     }
-    
-    .summary-total {
-      font-weight: 700;
-      font-size: 18px;
-      margin-top: 10px;
-      padding-top: 10px;
-      border-top: 1px solid var(--muted);
+    .faq-answer {
+      padding: 0 20px 20px;
+      color: #666;
+      display: none;
+      border-top: 1px solid #f0f0f0;
+      padding-top: 20px;
     }
-    
-    .checkout-btn {
-      width: 100%;
-      padding: 15px;
-      margin-top: 20px;
-      background: var(--pink);
-      color: white;
-      border: none;
-      border-radius: var(--round);
-      font-weight: 600;
-      cursor: pointer;
-      transition: var(--transition);
-    }
-    
-    .checkout-btn:hover {
-      background: var(--pink-strong);
-    }
+    .faq-item.open .faq-answer { display: block; }
+    .faq-item.open .faq-question i { transform: rotate(180deg); }
 
-    /* Request Form */
-    .request-form {
-      background: var(--light);
-      border-radius: var(--round);
-      padding: 30px;
-      box-shadow: var(--card-shadow);
-      margin-top: 40px;
-    }
-    
-    .form-group {
-      margin-bottom: 20px;
-    }
-    
-    .form-group label {
-      display: block;
-      margin-bottom: 8px;
-      font-weight: 600;
-    }
-    
-    .form-control {
-      width: 100%;
-      padding: 12px 15px;
-      border: 1px solid var(--muted);
-      border-radius: var(--round);
-      font-family: inherit;
-      font-size: 14px;
-      transition: var(--transition);
-    }
-    
-    .form-control:focus {
-      outline: none;
-      border-color: var(--pink);
-      box-shadow: 0 0 0 3px rgba(234, 199, 216, 0.3);
-    }
-    
-    textarea.form-control {
-      min-height: 120px;
-      resize: vertical;
-    }
-    
-    .form-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
+    /* --- Cart --- */
+    .cart-items { background: var(--light); border-radius: var(--round); overflow: hidden; box-shadow: var(--card-shadow); }
+    .cart-item {
+      display: flex;
+      padding: 20px;
+      border-bottom: 1px solid #eee;
+      align-items: center;
       gap: 20px;
     }
-    
-    .file-upload {
-      position: relative;
-      display: inline-block;
-      cursor: pointer;
-      width: 100%;
-    }
-    
-    .file-upload input[type=file] {
-      position: absolute;
-      left: -9999px;
-    }
-    
-    .file-upload-label {
-      display: block;
-      padding: 12px 15px;
-      border: 1px dashed var(--pink);
-      border-radius: var(--round);
-      background: rgba(234, 199, 216, 0.1);
-      text-align: center;
-      transition: var(--transition);
-    }
-    
-    .file-upload-label:hover {
-      background: rgba(234, 199, 216, 0.2);
-    }
-    
-    .submit-btn {
-      background: var(--pink);
-      color: white;
-      border: none;
-      padding: 12px 30px;
-      border-radius: var(--round);
-      font-weight: 600;
-      cursor: pointer;
-      transition: var(--transition);
-      font-size: 16px;
-    }
-    
-    .submit-btn:hover {
-      background: var(--pink-strong);
-      transform: translateY(-2px);
-      box-shadow: 0 5px 10px rgba(225, 169, 191, 0.3);
-    }
+    .cart-thumb { width: 80px; height: 80px; background: #eee; border-radius: 10px; background-size: cover; }
+    .cart-info { flex: 1; }
+    .cart-total { padding: 30px; text-align: right; background: #fff; }
+    .empty-cart { padding: 50px; text-align: center; color: #888; }
 
-    /* Complaint Form */
-    .complaint-form {
-      background: var(--light);
-      border-radius: var(--round);
-      padding: 30px;
-      box-shadow: var(--card-shadow);
-      margin-top: 40px;
+    /* --- Footer --- */
+    footer {
+      background: var(--muted);
+      padding: 40px 0 20px;
+      margin-top: auto; /* Pushes footer to bottom */
     }
-    
-    .complaint-options {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 15px;
-      margin-bottom: 20px;
-    }
-    
-    .complaint-option {
-      flex: 1 0 200px;
-      padding: 15px;
-      border: 1px solid var(--muted);
-      border-radius: var(--round);
-      cursor: pointer;
-      transition: var(--transition);
-      text-align: center;
-    }
-    
-    .complaint-option:hover {
-      border-color: var(--pink);
-      background: rgba(234, 199, 216, 0.1);
-    }
-    
-    .complaint-option.selected {
-      border-color: var(--pink);
-      background: rgba(234, 199, 216, 0.2);
-    }
-    
-    .complaint-option i {
-      font-size: 24px;
-      margin-bottom: 10px;
-      color: var(--pink);
-    }
-
-    /* Testimonial Section */
-    .testimonial-section {
-      margin-top: 60px;
-      padding: 40px 0;
-      background: var(--light);
-      border-radius: var(--round);
-      box-shadow: var(--card-shadow);
-    }
-    
-    .testimonial-container {
-      max-width: 800px;
+    .footer-content {
+      max-width: 980px;
       margin: 0 auto;
       padding: 0 28px;
-      text-align: center;
-    }
-    
-    .testimonial-title {
-      font-size: 24px;
-      margin-bottom: 30px;
-      color: var(--dark);
-    }
-    
-    .testimonial-cards {
-      display: flex;
-      gap: 20px;
-      overflow-x: auto;
-      padding: 10px 0;
-      scroll-snap-type: x mandatory;
-    }
-    
-    .testimonial-card {
-      min-width: 250px;
-      padding: 20px;
-      background: var(--muted);
-      border-radius: var(--round);
-      scroll-snap-align: center;
-    }
-    
-    .testimonial-text {
-      font-style: italic;
-      margin-bottom: 15px;
-    }
-    
-    .testimonial-author {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    
-    .author-avatar {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: var(--pink);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-weight: 600;
-    }
-    
-    .author-info {
-      text-align: left;
-    }
-    
-    .author-name {
-      font-weight: 600;
-      margin: 0;
-    }
-    
-    .author-title {
-      font-size: 12px;
-      color: #666;
-      margin: 0;
-    }
-
-    /* Footer */
-    footer {
-      margin-top: 60px;
-      padding: 40px 0 20px;
-      background: var(--muted);
-      border-top-left-radius: var(--round);
-      border-top-right-radius: var(--round);
-    }
-    
-    .footer-content {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
       gap: 30px;
-      margin-bottom: 30px;
     }
-    
-    .footer-section h3 {
-      margin-bottom: 15px;
-      font-size: 18px;
-      color: var(--dark);
-    }
-    
-    .footer-section ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-    
-    .footer-section ul li {
-      margin-bottom: 8px;
-    }
-    
-    .footer-section ul li a {
-      color: #666;
-      text-decoration: none;
-      transition: var(--transition);
-    }
-    
-    .footer-section ul li a:hover {
-      color: var(--pink);
-    }
-    
-    .social-links {
-      display: flex;
-      gap: 15px;
-    }
-    
+    .footer-section h3 { font-size: 18px; margin-bottom: 20px; }
+    .social-links { display: flex; gap: 15px; }
     .social-links a {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 40px;
-      height: 40px;
-      background: var(--light);
+      width: 40px; height: 40px;
+      background: #fff;
       border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
       color: var(--pink);
-      transition: var(--transition);
-    }
-    
-    .social-links a:hover {
-      background: var(--pink);
-      color: white;
-      transform: translateY(-3px);
-    }
-    
-    .footer-bottom {
-      text-align: center;
-      padding-top: 20px;
-      border-top: 1px solid #ddd;
-      font-size: 14px;
-      color: #666;
-    }
-
-    /* CS Button */
-    .cs-button {
-      position: fixed;
-      bottom: 90px;
-      right: 30px;
-      width: 50px;
-      height: 50px;
-      background: var(--green);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-size: 20px;
-      cursor: pointer;
-      z-index: 1000;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-      transition: var(--transition);
-    }
-    
-    .cs-button:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-    }
-    
-    .cs-options {
-      position: fixed;
-      bottom: 150px;
-      right: 30px;
-      background: white;
-      border-radius: var(--round);
-      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-      padding: 15px;
-      display: none;
-      z-index: 1000;
-      min-width: 200px;
-    }
-    
-    .cs-options.show {
-      display: block;
-      animation: fadeInUp 0.3s ease-out;
-    }
-    
-    .cs-option {
-      display: flex;
-      align-items: center;
-      padding: 10px;
-      border-radius: var(--round);
-      transition: var(--transition);
       text-decoration: none;
-      color: var(--dark);
+      transition: var(--transition);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
     }
-    
-    .cs-option:hover {
-      background: var(--muted);
-    }
-    
-    .cs-option i {
-      width: 30px;
-      text-align: center;
-      margin-right: 10px;
-      color: var(--pink);
-    }
+    .social-links a:hover { background: var(--pink); color: #fff; transform: translateY(-3px); }
+    .copyright { text-align: center; margin-top: 40px; color: #888; font-size: 14px; }
 
-    /* Back to Top Button */
-    .back-to-top {
+    /* --- FLOATING BUTTONS (CS & BackToTop) --- */
+    .floating-container {
       position: fixed;
       bottom: 30px;
       right: 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      z-index: 2000;
+      align-items: center;
+    }
+
+    /* Back to Top */
+    .back-to-top {
       width: 50px;
       height: 50px;
       background: var(--pink);
       border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display: flex; align-items: center; justify-content: center;
       color: white;
-      font-size: 20px;
       cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      transition: var(--transition);
       opacity: 0;
       visibility: hidden;
-      transition: var(--transition);
-      z-index: 1000;
+      transform: translateY(20px);
     }
-    
-    .back-to-top.show {
-      opacity: 1;
-      visibility: visible;
-    }
-    
-    .back-to-top:hover {
-      background: var(--pink-strong);
-      transform: translateY(-5px);
-    }
+    .back-to-top.show { opacity: 1; visibility: visible; transform: translateY(0); }
+    .back-to-top:hover { background: var(--pink-strong); transform: translateY(-3px); }
 
-    /* Modal */
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.8);
-      z-index: 2000;
-      align-items: center;
-      justify-content: center;
-    }
-    
-    .modal.active {
-      display: flex;
-    }
-    
-    .modal-content {
-      max-width: 90%;
-      max-height: 90%;
+    /* CS Button */
+    .cs-wrapper {
       position: relative;
     }
-    
-    .modal-close {
-      position: absolute;
-      top: 15px;
-      right: 15px;
-      width: 40px;
-      height: 40px;
-      background: white;
+
+    .cs-btn {
+      width: 55px;
+      height: 55px;
+      background: var(--green);
       border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display: flex; align-items: center; justify-content: center;
+      color: #556b2f;
+      font-size: 24px;
       cursor: pointer;
-      font-size: 20px;
-      color: var(--dark);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      transition: var(--transition);
+      animation: pulse 2s infinite;
     }
     
-    .modal-image {
-      max-width: 100%;
-      max-height: 80vh;
-      border-radius: var(--round);
+    .cs-btn:hover { background: var(--green-hover); transform: scale(1.05); }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(217, 229, 193, 0.7); }
+      70% { box-shadow: 0 0 0 15px rgba(217, 229, 193, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(217, 229, 193, 0); }
     }
 
-    /* Responsive Design */
+    /* CS Dropdown Menu */
+    .cs-menu {
+      position: absolute;
+      bottom: 70px;
+      right: 0;
+      background: white;
+      border-radius: 12px;
+      width: 160px;
+      padding: 10px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(10px) scale(0.9);
+      transition: var(--transition);
+    }
+    
+    .cs-menu.active {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0) scale(1);
+    }
+
+    .cs-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px;
+      color: var(--dark);
+      text-decoration: none;
+      border-radius: 8px;
+      transition: 0.2s;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .cs-item:hover { background: var(--muted); }
+    .cs-item i { font-size: 18px; width: 24px; text-align: center; }
+    .cs-item.wa { color: #25D366; }
+    .cs-item.tg { color: #0088cc; }
+
+    /* Mobile Responsive */
     @media (max-width: 768px) {
-      .nav-container {
-        flex-direction: column;
-        gap: 15px;
-      }
-      
-      .filter-section {
-        flex-direction: column;
-        align-items: stretch;
-      }
-      
-      .search-box {
-        width: 100%;
-      }
-      
-      .filter-buttons {
-        justify-content: center;
-      }
-      
-      .testimonial-cards {
-        flex-direction: column;
-      }
-      
-      .footer-content {
-        grid-template-columns: 1fr;
-      }
-      
-      .form-row {
-        grid-template-columns: 1fr;
-      }
+      .nav-container { flex-direction: column; gap: 15px; }
+      .nav-links { flex-wrap: wrap; justify-content: center; gap: 10px; }
+      .nav-links button { font-size: 14px; }
+      .filter-section { justify-content: center; }
     }
   </style>
 </head>
 <body>
-  <!-- Loading Screen -->
-  <div class="loader-wrapper">
-    <div class="loader"></div>
-  </div>
 
   <!-- Navigation -->
   <nav>
     <div class="nav-container">
-      <div class="logo">
+      <div class="logo" onclick="switchPage('home')">
         <div class="mark">★</div>
         <div>
-          <h1>Cute Request</h1>
+          <h1 style="font-size:20px;">Cute Request</h1>
         </div>
       </div>
       <div class="nav-links">
-        <a class="nav-link active" data-page="home">Beranda</a>
-        <a class="nav-link" data-page="portfolio">Portfolio</a>
-        <a class="nav-link" data-page="faq">FAQ</a>
-        <a class="nav-link" data-page="cart">Keranjang</a>
-        <a class="nav-link" data-page="request">Request</a>
-        <a class="nav-link" data-page="complaint">Keluhan</a>
-        <a class="nav-link" data-page="testimonials">Testimoni</a>
+        <button onclick="switchPage('home')" class="nav-btn active" data-target="home">Beranda</button>
+        <button onclick="switchPage('portfolio')" class="nav-btn" data-target="portfolio">Portfolio</button>
+        <button onclick="switchPage('req')" class="nav-btn" data-target="req">Request</button>
+        <button onclick="switchPage('complaint')" class="nav-btn" data-target="complaint">Keluhan</button>
+        <button onclick="switchPage('faq')" class="nav-btn" data-target="faq">FAQ</button>
+        <button onclick="switchPage('cart')" class="nav-btn cart-btn-nav" data-target="cart">
+          <i class="fas fa-shopping-cart"></i> <span id="cart-count">0</span>
+        </button>
       </div>
     </div>
   </nav>
 
   <div class="wrap">
-    <!-- Home Page -->
-    <div class="page active" id="home">
+    
+    <!-- 1. HALAMAN BERANDA (HOME) -->
+    <div id="home" class="page-section active">
       <header>
         <div class="logo">
           <div class="mark">★</div>
           <div>
-            <h1>Cute Request</h1>
-            <p class="subtitle">Tempat pelanggan kirim request gambar lucu ♡</p>
+            <h1>Selamat Datang! ♡</h1>
+            <p class="subtitle">Platform request gambar lucu & aesthetic nomer #1.</p>
           </div>
         </div>
       </header>
-
-      <!-- Search and Filter Section -->
-      <div class="filter-section">
-        <div class="search-box">
-          <input type="text" placeholder="Cari contoh gambar..." id="searchInput">
-          <button type="button"><i class="fas fa-search"></i></button>
-        </div>
-        <div class="filter-buttons">
-          <button class="filter-btn active" data-filter="all">Semua</button>
-          <button class="filter-btn" data-filter="portrait">Portrait</button>
-          <button class="filter-btn" data-filter="product">Product</button>
-          <button class="filter-btn" data-filter="sticker">Sticker</button>
+      
+      <div style="background: var(--pink); border-radius: 20px; padding: 40px; color: white; margin-bottom: 40px; text-align: center; background-image: url('https://i.ibb.co/gMGWnB7S/Whats-App-Image-2025-12-01-at-19-58-07.jpg'); background-size: cover; background-position: center; position: relative; overflow: hidden;">
+        <div style="position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.4);"></div>
+        <div style="position: relative; z-index: 2;">
+          <h2 style="font-size: 32px; margin-bottom: 10px;">Wujudkan Ide Lucumu</h2>
+          <p style="margin-bottom: 25px; font-size: 16px;">Kami menyediakan jasa desain karakter, produk, dan stiker dengan gaya pastel.</p>
+          <button onclick="switchPage('portfolio')" style="background: white; color: var(--pink); border: none; padding: 12px 30px; border-radius: 30px; font-weight: 700; cursor: pointer; font-size: 16px;">Lihat Katalog</button>
         </div>
       </div>
 
-      <div class="grid" id="portfolio">
-        <!-- Card 1 -->
-        <div class="card" data-category="portrait">
-          <div class="thumb"
-               style="background-image:url('https://i.ibb.co/gMGWnB7S/Whats-App-Image-2025-12-01-at-19-58-07.jpg');">
-            <div class="thumb-overlay">
-              <i class="fas fa-expand"></i>
-            </div>
-          </div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+        <div style="text-align: center; padding: 20px; background: white; border-radius: 18px; box-shadow: var(--card-shadow);">
+          <i class="fas fa-paint-brush" style="font-size: 30px; color: var(--pink); margin-bottom: 10px;"></i>
+          <h3 style="font-size: 18px;">Desain Unik</h3>
+          <p style="font-size: 14px; color: #666;">Setiap request dibuat original sesuai keinginanmu.</p>
+        </div>
+        <div style="text-align: center; padding: 20px; background: white; border-radius: 18px; box-shadow: var(--card-shadow);">
+          <i class="fas fa-clock" style="font-size: 30px; color: var(--green); margin-bottom: 10px;"></i>
+          <h3 style="font-size: 18px;">Pengerjaan Cepat</h3>
+          <p style="font-size: 14px; color: #666;">Estimasi waktu pengerjaan 1-3 hari kerja.</p>
+        </div>
+        <div style="text-align: center; padding: 20px; background: white; border-radius: 18px; box-shadow: var(--card-shadow);">
+          <i class="fas fa-heart" style="font-size: 30px; color: var(--pink-strong); margin-bottom: 10px;"></i>
+          <h3 style="font-size: 18px;">Puas & Happy</h3>
+          <p style="font-size: 14px; color: #666;">Revisi gratis hingga kamu merasa puas dengan hasilnya.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. HALAMAN PORTFOLIO -->
+    <div id="portfolio" class="page-section">
+      <header>
+        <div>
+          <h1>Katalog Desain</h1>
+          <p class="subtitle">Pilih gaya yang kamu suka.</p>
+        </div>
+      </header>
+
+      <div class="filter-section">
+        <button class="filter-btn active" onclick="filterPortfolio('all')">Semua</button>
+        <button class="filter-btn" onclick="filterPortfolio('portrait')">Portrait</button>
+        <button class="filter-btn" onclick="filterPortfolio('product')">Product</button>
+        <button class="filter-btn" onclick="filterPortfolio('sticker')">Sticker</button>
+      </div>
+
+      <div class="grid">
+        <!-- Item 1 -->
+        <div class="card" data-cat="portrait">
+          <div class="thumb" style="background-image:url('https://i.ibb.co/gMGWnB7S/Whats-App-Image-2025-12-01-at-19-58-07.jpg');"></div>
           <div class="card-content">
-            <span class="card-category">Portrait</span>
-            <h3>Contoh 1 — Character Portrait</h3>
-            <p>Wajah kawaii, background soft, cocok untuk avatar.</p>
+            <h3>Chibi Character</h3>
+            <p>Karakter imut dengan kepala besar, cocok untuk profil.</p>
             <div class="card-footer">
               <span class="card-price">Rp 50.000</span>
-              <button class="add-to-cart">Tambah ke Keranjang</button>
+              <button class="btn-buy" onclick="addToCart('Chibi Character', 50000)">+ Keranjang</button>
             </div>
           </div>
         </div>
-
-        <!-- Card 2 -->
-        <div class="card" data-category="product">
-          <div class="thumb"
-               style="background-image:url('https://i.ibb.co/pjT363g4/Whats-App-Image-2025-12-01-at-19-58-07-1.jpg');">
-            <div class="thumb-overlay">
-              <i class="fas fa-expand"></i>
-            </div>
-          </div>
+        <!-- Item 2 -->
+        <div class="card" data-cat="product">
+          <div class="thumb" style="background-image:url('https://i.ibb.co/pjT363g4/Whats-App-Image-2025-12-01-at-19-58-07-1.jpg');"></div>
           <div class="card-content">
-            <span class="card-category">Product</span>
-            <h3>Contoh 2 — Pastel Product</h3>
-            <p>Produk lucu dengan warna pastel aesthetic.</p>
+            <h3>Product Pastel</h3>
+            <p>Ilustrasi produk jualanmu dengan gaya estetik.</p>
             <div class="card-footer">
               <span class="card-price">Rp 75.000</span>
-              <button class="add-to-cart">Tambah ke Keranjang</button>
+              <button class="btn-buy" onclick="addToCart('Product Pastel', 75000)">+ Keranjang</button>
             </div>
           </div>
         </div>
-
-        <!-- Card 3 -->
-        <div class="card" data-category="sticker">
-          <div class="thumb"
-               style="background-image:url('https://i.ibb.co/0pbLcy8q/Whats-App-Image-2025-12-01-at-19-58-07-2.jpg');">
-            <div class="thumb-overlay">
-              <i class="fas fa-expand"></i>
-            </div>
-          </div>
+        <!-- Item 3 -->
+        <div class="card" data-cat="sticker">
+          <div class="thumb" style="background-image:url('https://i.ibb.co/0pbLcy8q/Whats-App-Image-2025-12-01-at-19-58-07-2.jpg');"></div>
           <div class="card-content">
-            <span class="card-category">Sticker</span>
-            <h3>Contoh 3 — Cute Sticker</h3>
-            <p>Style stiker gemes dengan outline lembut.</p>
+            <h3>Sticker Pack (5 pcs)</h3>
+            <p>Paket stiker lucu untuk WhatsApp atau Telegram.</p>
             <div class="card-footer">
               <span class="card-price">Rp 30.000</span>
-              <button class="add-to-cart">Tambah ke Keranjang</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Additional Cards -->
-        <div class="card" data-category="portrait">
-          <div class="thumb"
-               style="background-image:url('https://i.ibb.co/gMGWnB7S/Whats-App-Image-2025-12-01-at-19-58-07.jpg');">
-            <div class="thumb-overlay">
-              <i class="fas fa-expand"></i>
-            </div>
-          </div>
-          <div class="card-content">
-            <span class="card-category">Portrait</span>
-            <h3>Contoh 4 — Chibi Character</h3>
-            <p>Karakter chibi dengan ekspresi lucu dan warna cerah.</p>
-            <div class="card-footer">
-              <span class="card-price">Rp 45.000</span>
-              <button class="add-to-cart">Tambah ke Keranjang</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="card" data-category="product">
-          <div class="thumb"
-               style="background-image:url('https://i.ibb.co/pjT363g4/Whats-App-Image-2025-12-01-at-19-58-07-1.jpg');">
-            <div class="thumb-overlay">
-              <i class="fas fa-expand"></i>
-            </div>
-          </div>
-          <div class="card-content">
-            <span class="card-category">Product</span>
-            <h3>Contoh 5 — Cute Packaging</h3>
-            <p>Desain kemasan produk dengan tema kartun yang menarik.</p>
-            <div class="card-footer">
-              <span class="card-price">Rp 85.000</span>
-              <button class="add-to-cart">Tambah ke Keranjang</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="card" data-category="sticker">
-          <div class="thumb"
-               style="background-image:url('https://i.ibb.co/0pbLcy8q/Whats-App-Image-2025-12-01-at-19-58-07-2.jpg');">
-            <div class="thumb-overlay">
-              <i class="fas fa-expand"></i>
-            </div>
-          </div>
-          <div class="card-content">
-            <span class="card-category">Sticker</span>
-            <h3>Contoh 6 — Emoji Set</h3>
-            <p>Set emoji kustom dengan karakter yang konsisten.</p>
-            <div class="card-footer">
-              <span class="card-price">Rp 60.000</span>
-              <button class="add-to-cart">Tambah ke Keranjang</button>
+              <button class="btn-buy" onclick="addToCart('Sticker Pack', 30000)">+ Keranjang</button>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Portfolio Page -->
-    <div class="page" id="portfolio">
+    <!-- 3. HALAMAN REQUEST (FORM) -->
+    <div id="req" class="page-section">
       <header>
-        <div class="logo">
-          <div class="mark">★</div>
-          <div>
-            <h1>Portfolio</h1>
-            <p class="subtitle">Koleksi karya-karya terbaik kami</p>
-          </div>
+        <div>
+          <h1>Buat Request Baru</h1>
+          <p class="subtitle">Ceritakan idemu, kami yang gambarkan!</p>
         </div>
       </header>
 
-      <!-- Search and Filter Section -->
-      <div class="filter-section">
-        <div class="search-box">
-          <input type="text" placeholder="Cari contoh gambar..." id="searchInputPortfolio">
-          <button type="button"><i class="fas fa-search"></i></button>
-        </div>
-        <div class="filter-buttons">
-          <button class="filter-btn active" data-filter="all">Semua</button>
-          <button class="filter-btn" data-filter="portrait">Portrait</button>
-          <button class="filter-btn" data-filter="product">Product</button>
-          <button class="filter-btn" data-filter="sticker">Sticker</button>
-        </div>
-      </div>
-
-      <div class="grid" id="portfolioGrid">
-        <!-- Card 1 -->
-        <div class="card" data-category="portrait">
-          <div class="thumb"
-               style="background-image:url('https://i.ibb.co/gMGWnB7S/Whats-App-Image-2025-12-01-at-19-58-07.jpg');">
-            <div class="thumb-overlay">
-              <i class="fas fa-expand"></i>
-            </div>
-          </div>
-          <div class="card-content">
-            <span class="card-category">Portrait</span>
-            <h3>Contoh 1 — Character Portrait</h3>
-            <p>Wajah kawaii, background soft, cocok untuk avatar.</p>
-            <div class="card-footer">
-              <span class="card-price">Rp 50.000</span>
-              <button class="add-to-cart">Tambah ke Keranjang</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Card 2 -->
-        <div class="card" data-category="product">
-          <div class="thumb"
-               style="background-image:url('https://i.ibb.co/pjT363g4/Whats-App-Image-2025-12-01-at-19-58-07-1.jpg');">
-            <div class="thumb-overlay">
-              <i class="fas fa-expand"></i>
-            </div>
-          </div>
-          <div class="card-content">
-            <span class="card-category">Product</span>
-            <h3>Contoh 2 — Pastel Product</h3>
-            <p>Produk lucu dengan warna pastel aesthetic.</p>
-            <div class="card-footer">
-              <span class="card-price">Rp 75.000</span>
-              <button class="add-to-cart">Tambah ke Keranjang</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Card 3 -->
-        <div class="card" data-category="sticker">
-          <div class="thumb"
-               style="background-image:url('https://i.ibb.co/0pbLcy8q/Whats-App-Image-2025-12-01-at-19-58-07-2.jpg');">
-            <div class="thumb-overlay">
-              <i class="fas fa-expand"></i>
-            </div>
-          </div>
-          <div class="card-content">
-            <span class="card-category">Sticker</span>
-            <h3>Contoh 3 — Cute Sticker</h3>
-            <p>Style stiker gemes dengan outline lembut.</p>
-            <div class="card-footer">
-              <span class="card-price">Rp 30.000</span>
-              <button class="add-to-cart">Tambah ke Keranjang</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Additional Cards -->
-        <div class="card" data-category="portrait">
-          <div class="thumb"
-               style="background-image:url('https://i.ibb.co/gMGWnB7S/Whats-App-Image-2025-12-01-at-19-58-07.jpg');">
-            <div class="thumb-overlay">
-              <i class="fas fa-expand"></i>
-            </div>
-          </div>
-          <div class="card-content">
-            <span class="card-category">Portrait</span>
-            <h3>Contoh 4 — Chibi Character</h3>
-            <p>Karakter chibi dengan ekspresi lucu dan warna cerah.</p>
-            <div class="card-footer">
-              <span class="card-price">Rp 45.000</span>
-              <button class="add-to-cart">Tambah ke Keranjang</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="card" data-category="product">
-          <div class="thumb"
-               style="background-image:url('https://i.ibb.co/pjT363g4/Whats-App-Image-2025-12-01-at-19-58-07-1.jpg');">
-            <div class="thumb-overlay">
-              <i class="fas fa-expand"></i>
-            </div>
-          </div>
-          <div class="card-content">
-            <span class="card-category">Product</span>
-            <h3>Contoh 5 — Cute Packaging</h3>
-            <p>Desain kemasan produk dengan tema kartun yang menarik.</p>
-            <div class="card-footer">
-              <span class="card-price">Rp 85.000</span>
-              <button class="add-to-cart">Tambah ke Keranjang</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="card" data-category="sticker">
-          <div class="thumb"
-               style="background-image:url('https://i.ibb.co/0pbLcy8q/Whats-App-Image-2025-12-01-at-19-58-07-2.jpg');">
-            <div class="thumb-overlay">
-              <i class="fas fa-expand"></i>
-            </div>
-          </div>
-          <div class="card-content">
-            <span class="card-category">Sticker</span>
-            <h3>Contoh 6 — Emoji Set</h3>
-            <p>Set emoji kustom dengan karakter yang konsisten.</p>
-            <div class="card-footer">
-              <span class="card-price">Rp 60.000</span>
-              <button class="add-to-cart">Tambah ke Keranjang</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- FAQ Page -->
-    <div class="page" id="faq">
-      <header>
-        <div class="logo">
-          <div class="mark">★</div>
-          <div>
-            <h1>FAQ</h1>
-            <p class="subtitle">Pertanyaan yang sering diajukan</p>
-          </div>
-        </div>
-      </header>
-
-      <div class="faq-section">
-        <div class="faq-item">
-          <div class="faq-question">
-            <span>Bagaimana cara memesan gambar?</span>
-            <i class="fas fa-chevron-down"></i>
-          </div>
-          <div class="faq-answer">
-            <p>Anda dapat memesan gambar dengan mengisi form pada halaman Request. Pilih jenis gambar yang Anda inginkan, berikan deskripsi detail, dan unggah referensi jika ada. Setelah itu, tim kami akan menghubungi Anda untuk konfirmasi lebih lanjut.</p>
-          </div>
-        </div>
-
-        <div class="faq-item">
-          <div class="faq-question">
-            <span>Berapa lama waktu pengerjaan?</span>
-            <i class="fas fa-chevron-down"></i>
-          </div>
-          <div class="faq-answer">
-            <p>Waktu pengerjaan tergantung pada kompleksitas gambar yang dipesan. Untuk gambar sederhana, biasanya memakan waktu 1-3 hari. Untuk gambar yang lebih kompleks, bisa memakan waktu 3-7 hari. Kami akan memberikan estimasi waktu pengerjaan saat konfirmasi pesanan.</p>
-          </div>
-        </div>
-
-        <div class="faq-item">
-          <div class="faq-question">
-            <span>Apakah saya bisa melakukan revisi?</span>
-            <i class="fas fa-chevron-down"></i>
-          </div>
-          <div class="faq-answer">
-            <p>Ya, Anda bisa melakukan revisi. Setiap pesanan mendapatkan 2 kali revisi gratis. Jika Anda membutuhkan revisi lebih dari itu, akan ada biaya tambahan tergantung pada kompleksitas revisi yang diminta.</p>
-          </div>
-        </div>
-
-        <div class="faq-item">
-          <div class="faq-question">
-            <span>Bagaimana sistem pembayarannya?</span>
-            <i class="fas fa-chevron-down"></i>
-          </div>
-          <div class="faq-answer">
-            <p>Kami menggunakan sistem pembayaran 50% di muka dan 50% setelah gambar selesai. Pembayaran dapat dilakukan melalui transfer bank atau e-wallet. Detail pembayaran akan dikirimkan melalui WhatsApp setelah konfirmasi pesanan.</p>
-          </div>
-        </div>
-
-        <div class="faq-item">
-          <div class="faq-question">
-            <span>Apakah file hasil bisa digunakan untuk komersial?</span>
-            <i class="fas fa-chevron-down"></i>
-          </div>
-          <div class="faq-answer">
-            <p>Ya, file hasil dapat digunakan untuk keperluan komersial. Namun, hak cipta tetap milik kami sebagai pembuat. Jika Anda membutuhkan hak cipta penuh, ada biaya tambahan yang dapat dibicarakan lebih lanjut.</p>
-          </div>
-        </div>
-
-        <div class="faq-item">
-          <div class="faq-question">
-            <span>Format file apa yang saya dapatkan?</span>
-            <i class="fas fa-chevron-down"></i>
-          </div>
-          <div class="faq-answer">
-            <p>Anda akan mendapatkan file dalam format PNG (transparan), JPG (white background), dan source file dalam format PSD atau AI tergantung pada jenis gambar yang dipesan.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Cart Page -->
-    <div class="page" id="cart">
-      <header>
-        <div class="logo">
-          <div class="mark">★</div>
-          <div>
-            <h1>Keranjang Belanja</h1>
-            <p class="subtitle">Kelola pesanan Anda</p>
-          </div>
-        </div>
-      </header>
-
-      <div class="cart-section">
-        <div class="cart-empty" id="cartEmpty">
-          <i class="fas fa-shopping-cart" style="font-size: 48px; color: var(--muted); margin-bottom: 15px;"></i>
-          <h3>Keranjang Anda Kosong</h3>
-          <p>Belum ada item yang ditambahkan ke keranjang</p>
-          <button class="submit-btn" style="margin-top: 20px;" onclick="showPage('portfolio')">Lihat Portfolio</button>
-        </div>
-
-        <div class="cart-items" id="cartItems" style="display: none;">
-          <!-- Cart items will be dynamically added here -->
-        </div>
-
-        <div class="cart-summary" id="cartSummary" style="display: none;">
-          <div class="summary-row">
-            <span>Subtotal:</span>
-            <span id="subtotal">Rp 0</span>
-          </div>
-          <div class="summary-row">
-            <span>Biaya Layanan:</span>
-            <span id="serviceFee">Rp 5.000</span>
-          </div>
-          <div class="summary-row summary-total">
-            <span>Total:</span>
-            <span id="total">Rp 0</span>
-          </div>
-          <button class="checkout-btn">Checkout</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Request Page -->
-    <div class="page" id="request">
-      <header>
-        <div class="logo">
-          <div class="mark">★</div>
-          <div>
-            <h1>Request Gambar</h1>
-            <p class="subtitle">Buat gambar lucu sesuai keinginan Anda</p>
-          </div>
-        </div>
-      </header>
-
-      <div class="request-form">
-        <h2>Form Request</h2>
-        <p style="margin-bottom: 20px;">Silakan isi form berikut untuk memesan gambar custom. Tim kami akan segera menghubungi Anda.</p>
-        
-        <div class="form-row">
+      <div class="form-box">
+        <form onsubmit="event.preventDefault(); alert('Request terkirim! Admin akan menghubungi via WA.');">
           <div class="form-group">
-            <label for="name">Nama Lengkap</label>
-            <input type="text" id="name" class="form-control" placeholder="Masukkan nama lengkap Anda">
+            <label>Nama Lengkap</label>
+            <input type="text" placeholder="Nama kamu..." required>
           </div>
           <div class="form-group">
-            <label for="email">Email</label>
-            <input type="email" id="email" class="form-control" placeholder="Masukkan email aktif Anda">
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label for="phone">Nomor WhatsApp</label>
-            <input type="tel" id="phone" class="form-control" placeholder="Masukkan nomor WhatsApp aktif">
-          </div>
-          <div class="form-group">
-            <label for="type">Jenis Gambar</label>
-            <select id="type" class="form-control">
-              <option value="">Pilih jenis gambar</option>
-              <option value="portrait">Character Portrait</option>
-              <option value="product">Pastel Product</option>
-              <option value="sticker">Cute Sticker</option>
-              <option value="custom">Custom Design</option>
+            <label>Jenis Gambar</label>
+            <select>
+              <option>Pilih jenis...</option>
+              <option>Portrait Karakter</option>
+              <option>Produk Bisnis</option>
+              <option>Sticker Set</option>
+              <option>Lainnya</option>
             </select>
           </div>
-        </div>
-
-        <div class="form-group">
-          <label for="description">Deskripsi Permintaan</label>
-          <textarea id="description" class="form-control" placeholder="Jelaskan detail gambar yang Anda inginkan (warna, gaya, karakter, dll)"></textarea>
-        </div>
-
-        <div class="form-group">
-          <label for="reference">Referensi (Opsional)</label>
-          <div class="file-upload">
-            <input type="file" id="reference" accept="image/*">
-            <label for="reference" class="file-upload-label">
-              <i class="fas fa-cloud-upload-alt"></i> Unggah Gambar Referensi
-            </label>
+          <div class="form-group">
+            <label>Detail Request</label>
+            <textarea rows="5" placeholder="Jelaskan pose, warna, ekspresi, dll..." required></textarea>
           </div>
-        </div>
-
-        <div class="form-group">
-          <label for="deadline">Deadline (Opsional)</label>
-          <input type="date" id="deadline" class="form-control">
-        </div>
-
-        <div class="form-group">
-          <label for="notes">Catatan Tambahan</label>
-          <textarea id="notes" class="form-control" placeholder="Ada permintaan khusus lainnya?"></textarea>
-        </div>
-
-        <button type="submit" class="submit-btn">Kirim Request</button>
+          <div class="form-group">
+            <label>Link Referensi (Opsional)</label>
+            <input type="url" placeholder="https://...">
+          </div>
+          <button type="submit" class="btn-submit">Kirim Request</button>
+        </form>
       </div>
     </div>
 
-    <!-- Complaint Page -->
-    <div class="page" id="complaint">
+    <!-- 4. HALAMAN KELUHAN -->
+    <div id="complaint" class="page-section">
       <header>
-        <div class="logo">
-          <div class="mark">★</div>
-          <div>
-            <h1>Keluhan & Saran</h1>
-            <p class="subtitle">Kami sangat menghargai feedback Anda</p>
-          </div>
+        <div>
+          <h1>Form Keluhan</h1>
+          <p class="subtitle">Ada masalah? Sampaikan di sini, kami siap bantu.</p>
         </div>
       </header>
 
-      <div class="complaint-form">
-        <h2>Form Keluhan & Saran</h2>
-        <p style="margin-bottom: 20px;">Jika Anda memiliki keluhan atau saran, silakan isi form berikut. Kami akan segera menindaklanjuti.</p>
-        
-        <div class="form-row">
+      <div class="form-box" style="border-top: 5px solid var(--pink-strong);">
+        <form onsubmit="event.preventDefault(); alert('Keluhan diterima. Mohon tunggu balasan tim support.');">
           <div class="form-group">
-            <label for="complaintName">Nama Lengkap</label>
-            <input type="text" id="complaintName" class="form-control" placeholder="Masukkan nama lengkap Anda">
+            <label>Nomor Pesanan (Order ID)</label>
+            <input type="text" placeholder="#CR-XXXX">
           </div>
           <div class="form-group">
-            <label for="complaintEmail">Email</label>
-            <input type="email" id="complaintEmail" class="form-control" placeholder="Masukkan email aktif Anda">
+            <label>Masalah yang dialami</label>
+            <select>
+              <option>Revisi belum sesuai</option>
+              <option>Pengiriman file terlambat</option>
+              <option>Kesalahan pembayaran</option>
+              <option>Lainnya</option>
+            </select>
           </div>
-        </div>
-
-        <div class="form-group">
-          <label>Jenis Keluhan/Saran</label>
-          <div class="complaint-options">
-            <div class="complaint-option" data-type="quality">
-              <i class="fas fa-paint-brush"></i>
-              <span>Kualitas Gambar</span>
-            </div>
-            <div class="complaint-option" data-type="service">
-              <i class="fas fa-headset"></i>
-              <span>Pelayanan</span>
-            </div>
-            <div class="complaint-option" data-type="deadline">
-              <i class="fas fa-clock"></i>
-              <span>Waktu Pengerjaan</span>
-            </div>
-            <div class="complaint-option" data-type="payment">
-              <i class="fas fa-credit-card"></i>
-              <span>Pembayaran</span>
-            </div>
-            <div class="complaint-option" data-type="suggestion">
-              <i class="fas fa-lightbulb"></i>
-              <span>Saran</span>
-            </div>
-            <div class="complaint-option" data-type="other">
-              <i class="fas fa-ellipsis-h"></i>
-              <span>Lainnya</span>
-            </div>
+          <div class="form-group">
+            <label>Pesan Keluhan</label>
+            <textarea rows="5" placeholder="Ceritakan detail masalahnya..." required></textarea>
           </div>
-        </div>
-
-        <div class="form-group">
-          <label for="complaintDetail">Detail Keluhan/Saran</label>
-          <textarea id="complaintDetail" class="form-control" placeholder="Jelaskan keluhan atau saran Anda secara detail"></textarea>
-        </div>
-
-        <div class="form-group">
-          <label for="complaintOrder">ID Pesanan (Jika ada)</label>
-          <input type="text" id="complaintOrder" class="form-control" placeholder="Masukkan ID pesanan jika keluhan terkait pesanan tertentu">
-        </div>
-
-        <button type="submit" class="submit-btn">Kirim Keluhan/Saran</button>
+          <button type="submit" class="btn-submit" style="background: var(--dark);">Kirim Keluhan</button>
+        </form>
       </div>
     </div>
 
-    <!-- Testimonials Page -->
-    <div class="page" id="testimonials">
+    <!-- 5. HALAMAN FAQ -->
+    <div id="faq" class="page-section">
       <header>
-        <div class="logo">
-          <div class="mark">★</div>
-          <div>
-            <h1>Testimoni</h1>
-            <p class="subtitle">Apa kata pelanggan kami</p>
-          </div>
+        <div>
+          <h1>Tanya Jawab (FAQ)</h1>
+          <p class="subtitle">Hal yang sering ditanyakan pelanggan.</p>
         </div>
       </header>
 
-      <section class="testimonial-section">
-        <div class="testimonial-container">
-          <h2 class="testimonial-title">Apa Kata Pelanggan Kami</h2>
-          <div class="testimonial-cards">
-            <div class="testimonial-card">
-              <p class="testimonial-text">"Gambar yang dihasilkan sangat lucu dan sesuai dengan yang saya inginkan. Pelayanan sangat ramah!"</p>
-              <div class="testimonial-author">
-                <div class="author-avatar">A</div>
-                <div class="author-info">
-                  <h4 class="author-name">Andi</h4>
-                  <p class="author-title">Content Creator</p>
-                </div>
-              </div>
-            </div>
-            <div class="testimonial-card">
-              <p class="testimonial-text">"Sangat puas dengan hasilnya! Proses pengerjaan cepat dan hasilnya melebihi ekspektasi."</p>
-              <div class="testimonial-author">
-                <div class="author-avatar">S</div>
-                <div class="author-info">
-                  <h4 class="author-name">Siti</h4>
-                  <p class="author-title">Online Shop Owner</p>
-                </div>
-              </div>
-            </div>
-            <div class="testimonial-card">
-              <p class="testimonial-text">"Desain sticker yang saya pesan sangat unik dan disukai pelanggan saya. Recommended!"</p>
-              <div class="testimonial-author">
-                <div class="author-avatar">R</div>
-                <div class="author-info">
-                  <h4 class="author-name">Rina</h4>
-                  <p class="author-title">Entrepreneur</p>
-                </div>
-              </div>
-            </div>
-            <div class="testimonial-card">
-              <p class="testimonial-text">"Proses pemesanan mudah dan hasilnya selalu memuaskan. Sudah beberapa kali pesan di sini!"</p>
-              <div class="testimonial-author">
-                <div class="author-avatar">B</div>
-                <div class="author-info">
-                  <h4 class="author-name">Budi</h4>
-                  <p class="author-title">Graphic Designer</p>
-                </div>
-              </div>
-            </div>
-            <div class="testimonial-card">
-              <p class="testimonial-text">"Harga terjangkau dengan kualitas yang bagus. Cocok untuk usaha kecil seperti saya."</p>
-              <div class="testimonial-author">
-                <div class="author-avatar">D</div>
-                <div class="author-info">
-                  <h4 class="author-name">Dewi</h4>
-                  <p class="author-title">Small Business Owner</p>
-                </div>
-              </div>
-            </div>
+      <div style="max-width: 700px; margin: 0 auto;">
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            Berapa lama proses pengerjaan? <i class="fas fa-chevron-down"></i>
+          </div>
+          <div class="faq-answer">
+            Biasanya memakan waktu 1-3 hari kerja tergantung tingkat kesulitan dan antrian.
           </div>
         </div>
-      </section>
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            Apakah bisa revisi gambar? <i class="fas fa-chevron-down"></i>
+          </div>
+          <div class="faq-answer">
+            Tentu! Kamu mendapatkan jatah revisi minor sebanyak 2x gratis. Revisi mayor akan dikenakan biaya tambahan.
+          </div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            File apa yang akan saya terima? <i class="fas fa-chevron-down"></i>
+          </div>
+          <div class="faq-answer">
+            Kamu akan mendapatkan file High Resolution dalam format PNG (transparan) dan JPG.
+          </div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            Metode pembayaran apa saja? <i class="fas fa-chevron-down"></i>
+          </div>
+          <div class="faq-answer">
+            Kami menerima Transfer Bank (BCA, Mandiri) dan E-Wallet (Dana, GoPay, OVO).
+          </div>
+        </div>
+      </div>
     </div>
+
+    <!-- 6. HALAMAN KERANJANG -->
+    <div id="cart" class="page-section">
+      <header>
+        <div>
+          <h1>Keranjang Belanja</h1>
+          <p class="subtitle">Selesaikan pesananmu.</p>
+        </div>
+      </header>
+
+      <div class="cart-items" id="cart-container">
+        <!-- Cart items injected by JS -->
+        <div class="empty-cart">
+          <i class="fas fa-shopping-basket" style="font-size: 40px; color: #ddd; margin-bottom: 10px;"></i>
+          <p>Keranjang masih kosong.</p>
+          <button class="btn-buy" onclick="switchPage('portfolio')">Belanja Sekarang</button>
+        </div>
+      </div>
+    </div>
+
   </div>
 
   <!-- Footer -->
   <footer>
-    <div class="wrap">
-      <div class="footer-content">
-        <div class="footer-section">
-          <h3>Tentang Kami</h3>
-          <p>Cute Request adalah platform untuk memesan gambar lucu dengan gaya pastel yang aesthetic. Kami siap mewujudkan ide kreatif Anda.</p>
-        </div>
-        <div class="footer-section">
-          <h3>Layanan</h3>
-          <ul>
-            <li><a href="#" onclick="showPage('request')">Character Portrait</a></li>
-            <li><a href="#" onclick="showPage('request')">Pastel Product</a></li>
-            <li><a href="#" onclick="showPage('request')">Cute Sticker</a></li>
-            <li><a href="#" onclick="showPage('request')">Custom Design</a></li>
-          </ul>
-        </div>
-        <div class="footer-section">
-          <h3>Menu</h3>
-          <ul>
-            <li><a href="#" onclick="showPage('home')">Beranda</a></li>
-            <li><a href="#" onclick="showPage('portfolio')">Portfolio</a></li>
-            <li><a href="#" onclick="showPage('faq')">FAQ</a></li>
-            <li><a href="#" onclick="showPage('testimonials')">Testimoni</a></li>
-          </ul>
-        </div>
-        <div class="footer-section">
-          <h3>Ikuti Kami</h3>
-          <div class="social-links">
-            <a href="#"><i class="fab fa-instagram"></i></a>
-            <a href="#"><i class="fab fa-telegram"></i></a>
-            <a href="#"><i class="fab fa-tiktok"></i></a>
-          </div>
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>Tentang Kami</h3>
+        <p>Cute Request adalah studio ilustrasi digital dengan gaya pastel yang menggemaskan. Berdiri sejak 2023 di Jakarta.</p>
+      </div>
+      <div class="footer-section">
+        <h3>Ikuti Kami</h3>
+        <div class="social-links">
+          <!-- Hanya IG, Telegram, TikTok -->
+          <a href="#"><i class="fab fa-instagram"></i></a>
+          <a href="#"><i class="fab fa-telegram-plane"></i></a>
+          <a href="#"><i class="fab fa-tiktok"></i></a>
         </div>
       </div>
-      <div class="footer-bottom">
-        <p>&copy; 2023 Cute Request. All rights reserved.</p>
-      </div>
+    </div>
+    <div class="copyright">
+      &copy; 2023 Cute Request. All rights reserved.
     </div>
   </footer>
 
-  <!-- CS Button -->
-  <div class="cs-button" id="csButton">
-    <i class="fas fa-headset"></i>
-  </div>
-  
-  <div class="cs-options" id="csOptions">
-    <a href="https://wa.me/6285776614421" target="_blank" class="cs-option">
-      <i class="fab fa-whatsapp"></i>
-      <span>WhatsApp</span>
-    </a>
-    <a href="#" class="cs-option">
-      <i class="fab fa-telegram"></i>
-      <span>Telegram</span>
-    </a>
-  </div>
-
-  <!-- Back to Top Button -->
-  <div class="back-to-top" id="backToTop">
-    <i class="fas fa-arrow-up"></i>
-  </div>
-
-  <!-- Image Modal -->
-  <div class="modal" id="imageModal">
-    <div class="modal-content">
-      <div class="modal-close" id="modalClose">
-        <i class="fas fa-times"></i>
+  <!-- Floating Buttons Container -->
+  <div class="floating-container">
+    
+    <!-- CS Button (Above Arrow) -->
+    <div class="cs-wrapper" id="csWrapper">
+      <div class="cs-menu" id="csMenu">
+        <a href="https://wa.me/6285776614421" target="_blank" class="cs-item wa">
+          <i class="fab fa-whatsapp"></i> WhatsApp
+        </a>
+        <a href="#" class="cs-item tg">
+          <i class="fab fa-telegram-plane"></i> Telegram
+        </a>
       </div>
-      <img src="" alt="Expanded view" class="modal-image" id="modalImage">
+      <div class="cs-btn" onclick="toggleCS()" title="Hubungi CS">
+        <i class="fas fa-headset"></i>
+      </div>
+    </div>
+
+    <!-- Back to Top Arrow -->
+    <div class="back-to-top" id="backToTop" onclick="scrollToTop()">
+      <i class="fas fa-arrow-up"></i>
     </div>
   </div>
 
   <script>
-    // Cart Data
-    let cartItems = [];
-    
-    // Page Navigation
-    function showPage(pageId) {
+    // --- 1. Page Switching Logic (SPA) ---
+    function switchPage(pageId) {
       // Hide all pages
-      const pages = document.querySelectorAll('.page');
-      pages.forEach(page => {
+      document.querySelectorAll('.page-section').forEach(page => {
         page.classList.remove('active');
       });
+      // Remove active class from nav buttons
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+
+      // Show target page
+      const target = document.getElementById(pageId);
+      if(target) {
+        target.classList.add('active');
+        // Scroll to top
+        window.scrollTo(0, 0);
+      }
+
+      // Set active nav
+      const activeBtn = document.querySelector(`.nav-btn[data-target="${pageId}"]`);
+      if(activeBtn) activeBtn.classList.add('active');
+    }
+
+    // --- 2. Portfolio Filter ---
+    function filterPortfolio(category) {
+      const cards = document.querySelectorAll('.card');
+      const buttons = document.querySelectorAll('.filter-btn');
       
-      // Show selected page
-      document.getElementById(pageId).classList.add('active');
-      
-      // Update nav links
-      const navLinks = document.querySelectorAll('.nav-link');
-      navLinks.forEach(link => {
-        link.classList.remove('active');
-        if (link.getAttribute('data-page') === pageId) {
-          link.classList.add('active');
+      buttons.forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+
+      cards.forEach(card => {
+        if (category === 'all' || card.getAttribute('data-cat') === category) {
+          card.style.display = 'flex';
+        } else {
+          card.style.display = 'none';
         }
       });
-      
-      // Scroll to top
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      });
-      
-      // Update cart if cart page is selected
-      if (pageId === 'cart') {
-        updateCartDisplay();
-      }
     }
+
+    // --- 3. FAQ Accordion ---
+    function toggleFaq(element) {
+      const parent = element.parentElement;
+      parent.classList.toggle('open');
+    }
+
+    // --- 4. Cart Logic (Simple) ---
+    let cart = [];
     
-    // Initialize navigation
-    document.querySelectorAll('.nav-link').forEach(link => {
-      link.addEventListener('click', function() {
-        const pageId = this.getAttribute('data-page');
-        showPage(pageId);
+    function addToCart(itemName, price) {
+      cart.push({name: itemName, price: price});
+      updateCartUI();
+      alert('Berhasil masuk keranjang! ♡');
+    }
+
+    function updateCartUI() {
+      const countSpan = document.getElementById('cart-count');
+      const container = document.getElementById('cart-container');
+      
+      countSpan.innerText = cart.length;
+
+      if(cart.length === 0) {
+        container.innerHTML = `
+          <div class="empty-cart">
+            <i class="fas fa-shopping-basket" style="font-size: 40px; color: #ddd; margin-bottom: 10px;"></i>
+            <p>Keranjang masih kosong.</p>
+            <button class="btn-buy" onclick="switchPage('portfolio')">Belanja Sekarang</button>
+          </div>`;
+        return;
+      }
+
+      let html = '';
+      let total = 0;
+      
+      cart.forEach((item, index) => {
+        total += item.price;
+        html += `
+          <div class="cart-item">
+            <div class="cart-thumb" style="background-color: var(--pink);"></div>
+            <div class="cart-info">
+              <h4 style="margin:0;">${item.name}</h4>
+              <p style="margin:0; color:#888;">ID: #${index+100}</p>
+            </div>
+            <div style="font-weight:bold;">Rp ${item.price.toLocaleString()}</div>
+          </div>
+        `;
       });
-    });
-    
-    // Loader
-    window.addEventListener('load', function() {
-      setTimeout(function() {
-        document.querySelector('.loader-wrapper').classList.add('fade-out');
-      }, 1000);
+
+      html += `
+        <div class="cart-total">
+          <h3 style="margin:0;">Total: Rp ${total.toLocaleString()}</h3>
+          <button class="btn-submit" style="margin-top:15px; width:auto; padding:10px 40px;">Checkout via WhatsApp</button>
+        </div>
+      `;
+      
+      container.innerHTML = html;
+    }
+
+    // --- 5. Floating Buttons Logic ---
+    const backToTopBtn = document.getElementById('backToTop');
+    const csMenu = document.getElementById('csMenu');
+
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 300) {
+        backToTopBtn.classList.add('show');
+      } else {
+        backToTopBtn.classList.remove('show');
+      }
     });
 
-    // Back to Top Button
-    const backToTopButton = document.getElementById('backToTop');
-    
-    window.addEventListener('scroll', () => {
-      if (window.pageYOffset > 300) {
-        backToTopButton.classList.add('show');
-      } else {
-        backToTopButton.classList.remove('show');
+    function scrollToTop() {
+      window.scrollTo({top: 0, behavior: 'smooth'});
+    }
+
+    function toggleCS() {
+      csMenu.classList.toggle('active');
+    }
+
+    // Close CS menu when clicking outside
+    document.addEventListener('click', function(event) {
+      const csWrapper = document.getElementById('csWrapper');
+      if (!csWrapper.contains(event.target)) {
+        csMenu.classList.remove('active');
       }
     });
-    
-    backToTopButton.addEventListener('click', () => {
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      });
-    });
+
+  </script>
+</body>
+</html>
