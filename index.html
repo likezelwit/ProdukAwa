@@ -112,15 +112,46 @@
     
     .cart-btn-nav::after { display: none; }
 
+    /* Hamburger & Mobile Menu Styles */
+    .hamburger-btn {
+      display: none; /* Hidden on desktop */
+      background: none;
+      border: none;
+      font-size: 24px;
+      color: var(--pink-strong);
+      cursor: pointer;
+    }
+
+    .close-menu-btn {
+      display: none; /* Hidden on desktop */
+      align-self: flex-end;
+      font-size: 24px;
+      color: #888;
+      margin-bottom: 20px;
+    }
+
+    .nav-overlay {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 1001;
+      display: none;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .nav-overlay.active {
+      display: block;
+      opacity: 1;
+    }
+
     /* --- Layout & Pages --- */
     .wrap {
       max-width: 980px;
       margin: 28px auto;
       padding: 28px;
-      flex: 1; /* Pushes footer down */
+      flex: 1;
     }
 
-    /* Page Switching Logic */
     .page-section {
       display: none;
       animation: fadeIn 0.5s ease-out;
@@ -303,7 +334,7 @@
     footer {
       background: var(--muted);
       padding: 40px 0 20px;
-      margin-top: auto; /* Pushes footer to bottom */
+      margin-top: auto;
     }
     .footer-content {
       max-width: 980px;
@@ -340,7 +371,6 @@
       align-items: center;
     }
 
-    /* Back to Top */
     .back-to-top {
       width: 50px;
       height: 50px;
@@ -358,11 +388,7 @@
     .back-to-top.show { opacity: 1; visibility: visible; transform: translateY(0); }
     .back-to-top:hover { background: var(--pink-strong); transform: translateY(-3px); }
 
-    /* CS Button */
-    .cs-wrapper {
-      position: relative;
-    }
-
+    .cs-wrapper { position: relative; }
     .cs-btn {
       width: 55px;
       height: 55px;
@@ -376,7 +402,6 @@
       transition: var(--transition);
       animation: pulse 2s infinite;
     }
-    
     .cs-btn:hover { background: var(--green-hover); transform: scale(1.05); }
 
     @keyframes pulse {
@@ -385,7 +410,6 @@
       100% { box-shadow: 0 0 0 0 rgba(217, 229, 193, 0); }
     }
 
-    /* CS Dropdown Menu */
     .cs-menu {
       position: absolute;
       bottom: 70px;
@@ -400,40 +424,79 @@
       transform: translateY(10px) scale(0.9);
       transition: var(--transition);
     }
-    
-    .cs-menu.active {
-      opacity: 1;
-      visibility: visible;
-      transform: translateY(0) scale(1);
-    }
-
+    .cs-menu.active { opacity: 1; visibility: visible; transform: translateY(0) scale(1); }
     .cs-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px;
-      color: var(--dark);
-      text-decoration: none;
-      border-radius: 8px;
-      transition: 0.2s;
-      font-size: 14px;
-      font-weight: 600;
+      display: flex; align-items: center; gap: 10px; padding: 10px;
+      color: var(--dark); text-decoration: none; border-radius: 8px;
+      transition: 0.2s; font-size: 14px; font-weight: 600;
     }
     .cs-item:hover { background: var(--muted); }
     .cs-item i { font-size: 18px; width: 24px; text-align: center; }
     .cs-item.wa { color: #25D366; }
     .cs-item.tg { color: #0088cc; }
 
-    /* Mobile Responsive */
+    /* --- MOBILE RESPONSIVE & HAMBURGER --- */
     @media (max-width: 768px) {
-      .nav-container { flex-direction: column; gap: 15px; }
-      .nav-links { flex-wrap: wrap; justify-content: center; gap: 10px; }
-      .nav-links button { font-size: 14px; }
+      .hamburger-btn { display: block; }
+      .close-menu-btn { display: block; }
+
+      .nav-links {
+        position: fixed;
+        top: 0;
+        right: -100%; /* Hidden by default */
+        width: 250px;
+        height: 100vh;
+        background: white;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 20px;
+        box-shadow: -5px 0 20px rgba(0,0,0,0.1);
+        transition: right 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        z-index: 1002;
+      }
+      
+      .nav-links.active {
+        right: 0; /* Slide in */
+      }
+
+      .nav-links button {
+        width: 100%;
+        text-align: left;
+        padding: 12px 15px;
+        font-size: 16px;
+        border-bottom: 1px solid #f0f0f0;
+      }
+      
+      .nav-links button:last-child {
+        border-bottom: none;
+        margin-top: 10px;
+      }
+
+      .nav-links button::after { display: none; } /* Remove underline effect on mobile */
+      
+      .nav-links button.active {
+        color: var(--pink);
+        background: #fdf2f7;
+        border-radius: 10px;
+        border-bottom: none;
+      }
+
+      /* Adjust cart button on mobile */
+      .cart-btn-nav {
+        text-align: center !important;
+        background: var(--pink) !important;
+        color: white !important;
+        margin-top: 20px;
+      }
+
       .filter-section { justify-content: center; }
     }
   </style>
 </head>
 <body>
+
+  <!-- Overlay for Mobile Menu -->
+  <div class="nav-overlay" id="navOverlay" onclick="closeMenu()"></div>
 
   <!-- Navigation -->
   <nav>
@@ -444,7 +507,18 @@
           <h1 style="font-size:20px;">Cute Request</h1>
         </div>
       </div>
-      <div class="nav-links">
+      
+      <!-- Hamburger Button (Mobile Only) -->
+      <button class="hamburger-btn" onclick="openMenu()">
+        <i class="fas fa-bars"></i>
+      </button>
+
+      <div class="nav-links" id="navLinks">
+        <!-- Close Button (Mobile Only) -->
+        <button class="close-menu-btn" onclick="closeMenu()">
+          <i class="fas fa-times"></i>
+        </button>
+
         <button onclick="switchPage('home')" class="nav-btn active" data-target="home">Beranda</button>
         <button onclick="switchPage('portfolio')" class="nav-btn" data-target="portfolio">Portfolio</button>
         <button onclick="switchPage('req')" class="nav-btn" data-target="req">Request</button>
@@ -516,7 +590,6 @@
       </div>
 
       <div class="grid">
-        <!-- Item 1 -->
         <div class="card" data-cat="portrait">
           <div class="thumb" style="background-image:url('https://i.ibb.co/gMGWnB7S/Whats-App-Image-2025-12-01-at-19-58-07.jpg');"></div>
           <div class="card-content">
@@ -528,7 +601,6 @@
             </div>
           </div>
         </div>
-        <!-- Item 2 -->
         <div class="card" data-cat="product">
           <div class="thumb" style="background-image:url('https://i.ibb.co/pjT363g4/Whats-App-Image-2025-12-01-at-19-58-07-1.jpg');"></div>
           <div class="card-content">
@@ -540,7 +612,6 @@
             </div>
           </div>
         </div>
-        <!-- Item 3 -->
         <div class="card" data-cat="sticker">
           <div class="thumb" style="background-image:url('https://i.ibb.co/0pbLcy8q/Whats-App-Image-2025-12-01-at-19-58-07-2.jpg');"></div>
           <div class="card-content">
@@ -702,7 +773,6 @@
       <div class="footer-section">
         <h3>Ikuti Kami</h3>
         <div class="social-links">
-          <!-- Hanya IG, Telegram, TikTok -->
           <a href="#"><i class="fab fa-instagram"></i></a>
           <a href="#"><i class="fab fa-telegram-plane"></i></a>
           <a href="#"><i class="fab fa-tiktok"></i></a>
@@ -739,7 +809,18 @@
   </div>
 
   <script>
-    // --- 1. Page Switching Logic (SPA) ---
+    // --- Mobile Menu Logic ---
+    function openMenu() {
+      document.getElementById('navLinks').classList.add('active');
+      document.getElementById('navOverlay').classList.add('active');
+    }
+
+    function closeMenu() {
+      document.getElementById('navLinks').classList.remove('active');
+      document.getElementById('navOverlay').classList.remove('active');
+    }
+
+    // --- Page Switching Logic (SPA) ---
     function switchPage(pageId) {
       // Hide all pages
       document.querySelectorAll('.page-section').forEach(page => {
@@ -754,16 +835,18 @@
       const target = document.getElementById(pageId);
       if(target) {
         target.classList.add('active');
-        // Scroll to top
         window.scrollTo(0, 0);
       }
 
       // Set active nav
       const activeBtn = document.querySelector(`.nav-btn[data-target="${pageId}"]`);
       if(activeBtn) activeBtn.classList.add('active');
+
+      // Auto close mobile menu after click
+      closeMenu();
     }
 
-    // --- 2. Portfolio Filter ---
+    // --- Portfolio Filter ---
     function filterPortfolio(category) {
       const cards = document.querySelectorAll('.card');
       const buttons = document.querySelectorAll('.filter-btn');
@@ -780,13 +863,13 @@
       });
     }
 
-    // --- 3. FAQ Accordion ---
+    // --- FAQ Accordion ---
     function toggleFaq(element) {
       const parent = element.parentElement;
       parent.classList.toggle('open');
     }
 
-    // --- 4. Cart Logic (Simple) ---
+    // --- Cart Logic (Simple) ---
     let cart = [];
     
     function addToCart(itemName, price) {
@@ -838,7 +921,7 @@
       container.innerHTML = html;
     }
 
-    // --- 5. Floating Buttons Logic ---
+    // --- Floating Buttons Logic ---
     const backToTopBtn = document.getElementById('backToTop');
     const csMenu = document.getElementById('csMenu');
 
