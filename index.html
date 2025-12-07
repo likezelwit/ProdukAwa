@@ -7,6 +7,12 @@
   <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&family=Poppins:wght@300;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+  <!-- FIREBASE SDK -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
+
   <style>
     :root{
       --pink: #EAC7D8;
@@ -45,7 +51,6 @@
       padding: 15px 0;
       position: sticky;
       top: 0;
-      /* PERBAIKAN: Z-index dibuat paling tinggi agar di atas overlay */
       z-index: 1100;
       box-shadow: 0 2px 10px rgba(0,0,0,0.05);
     }
@@ -57,11 +62,40 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 20px;
+    }
+
+    /* Search Bar */
+    .search-wrapper {
+      flex: 1;
+      max-width: 400px;
+      position: relative;
+      display: none; /* Mobile hidden initially */
+    }
+    @media(min-width: 768px) { .search-wrapper { display: block; } }
+
+    .search-input {
+      width: 100%;
+      padding: 10px 40px 10px 20px;
+      border: 1px solid #eee;
+      border-radius: 25px;
+      background: #fafafa;
+      font-family: inherit;
+      outline: none;
+      transition: var(--transition);
+    }
+    .search-input:focus { border-color: var(--pink); background: #fff; }
+    .search-btn {
+      position: absolute;
+      right: 15px; top: 50%;
+      transform: translateY(-50%);
+      background: none; border: none;
+      color: #999; cursor: pointer;
     }
 
     .nav-links {
       display: flex;
-      gap: 20px;
+      gap: 15px;
       align-items: center;
     }
 
@@ -78,7 +112,7 @@
       transition: var(--transition);
     }
 
-    .nav-links button::after {
+    .nav-links button:not(.btn-icon)::after {
       content: '';
       position: absolute;
       bottom: -2px;
@@ -90,7 +124,7 @@
       transition: width 0.3s;
     }
 
-    .nav-links button:hover::after,
+    .nav-links button:not(.btn-icon):hover::after,
     .nav-links button.active::after {
       width: 100%;
     }
@@ -99,73 +133,48 @@
       color: var(--pink-strong);
     }
 
+    .btn-icon {
+      font-size: 18px;
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .btn-icon:hover { background: #fdf2f7; color: var(--pink); }
+
     .cart-btn-nav {
       background: var(--pink) !important;
       color: white !important;
       padding: 8px 16px !important;
       border-radius: 20px;
+      display: flex; align-items: center; gap: 8px;
+      width: auto !important; height: auto !important;
     }
-    
-    .cart-btn-nav:hover {
-      background: var(--pink-hover) !important;
-      transform: translateY(-2px);
-    }
-    
+    .cart-btn-nav:hover { background: var(--pink-hover) !important; transform: translateY(-2px); }
     .cart-btn-nav::after { display: none; }
 
-    /* Hamburger & Mobile Menu Styles */
+    /* Hamburger */
     .hamburger-btn {
-      display: none; /* Hidden on desktop */
-      background: none;
-      border: none;
-      font-size: 24px;
-      color: var(--pink-strong);
-      cursor: pointer;
-      z-index: 1102; /* Ensure it's reachable */
-      padding: 5px;
-      border-radius: 5px;
-      transition: var(--transition);
-    }
-    
-    .hamburger-btn:hover {
-      background: rgba(225, 169, 191, 0.1);
+      display: none;
+      background: none; border: none;
+      font-size: 24px; color: var(--pink-strong);
+      cursor: pointer; padding: 5px;
     }
 
     .close-menu-btn {
       display: none;
-      align-self: flex-end;
-      font-size: 24px;
-      color: #888;
-      margin-bottom: 20px;
-      cursor: pointer;
-      background: none;
-      border: none;
-      padding: 5px;
-      border-radius: 5px;
-      transition: var(--transition);
-    }
-    
-    .close-menu-btn:hover {
-      background: rgba(0, 0, 0, 0.05);
-      color: var(--pink-strong);
+      align-self: flex-end; font-size: 24px;
+      color: #888; margin-bottom: 20px;
+      cursor: pointer; background: none; border: none;
     }
 
-    /* PERBAIKAN: Overlay diatur z-indexnya lebih rendah dari nav (1100) tapi tinggi dari konten lain */
     .nav-overlay {
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.5);
-      z-index: 1050; 
-      display: none;
-      opacity: 0;
-      transition: opacity 0.3s;
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5); z-index: 1050;
+      display: none; opacity: 0; transition: opacity 0.3s;
     }
-    .nav-overlay.active {
-      display: block;
-      opacity: 1;
-    }
+    .nav-overlay.active { display: block; opacity: 1; }
 
-    /* --- Layout & Pages --- */
+    /* --- Layout --- */
     .wrap {
       max-width: 980px;
       margin: 28px auto;
@@ -177,27 +186,18 @@
       display: none;
       animation: fadeIn 0.5s ease-out;
     }
-    
-    .page-section.active {
-      display: block;
-    }
+    .page-section.active { display: block; }
     
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* --- Header & Logo --- */
-    header {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      margin-bottom: 30px;
-    }
+    /* --- Shared & Headers --- */
+    header { display: flex; align-items: center; gap: 16px; margin-bottom: 30px; }
     .logo { display: flex; align-items: center; gap: 12px; cursor: pointer; }
     .logo .mark {
-      width: 50px; height: 50px;
-      border-radius: 14px;
+      width: 50px; height: 50px; border-radius: 14px;
       background: linear-gradient(180deg,var(--pink),#f8e7ef);
       box-shadow: var(--card-shadow);
       display: flex; align-items: center; justify-content: center;
@@ -206,349 +206,213 @@
     h1 { margin: 0; font-size: 28px; font-weight: 700; color: var(--dark); }
     p.subtitle { margin: 4px 0 0; color: #666; font-size: 14px; }
 
-    /* --- Portfolio Grid --- */
-    .filter-section {
-      margin-bottom: 30px;
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    
+    /* --- Products --- */
+    .filter-section { margin-bottom: 30px; display: flex; gap: 10px; flex-wrap: wrap; }
     .filter-btn {
-      padding: 8px 20px;
-      background: var(--light);
-      border: 1px solid #eee;
-      border-radius: 20px;
-      cursor: pointer;
-      transition: var(--transition);
+      padding: 8px 20px; background: var(--light);
+      border: 1px solid #eee; border-radius: 20px;
+      cursor: pointer; transition: var(--transition);
     }
-    
     .filter-btn:hover, .filter-btn.active {
-      background: var(--pink);
-      color: white;
-      border-color: var(--pink);
+      background: var(--pink); color: white; border-color: var(--pink);
     }
 
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-      gap: 24px;
-    }
-
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 24px; }
     .card {
-      background: var(--light);
-      border-radius: var(--round);
-      overflow: hidden;
-      box-shadow: var(--card-shadow);
-      transition: var(--transition);
-      display: flex;
-      flex-direction: column;
+      background: var(--light); border-radius: var(--round);
+      overflow: hidden; box-shadow: var(--card-shadow);
+      transition: var(--transition); display: flex; flex-direction: column;
+      position: relative;
+    }
+    .card:hover { transform: translateY(-8px); }
+    
+    .thumb {
+      height: 200px; background-size: cover; background-position: center;
+      background-color: #eee; cursor: pointer;
     }
     
-    .card:hover { transform: translateY(-8px); }
-
-    .thumb {
-      height: 200px;
-      background-size: cover;
-      background-position: center;
-      background-color: #eee;
+    .wishlist-icon {
+      position: absolute; top: 15px; right: 15px;
+      width: 35px; height: 35px; background: white;
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      color: #ccc; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      transition: 0.2s; z-index: 2;
     }
+    .wishlist-icon.active { color: #ff5252; }
+    .wishlist-icon:hover { transform: scale(1.1); }
 
     .card-content { padding: 20px; flex: 1; display: flex; flex-direction: column; }
-    .card h3 { margin: 0 0 10px; font-size: 18px; }
-    .card p { font-size: 14px; color: #666; margin-bottom: 15px; flex: 1; }
+    .card h3 { margin: 0 0 5px; font-size: 18px; }
+    .rating { color: #f1c40f; font-size: 12px; margin-bottom: 8px; }
     .card-footer { display: flex; justify-content: space-between; align-items: center; margin-top: auto; }
     .card-price { font-weight: 700; color: var(--pink-strong); }
     
     .btn-buy {
-      background: var(--pink);
-      color: #fff;
-      border: 0; padding: 8px 16px;
-      border-radius: 12px;
-      cursor: pointer;
-      font-weight: 600;
+      background: var(--pink); color: #fff; border: 0; padding: 8px 16px;
+      border-radius: 12px; cursor: pointer; font-weight: 600;
       transition: var(--transition);
     }
     .btn-buy:hover { background: var(--pink-hover); }
 
-    /* --- Forms (Request, Complaint) --- */
-    .form-box {
-      background: var(--light);
-      padding: 40px;
-      border-radius: var(--round);
-      box-shadow: var(--card-shadow);
-      max-width: 600px;
-      margin: 0 auto;
+    /* --- Detail Modal --- */
+    .modal-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.6); z-index: 2000;
+      display: none; align-items: center; justify-content: center;
+      padding: 20px;
+    }
+    .modal-overlay.active { display: flex; }
+    
+    .modal-content {
+      background: white; width: 100%; max-width: 800px;
+      border-radius: 20px; overflow: hidden;
+      display: flex; flex-direction: column;
+      max-height: 90vh; overflow-y: auto;
+      position: relative; animation: slideUp 0.3s ease;
     }
     
-    .form-group { margin-bottom: 20px; }
+    @keyframes slideUp { from{transform: translateY(20px); opacity:0;} to{transform: translateY(0); opacity:1;} }
+    
+    .close-modal {
+      position: absolute; top: 15px; right: 20px;
+      font-size: 24px; cursor: pointer; color: #666; z-index: 10;
+    }
+    
+    .detail-grid { display: grid; grid-template-columns: 1fr; }
+    @media(min-width: 768px){ .detail-grid { grid-template-columns: 1fr 1fr; } }
+    
+    .detail-img { height: 300px; background-size: cover; background-position: center; }
+    @media(min-width: 768px){ .detail-img { height: 100%; } }
+    
+    .detail-info { padding: 30px; }
+
+    /* --- Auth Forms --- */
+    .auth-container { max-width: 400px; margin: 40px auto; text-align: center; }
+    .form-box {
+      background: var(--light); padding: 40px;
+      border-radius: var(--round); box-shadow: var(--card-shadow);
+    }
+    .form-group { margin-bottom: 20px; text-align: left; }
     .form-group label { display: block; margin-bottom: 8px; font-weight: 600; }
     .form-group input, .form-group textarea, .form-group select {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid #eee;
-      border-radius: 12px;
-      font-family: inherit;
-      background: #fafafa;
+      width: 100%; padding: 12px; border: 1px solid #eee;
+      border-radius: 12px; font-family: inherit; background: #fafafa;
     }
-    .form-group input:focus, .form-group textarea:focus {
-      outline: none; border-color: var(--pink);
-      background: #fff;
-    }
-    
     .btn-submit {
-      width: 100%;
-      background: var(--pink);
-      color: white;
-      border: none;
-      padding: 14px;
-      border-radius: 12px;
-      font-weight: 700;
-      cursor: pointer;
-      font-size: 16px;
+      width: 100%; background: var(--pink); color: white;
+      border: none; padding: 14px; border-radius: 12px;
+      font-weight: 700; cursor: pointer; font-size: 16px;
       transition: var(--transition);
     }
     .btn-submit:hover { background: var(--pink-hover); }
 
-    /* --- FAQ --- */
-    .faq-item {
-      background: var(--light);
-      margin-bottom: 15px;
-      border-radius: 12px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-      overflow: hidden;
+    /* --- File Upload Drag & Drop --- */
+    .upload-zone {
+      border: 2px dashed #ddd; border-radius: 12px;
+      padding: 30px; text-align: center; cursor: pointer;
+      transition: 0.3s; background: #fafafa;
     }
-    .faq-question {
-      padding: 20px;
-      font-weight: 600;
-      cursor: pointer;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: #fff;
+    .upload-zone.dragover { border-color: var(--pink); background: #fdf2f7; }
+    .upload-preview { 
+      max-width: 100%; height: 150px; object-fit: contain; 
+      margin-top: 15px; display: none; border-radius: 8px;
     }
-    .faq-question i {
-      transition: transform 0.3s ease;
-    }
-    .faq-answer {
-      padding: 0 20px 20px;
-      color: #666;
-      display: none;
-      border-top: 1px solid #f0f0f0;
-      padding-top: 20px;
-    }
-    .faq-item.open .faq-answer { display: block; }
-    .faq-item.open .faq-question i { transform: rotate(180deg); }
 
-    /* --- Cart --- */
-    .cart-items { background: var(--light); border-radius: var(--round); overflow: hidden; box-shadow: var(--card-shadow); }
-    .cart-item {
-      display: flex;
-      padding: 20px;
-      border-bottom: 1px solid #eee;
-      align-items: center;
-      gap: 20px;
+    /* --- Blog --- */
+    .blog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+    .blog-card { background: white; border-radius: 18px; overflow: hidden; box-shadow: var(--card-shadow); }
+    .blog-img { height: 180px; background-size: cover; background-position: center; }
+    .blog-content { padding: 20px; }
+    .blog-date { font-size: 12px; color: #999; margin-bottom: 5px; }
+
+    /* --- Profile & Orders --- */
+    .profile-header { display: flex; align-items: center; gap: 20px; margin-bottom: 30px; }
+    .profile-avatar {
+      width: 80px; height: 80px; background: var(--pink); color: white;
+      border-radius: 50%; font-size: 30px; display: flex; align-items: center; justify-content: center;
     }
+    .order-item {
+      background: white; padding: 20px; border-radius: 12px;
+      margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      border-left: 5px solid #eee;
+    }
+    .order-item.status-process { border-color: #f1c40f; }
+    .order-item.status-done { border-color: var(--green); }
+    .status-badge {
+      font-size: 12px; padding: 4px 10px; border-radius: 20px;
+      background: #eee; font-weight: bold;
+    }
+
+    /* --- Cart & Coupon --- */
+    .cart-items { background: var(--light); border-radius: var(--round); overflow: hidden; box-shadow: var(--card-shadow); }
+    .cart-item { display: flex; padding: 20px; border-bottom: 1px solid #eee; align-items: center; gap: 20px; }
     .cart-thumb { width: 80px; height: 80px; background: #eee; border-radius: 10px; background-size: cover; }
     .cart-info { flex: 1; }
-    .cart-total { padding: 30px; text-align: right; background: #fff; }
-    .empty-cart { padding: 50px; text-align: center; color: #888; }
     .remove-item {
-      background: #ff5252;
-      color: white;
-      border: none;
-      border-radius: 50%;
-      width: 24px;
-      height: 24px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      font-size: 12px;
-      transition: var(--transition);
+      background: #ff5252; color: white; border: none;
+      border-radius: 50%; width: 24px; height: 24px;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
     }
-    .remove-item:hover {
-      background: #ff1744;
-      transform: scale(1.1);
-    }
+    .coupon-box { display: flex; gap: 10px; margin-top: 20px; }
+    .coupon-box input { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 8px; }
+    .btn-apply { background: var(--dark); color: white; border: none; padding: 0 20px; border-radius: 8px; cursor: pointer; }
 
-    /* --- Footer --- */
-    footer {
-      background: var(--muted);
-      padding: 40px 0 20px;
-      margin-top: auto;
-    }
+    /* --- Footer & Floating --- */
+    footer { background: var(--muted); padding: 40px 0 20px; margin-top: auto; }
     .footer-content {
-      max-width: 980px;
-      margin: 0 auto;
-      padding: 0 28px;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 30px;
+      max-width: 980px; margin: 0 auto; padding: 0 28px;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px;
     }
-    .footer-section h3 { font-size: 18px; margin-bottom: 20px; }
     .social-links { display: flex; gap: 15px; }
     .social-links a {
-      width: 40px; height: 40px;
-      background: #fff;
-      border-radius: 50%;
+      width: 40px; height: 40px; background: #fff; border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-      color: var(--pink);
-      text-decoration: none;
-      transition: var(--transition);
+      color: var(--pink); text-decoration: none; transition: var(--transition);
       box-shadow: 0 2px 5px rgba(0,0,0,0.05);
     }
     .social-links a:hover { background: var(--pink); color: #fff; transform: translateY(-3px); }
     .copyright { text-align: center; margin-top: 40px; color: #888; font-size: 14px; }
 
-    /* --- FLOATING BUTTONS (CS & BackToTop) --- */
     .floating-container {
-      position: fixed;
-      bottom: 30px;
-      right: 30px;
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-      /* PERBAIKAN: z-index diturunkan (1000) agar tertutup overlay (1050) saat menu buka */
-      z-index: 1000;
-      align-items: center;
+      position: fixed; bottom: 30px; right: 30px;
+      display: flex; flex-direction: column; gap: 15px;
+      z-index: 1000; align-items: center;
     }
-
     .back-to-top {
-      width: 50px;
-      height: 50px;
-      background: var(--pink);
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      color: white;
-      cursor: pointer;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-      transition: var(--transition);
-      opacity: 0;
-      visibility: hidden;
+      width: 50px; height: 50px; background: var(--pink);
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      color: white; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      transition: var(--transition); opacity: 0; visibility: hidden;
       transform: translateY(20px);
     }
     .back-to-top.show { opacity: 1; visibility: visible; transform: translateY(0); }
-    .back-to-top:hover { background: var(--pink-strong); transform: translateY(-3px); }
-
-    .cs-wrapper { position: relative; }
+    
     .cs-btn {
-      width: 55px;
-      height: 55px;
-      background: var(--green);
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      color: #556b2f;
-      font-size: 24px;
-      cursor: pointer;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-      transition: var(--transition);
-      animation: pulse 2s infinite;
+      width: 55px; height: 55px; background: var(--green);
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      color: #556b2f; font-size: 24px; cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2); animation: pulse 2s infinite;
     }
-    .cs-btn:hover { background: var(--green-hover); transform: scale(1.05); }
-
     @keyframes pulse {
       0% { box-shadow: 0 0 0 0 rgba(217, 229, 193, 0.7); }
       70% { box-shadow: 0 0 0 15px rgba(217, 229, 193, 0); }
       100% { box-shadow: 0 0 0 0 rgba(217, 229, 193, 0); }
     }
 
-    .cs-menu {
-      position: absolute;
-      bottom: 70px;
-      right: 0;
-      background: white;
-      border-radius: 12px;
-      width: 160px;
-      padding: 10px;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.15);
-      opacity: 0;
-      visibility: hidden;
-      transform: translateY(10px) scale(0.9);
-      transition: var(--transition);
-    }
-    .cs-menu.active { opacity: 1; visibility: visible; transform: translateY(0) scale(1); }
-    .cs-item {
-      display: flex; align-items: center; gap: 10px; padding: 10px;
-      color: var(--dark); text-decoration: none; border-radius: 8px;
-      transition: 0.2s; font-size: 14px; font-weight: 600;
-    }
-    .cs-item:hover { background: var(--muted); }
-    .cs-item i { font-size: 18px; width: 24px; text-align: center; }
-    .cs-item.wa { color: #25D366; }
-    .cs-item.tg { color: #0088cc; }
-
-    /* --- MOBILE RESPONSIVE & HAMBURGER --- */
     @media (max-width: 768px) {
-      .hamburger-btn { 
-        display: block;
-      }
-      .close-menu-btn { 
-        display: block;
-      }
-      
+      .hamburger-btn, .close-menu-btn { display: block; }
       .nav-links {
-        position: fixed;
-        top: 0;
-        right: -100%;
-        width: 280px;
-        height: 100vh;
-        background: white;
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 20px;
-        box-shadow: -5px 0 20px rgba(0,0,0,0.1);
+        position: fixed; top: 0; right: -100%;
+        width: 280px; height: 100vh; background: white;
+        flex-direction: column; align-items: flex-start;
+        padding: 20px; box-shadow: -5px 0 20px rgba(0,0,0,0.1);
         transition: right 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-        /* PERBAIKAN: Tidak perlu z-index disini karena induk 'nav' sudah 1100 */
-        overflow-y: auto;
+        overflow-y: auto; z-index: 1105;
       }
-      
-      .nav-links.active {
-        right: 0;
-      }
-
-      .nav-links button {
-        width: 100%;
-        text-align: left;
-        padding: 12px 15px;
-        font-size: 16px;
-        border-bottom: 1px solid #f0f0f0;
-        border-radius: 0;
-        margin-bottom: 0;
-      }
-      
-      .nav-links button:last-child {
-        border-bottom: none;
-        margin-top: 10px;
-      }
-
-      .nav-links button::after { 
-        display: none;
-      }
-      
-      .nav-links button.active {
-        color: var(--pink);
-        background: #fdf2f7;
-        border-radius: 10px;
-        border-bottom: none;
-      }
-
-      .cart-btn-nav {
-        text-align: center !important;
-        background: var(--pink) !important;
-        color: white !important;
-        margin-top: 20px;
-      }
-
-      .filter-section { justify-content: center; }
-      
-      .hamburger-btn i {
-        transition: transform 0.3s ease;
-      }
-      
-      .hamburger-btn.active i {
-        transform: rotate(90deg);
-      }
+      .nav-links.active { right: 0; }
+      .nav-links button { width: 100%; text-align: left; padding: 12px 15px; border-bottom: 1px solid #f0f0f0; }
+      .nav-links button.btn-icon { border: none; width: auto; display: inline-flex; }
+      .search-wrapper { display: block; margin: 10px 0; width: 100%; max-width: 100%; }
     }
   </style>
 </head>
@@ -557,34 +421,50 @@
   <!-- Overlay for Mobile Menu -->
   <div class="nav-overlay" id="navOverlay"></div>
 
+  <!-- Detail Modal -->
+  <div class="modal-overlay" id="productModal">
+    <div class="modal-content">
+      <div class="close-modal" onclick="closeModal('productModal')">&times;</div>
+      <div class="detail-grid" id="modalDetailContent">
+        <!-- Content injected by JS -->
+      </div>
+    </div>
+  </div>
+
   <!-- Navigation -->
   <nav>
     <div class="nav-container">
       <div class="logo" onclick="switchPage('home')">
         <div class="mark">★</div>
-        <div>
-          <h1 style="font-size:20px;">Cute Request</h1>
-        </div>
+        <div><h1 style="font-size:20px;">Cute Request</h1></div>
       </div>
       
-      <!-- Hamburger Button (Mobile Only) -->
-      <button class="hamburger-btn" id="hamburgerBtn" aria-label="Menu">
-        <i class="fas fa-bars"></i>
-      </button>
+      <div class="search-wrapper">
+        <input type="text" class="search-input" placeholder="Cari desain..." id="searchInput">
+        <button class="search-btn"><i class="fas fa-search"></i></button>
+      </div>
+      
+      <button class="hamburger-btn" id="hamburgerBtn"><i class="fas fa-bars"></i></button>
 
       <div class="nav-links" id="navLinks">
-        <!-- Close Button (Mobile Only) -->
-        <button class="close-menu-btn" id="closeMenuBtn" aria-label="Close Menu">
-          <i class="fas fa-times"></i>
-        </button>
+        <button class="close-menu-btn" id="closeMenuBtn"><i class="fas fa-times"></i></button>
 
         <button onclick="switchPage('home')" class="nav-btn active" data-target="home">Beranda</button>
         <button onclick="switchPage('portfolio')" class="nav-btn" data-target="portfolio">Portfolio</button>
+        <button onclick="switchPage('blog')" class="nav-btn" data-target="blog">Blog</button>
         <button onclick="switchPage('req')" class="nav-btn" data-target="req">Request</button>
-        <button onclick="switchPage('complaint')" class="nav-btn" data-target="complaint">Keluhan</button>
-        <button onclick="switchPage('faq')" class="nav-btn" data-target="faq">FAQ</button>
+        
+        <button onclick="switchPage('wishlist')" class="nav-btn btn-icon" title="Wishlist">
+          <i class="fas fa-heart"></i>
+        </button>
+        
         <button onclick="switchPage('cart')" class="nav-btn cart-btn-nav" data-target="cart">
           <i class="fas fa-shopping-cart"></i> <span id="cart-count">0</span>
+        </button>
+
+        <!-- Dynamic Auth Button -->
+        <button id="authBtn" onclick="handleAuthClick()" class="nav-btn" style="font-weight:bold; color:var(--pink-strong);">
+          Login
         </button>
       </div>
     </div>
@@ -592,7 +472,7 @@
 
   <div class="wrap">
     
-    <!-- 1. HALAMAN BERANDA (HOME) -->
+    <!-- 1. HOME -->
     <div id="home" class="page-section active">
       <header>
         <div class="logo">
@@ -607,103 +487,67 @@
       <div style="background: var(--pink); border-radius: 20px; padding: 40px; color: white; margin-bottom: 40px; text-align: center; background-image: url('https://i.ibb.co/gMGWnB7S/Whats-App-Image-2025-12-01-at-19-58-07.jpg'); background-size: cover; background-position: center; position: relative; overflow: hidden;">
         <div style="position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.4);"></div>
         <div style="position: relative; z-index: 2;">
-          <h2 style="font-size: 32px; margin-bottom: 10px;">Wujudkan Ide Lucumu</h2>
-          <p style="margin-bottom: 25px; font-size: 16px;">Kami menyediakan jasa desain karakter, produk, dan stiker dengan gaya pastel.</p>
-          <button onclick="switchPage('portfolio')" style="background: white; color: var(--pink); border: none; padding: 12px 30px; border-radius: 30px; font-weight: 700; cursor: pointer; font-size: 16px;">Lihat Katalog</button>
+          <h2 style="font-size: 32px; margin-bottom: 10px;">Flash Sale 50%!</h2>
+          <p style="margin-bottom: 25px; font-size: 16px;">Gunakan kode: <b>PASTEL50</b> saat checkout.</p>
+          <button onclick="switchPage('portfolio')" style="background: white; color: var(--pink); border: none; padding: 12px 30px; border-radius: 30px; font-weight: 700; cursor: pointer;">Lihat Katalog</button>
         </div>
       </div>
 
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
         <div style="text-align: center; padding: 20px; background: white; border-radius: 18px; box-shadow: var(--card-shadow);">
           <i class="fas fa-paint-brush" style="font-size: 30px; color: var(--pink); margin-bottom: 10px;"></i>
-          <h3 style="font-size: 18px;">Desain Unik</h3>
-          <p style="font-size: 14px; color: #666;">Setiap request dibuat original sesuai keinginanmu.</p>
+          <h3>Desain Unik</h3>
+          <p style="font-size: 14px; color: #666;">Original & Custom.</p>
         </div>
         <div style="text-align: center; padding: 20px; background: white; border-radius: 18px; box-shadow: var(--card-shadow);">
-          <i class="fas fa-clock" style="font-size: 30px; color: var(--green); margin-bottom: 10px;"></i>
-          <h3 style="font-size: 18px;">Pengerjaan Cepat</h3>
-          <p style="font-size: 14px; color: #666;">Estimasi waktu pengerjaan 1-3 hari kerja.</p>
+          <i class="fas fa-shipping-fast" style="font-size: 30px; color: var(--green); margin-bottom: 10px;"></i>
+          <h3>Real-time Tracking</h3>
+          <p style="font-size: 14px; color: #666;">Pantau status order.</p>
         </div>
         <div style="text-align: center; padding: 20px; background: white; border-radius: 18px; box-shadow: var(--card-shadow);">
-          <i class="fas fa-heart" style="font-size: 30px; color: var(--pink-strong); margin-bottom: 10px;"></i>
-          <h3 style="font-size: 18px;">Puas & Happy</h3>
-          <p style="font-size: 14px; color: #666;">Revisi gratis hingga kamu merasa puas dengan hasilnya.</p>
+          <i class="fas fa-file-upload" style="font-size: 30px; color: var(--pink-strong); margin-bottom: 10px;"></i>
+          <h3>Easy Upload</h3>
+          <p style="font-size: 14px; color: #666;">Drag & Drop referensi.</p>
         </div>
       </div>
     </div>
 
-    <!-- 2. HALAMAN PORTFOLIO -->
+    <!-- 2. PORTFOLIO -->
     <div id="portfolio" class="page-section">
       <header>
         <div>
           <h1>Katalog Desain</h1>
-          <p class="subtitle">Pilih gaya yang kamu suka.</p>
+          <p class="subtitle">Temukan gaya favoritmu.</p>
         </div>
       </header>
-
       <div class="filter-section">
         <button class="filter-btn active" onclick="filterPortfolio('all', this)">Semua</button>
         <button class="filter-btn" onclick="filterPortfolio('portrait', this)">Portrait</button>
         <button class="filter-btn" onclick="filterPortfolio('product', this)">Product</button>
         <button class="filter-btn" onclick="filterPortfolio('sticker', this)">Sticker</button>
       </div>
-
-      <div class="grid">
-        <div class="card" data-cat="portrait">
-          <div class="thumb" style="background-image:url('https://i.ibb.co/gMGWnB7S/Whats-App-Image-2025-12-01-at-19-58-07.jpg');"></div>
-          <div class="card-content">
-            <h3>Chibi Character</h3>
-            <p>Karakter imut dengan kepala besar, cocok untuk profil.</p>
-            <div class="card-footer">
-              <span class="card-price">Rp 50.000</span>
-              <button class="btn-buy" onclick="addToCart('Chibi Character', 50000, 'https://i.ibb.co/gMGWnB7S/Whats-App-Image-2025-12-01-at-19-58-07.jpg')">+ Keranjang</button>
-            </div>
-          </div>
-        </div>
-        <div class="card" data-cat="product">
-          <div class="thumb" style="background-image:url('https://i.ibb.co/pjT363g4/Whats-App-Image-2025-12-01-at-19-58-07-1.jpg');"></div>
-          <div class="card-content">
-            <h3>Product Pastel</h3>
-            <p>Ilustrasi produk jualanmu dengan gaya estetik.</p>
-            <div class="card-footer">
-              <span class="card-price">Rp 75.000</span>
-              <button class="btn-buy" onclick="addToCart('Product Pastel', 75000, 'https://i.ibb.co/pjT363g4/Whats-App-Image-2025-12-01-at-19-58-07-1.jpg')">+ Keranjang</button>
-            </div>
-          </div>
-        </div>
-        <div class="card" data-cat="sticker">
-          <div class="thumb" style="background-image:url('https://i.ibb.co/0pbLcy8q/Whats-App-Image-2025-12-01-at-19-58-07-2.jpg');"></div>
-          <div class="card-content">
-            <h3>Sticker Pack (5 pcs)</h3>
-            <p>Paket stiker lucu untuk WhatsApp atau Telegram.</p>
-            <div class="card-footer">
-              <span class="card-price">Rp 30.000</span>
-              <button class="btn-buy" onclick="addToCart('Sticker Pack', 30000, 'https://i.ibb.co/0pbLcy8q/Whats-App-Image-2025-12-01-at-19-58-07-2.jpg')">+ Keranjang</button>
-            </div>
-          </div>
-        </div>
+      <div class="grid" id="productGrid">
+        <!-- Products Injected via JS -->
       </div>
     </div>
 
-    <!-- 3. HALAMAN REQUEST (FORM) -->
+    <!-- 3. REQUEST FORM (Updated) -->
     <div id="req" class="page-section">
       <header>
         <div>
           <h1>Buat Request Baru</h1>
-          <p class="subtitle">Ceritakan idemu, kami yang gambarkan!</p>
+          <p class="subtitle">Ceritakan idemu secara detail.</p>
         </div>
       </header>
-
       <div class="form-box">
-        <form onsubmit="event.preventDefault(); alert('Request terkirim! Admin akan menghubungi via WA.');">
+        <form onsubmit="handleRequestSubmit(event)">
           <div class="form-group">
             <label>Nama Lengkap</label>
-            <input type="text" placeholder="Nama kamu..." required>
+            <input type="text" id="reqName" required>
           </div>
           <div class="form-group">
             <label>Jenis Gambar</label>
-            <select>
-              <option>Pilih jenis...</option>
+            <select id="reqType">
               <option>Portrait Karakter</option>
               <option>Produk Bisnis</option>
               <option>Sticker Set</option>
@@ -711,113 +555,131 @@
             </select>
           </div>
           <div class="form-group">
-            <label>Detail Request</label>
-            <textarea rows="5" placeholder="Jelaskan pose, warna, ekspresi, dll..." required></textarea>
+            <label>Upload Referensi (Drag & Drop)</label>
+            <div class="upload-zone" id="dropZone">
+              <p>Seret gambar ke sini atau klik untuk upload</p>
+              <input type="file" id="fileInput" hidden accept="image/*">
+              <img id="previewImg" class="upload-preview" />
+            </div>
+            <small style="color:#888;">Max size: 2MB (JPG/PNG)</small>
           </div>
           <div class="form-group">
-            <label>Link Referensi (Opsional)</label>
-            <input type="url" placeholder="https://...">
+            <label>Detail Request</label>
+            <textarea rows="5" id="reqDetail" placeholder="Pose, warna, ekspresi..." required></textarea>
           </div>
           <button type="submit" class="btn-submit">Kirim Request</button>
         </form>
       </div>
     </div>
 
-    <!-- 4. HALAMAN KELUHAN -->
-    <div id="complaint" class="page-section">
+    <!-- 4. BLOG -->
+    <div id="blog" class="page-section">
       <header>
         <div>
-          <h1>Form Keluhan</h1>
-          <p class="subtitle">Ada masalah? Sampaikan di sini, kami siap bantu.</p>
+          <h1>Blog & Tips</h1>
+          <p class="subtitle">Inspirasi untuk proyek desainmu.</p>
         </div>
       </header>
-
-      <div class="form-box" style="border-top: 5px solid var(--pink-strong);">
-        <form onsubmit="event.preventDefault(); alert('Keluhan diterima. Mohon tunggu balasan tim support.');">
-          <div class="form-group">
-            <label>Nomor Pesanan (Order ID)</label>
-            <input type="text" placeholder="#CR-XXXX">
+      <div class="blog-grid">
+        <div class="blog-card">
+          <div class="blog-img" style="background-image:url('https://i.ibb.co/gMGWnB7S/Whats-App-Image-2025-12-01-at-19-58-07.jpg');"></div>
+          <div class="blog-content">
+            <div class="blog-date">7 Des 2025</div>
+            <h3>Tren Warna Pastel 2025</h3>
+            <p style="font-size:14px;color:#666;">Warna soft pink dan sage green mendominasi tahun ini.</p>
           </div>
-          <div class="form-group">
-            <label>Masalah yang dialami</label>
-            <select>
-              <option>Revisi belum sesuai</option>
-              <option>Pengiriman file terlambat</option>
-              <option>Kesalahan pembayaran</option>
-              <option>Lainnya</option>
-            </select>
+        </div>
+        <div class="blog-card">
+          <div class="blog-img" style="background-image:url('https://i.ibb.co/pjT363g4/Whats-App-Image-2025-12-01-at-19-58-07-1.jpg');"></div>
+          <div class="blog-content">
+            <div class="blog-date">5 Des 2025</div>
+            <h3>Tips Memilih Maskot Brand</h3>
+            <p style="font-size:14px;color:#666;">Maskot yang lucu meningkatkan engagement pelanggan.</p>
           </div>
-          <div class="form-group">
-            <label>Pesan Keluhan</label>
-            <textarea rows="5" placeholder="Ceritakan detail masalahnya..." required></textarea>
-          </div>
-          <button type="submit" class="btn-submit" style="background: var(--dark);">Kirim Keluhan</button>
-        </form>
+        </div>
       </div>
     </div>
 
-    <!-- 5. HALAMAN FAQ -->
+    <!-- 5. AUTH (LOGIN/REGISTER) -->
+    <div id="auth" class="page-section">
+      <div class="auth-container">
+        <h1 id="authTitle">Login</h1>
+        <div class="form-box">
+          <form onsubmit="handleAuthSubmit(event)">
+            <div class="form-group">
+              <label>Email</label>
+              <input type="email" id="authEmail" required>
+            </div>
+            <div class="form-group">
+              <label>Password</label>
+              <input type="password" id="authPass" required>
+            </div>
+            <button type="submit" class="btn-submit" id="authSubmitBtn">Masuk</button>
+          </form>
+          <p style="margin-top:20px; font-size:14px;">
+            <span id="authSwitchText">Belum punya akun?</span> 
+            <a href="#" onclick="toggleAuthMode()" style="color:var(--pink);font-weight:bold;">Klik di sini</a>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. PROFILE & HISTORY -->
+    <div id="profile" class="page-section">
+      <header>
+        <div>
+          <h1>Profil Saya</h1>
+          <p class="subtitle">Riwayat pesanan dan status.</p>
+        </div>
+      </header>
+      <div class="form-box" style="max-width:800px;">
+        <div class="profile-header">
+          <div class="profile-avatar"><i class="fas fa-user"></i></div>
+          <div>
+            <h3 id="profileName">Loading...</h3>
+            <p id="profileEmail">user@example.com</p>
+            <button onclick="handleLogout()" style="color:red; background:none; border:none; cursor:pointer; font-weight:600; padding:0;">Logout</button>
+          </div>
+        </div>
+        <hr style="border:0; border-top:1px solid #eee; margin:20px 0;">
+        <h3>Riwayat Pesanan</h3>
+        <div id="orderHistory">
+          <p style="color:#888;">Memuat data pesanan...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7. WISHLIST -->
+    <div id="wishlist" class="page-section">
+      <header>
+        <div>
+          <h1>Favorit Saya</h1>
+          <p class="subtitle">Produk yang kamu simpan.</p>
+        </div>
+      </header>
+      <div class="grid" id="wishlistGrid">
+        <p>Belum ada item di wishlist.</p>
+      </div>
+    </div>
+
+    <!-- 8. FAQ & COMPLAINT (Existing) -->
     <div id="faq" class="page-section">
-      <header>
-        <div>
-          <h1>Tanya Jawab (FAQ)</h1>
-          <p class="subtitle">Hal yang sering ditanyakan pelanggan.</p>
-        </div>
-      </header>
-
-      <div style="max-width: 700px; margin: 0 auto;">
-        <div class="faq-item">
-          <div class="faq-question" onclick="toggleFaq(this)">
-            Berapa lama proses pengerjaan? <i class="fas fa-chevron-down"></i>
-          </div>
-          <div class="faq-answer">
-            Biasanya memakan waktu 1-3 hari kerja tergantung tingkat kesulitan dan antrian.
-          </div>
-        </div>
-        <div class="faq-item">
-          <div class="faq-question" onclick="toggleFaq(this)">
-            Apakah bisa revisi gambar? <i class="fas fa-chevron-down"></i>
-          </div>
-          <div class="faq-answer">
-            Tentu! Kamu mendapatkan jatah revisi minor sebanyak 2x gratis. Revisi mayor akan dikenakan biaya tambahan.
-          </div>
-        </div>
-        <div class="faq-item">
-          <div class="faq-question" onclick="toggleFaq(this)">
-            File apa yang akan saya terima? <i class="fas fa-chevron-down"></i>
-          </div>
-          <div class="faq-answer">
-            Kamu akan mendapatkan file High Resolution dalam format PNG (transparan) dan JPG.
-          </div>
-        </div>
-        <div class="faq-item">
-          <div class="faq-question" onclick="toggleFaq(this)">
-            Metode pembayaran apa saja? <i class="fas fa-chevron-down"></i>
-          </div>
-          <div class="faq-answer">
-            Kami menerima Transfer Bank (BCA, Mandiri) dan E-Wallet (Dana, GoPay, OVO).
-          </div>
-        </div>
-      </div>
+      <header><h1>FAQ</h1></header>
+      <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)">Berapa lama proses? <i class="fas fa-chevron-down"></i></div><div class="faq-answer">1-3 hari kerja.</div></div>
+    </div>
+    <div id="complaint" class="page-section">
+      <header><h1>Keluhan</h1></header>
+      <div class="form-box"><p>Silakan hubungi CS via WhatsApp untuk respon tercepat.</p></div>
     </div>
 
-    <!-- 6. HALAMAN KERANJANG -->
+    <!-- 9. CART -->
     <div id="cart" class="page-section">
       <header>
         <div>
           <h1>Keranjang Belanja</h1>
-          <p class="subtitle">Selesaikan pesananmu.</p>
         </div>
       </header>
-
-      <div class="cart-items" id="cart-container">
-        <!-- Cart items injected by JS -->
-        <div class="empty-cart">
-          <i class="fas fa-shopping-basket" style="font-size: 40px; color: #ddd; margin-bottom: 10px;"></i>
-          <p>Keranjang masih kosong.</p>
-          <button class="btn-buy" onclick="switchPage('portfolio')">Belanja Sekarang</button>
-        </div>
-      </div>
+      <div class="cart-items" id="cart-container"></div>
     </div>
 
   </div>
@@ -827,268 +689,492 @@
     <div class="footer-content">
       <div class="footer-section">
         <h3>Tentang Kami</h3>
-        <p>Cute Request adalah studio ilustrasi digital dengan gaya pastel yang menggemaskan. Berdiri sejak 2023 di Jakarta.</p>
+        <p>Cute Request: Jasa ilustrasi digital gaya pastel.</p>
       </div>
       <div class="footer-section">
         <h3>Ikuti Kami</h3>
         <div class="social-links">
           <a href="#"><i class="fab fa-instagram"></i></a>
-          <a href="#"><i class="fab fa-telegram-plane"></i></a>
           <a href="#"><i class="fab fa-tiktok"></i></a>
         </div>
       </div>
     </div>
-    <div class="copyright">
-      &copy; 2023 Cute Request. All rights reserved.
-    </div>
+    <div class="copyright">&copy; 2025 Cute Request.</div>
   </footer>
 
-  <!-- Floating Buttons Container -->
   <div class="floating-container">
-    
-    <!-- CS Button (Above Arrow) -->
-    <div class="cs-wrapper" id="csWrapper">
-      <div class="cs-menu" id="csMenu">
-        <a href="https://wa.me/6285776614421" target="_blank" class="cs-item wa">
-          <i class="fab fa-whatsapp"></i> WhatsApp
-        </a>
-        <a href="#" class="cs-item tg">
-          <i class="fab fa-telegram-plane"></i> Telegram
-        </a>
-      </div>
-      <div class="cs-btn" onclick="toggleCS()" title="Hubungi CS">
-        <i class="fas fa-headset"></i>
-      </div>
+    <div class="cs-wrapper">
+      <a href="https://wa.me/6285880929319" target="_blank" class="cs-btn" title="Hubungi CS">
+        <i class="fab fa-whatsapp"></i>
+      </a>
     </div>
-
-    <!-- Back to Top Arrow -->
-    <div class="back-to-top" id="backToTop" onclick="scrollToTop()">
-      <i class="fas fa-arrow-up"></i>
-    </div>
+    <div class="back-to-top" id="backToTop" onclick="scrollToTop()"><i class="fas fa-arrow-up"></i></div>
   </div>
 
   <script>
-    // --- Mobile Menu Logic ---
-    function openMenu() {
-      document.getElementById('navLinks').classList.add('active');
-      document.getElementById('navOverlay').classList.add('active');
-      document.getElementById('hamburgerBtn').classList.add('active');
-      document.body.style.overflow = 'hidden'; // Prevent scrolling when menu is open
+    // --- 1. CONFIGURATION & STATE ---
+    const firebaseConfig = {
+      apiKey: "AIzaSyB5tXCot1h83ZePjiX3kVvYfO0bDs8teSs",
+      authDomain: "dwellidoki-cb4cd.firebaseapp.com",
+      projectId: "dwellidoki-cb4cd",
+      storageBucket: "dwellidoki-cb4cd.firebasestorage.app",
+      messagingSenderId: "677449362018",
+      appId: "1:677449362018:web:834f81d2f55c27b139ff3b",
+      measurementId: "G-MLGPGY8Y1G"
+    };
+
+    // Initialize Firebase
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
     }
+    const auth = firebase.auth();
+    const db = firebase.firestore();
 
-    function closeMenu() {
-      document.getElementById('navLinks').classList.remove('active');
-      document.getElementById('navOverlay').classList.remove('active');
-      document.getElementById('hamburgerBtn').classList.remove('active');
-      document.body.style.overflow = ''; // Restore scrolling
-    }
-
-    // --- Page Switching Logic (SPA) ---
-    function switchPage(pageId) {
-      // Hide all pages
-      document.querySelectorAll('.page-section').forEach(page => {
-        page.classList.remove('active');
-      });
-      // Remove active class from nav buttons
-      document.querySelectorAll('.nav-btn').forEach(btn => {
-        btn.classList.remove('active');
-      });
-
-      // Show target page
-      const target = document.getElementById(pageId);
-      if(target) {
-        target.classList.add('active');
-        window.scrollTo(0, 0);
+    // Data Mockup (For Speed & Demo)
+    const products = [
+      { 
+        id: 1, name: "Chibi Character", price: 50000, category: "portrait", rating: 4.9, 
+        desc: "Karakter imut kepala besar.", img: "https://i.ibb.co/gMGWnB7S/Whats-App-Image-2025-12-01-at-19-58-07.jpg",
+        detail: "File PNG Transparan 2000px, Revisi 2x." 
+      },
+      { 
+        id: 2, name: "Product Pastel", price: 75000, category: "product", rating: 4.8, 
+        desc: "Ilustrasi produk estetik.", img: "https://i.ibb.co/pjT363g4/Whats-App-Image-2025-12-01-at-19-58-07-1.jpg",
+        detail: "Cocok untuk katalog Instagram/Shopee." 
+      },
+      { 
+        id: 3, name: "Sticker Pack (5pcs)", price: 30000, category: "sticker", rating: 5.0, 
+        desc: "Sticker WA/Telegram lucu.", img: "https://i.ibb.co/0pbLcy8q/Whats-App-Image-2025-12-01-at-19-58-07-2.jpg",
+        detail: "5 Ekspresi berbeda, format WEBP/PNG." 
+      },
+      {
+        id: 4, name: "Couple Portrait", price: 90000, category: "portrait", rating: 4.7,
+        desc: "Gambar berdua dengan pasangan.", img: "https://via.placeholder.com/400x400/EAC7D8/ffffff?text=Couple",
+        detail: "Background sederhana gratis."
       }
+    ];
 
-      // Set active nav
-      const activeBtn = document.querySelector(`.nav-btn[data-target="${pageId}"]`);
-      if(activeBtn) activeBtn.classList.add('active');
+    const coupons = { "PASTEL50": 0.5, "WELCOME10": 0.1 };
+    
+    let state = {
+      user: null,
+      cart: [],
+      wishlist: [], // Store product IDs
+      currentCoupon: null
+    };
 
-      // Auto close mobile menu after click
-      closeMenu();
-    }
-
-    // --- Portfolio Filter ---
-    function filterPortfolio(category, btnElement) {
-      const cards = document.querySelectorAll('.card');
-      const buttons = document.querySelectorAll('.filter-btn');
+    // --- 2. INITIALIZATION ---
+    document.addEventListener('DOMContentLoaded', () => {
+      // Setup UI Listeners
+      setupMobileMenu();
+      setupFileUpload();
+      setupSearch();
       
-      buttons.forEach(btn => btn.classList.remove('active'));
-      btnElement.classList.add('active');
+      // Render Initial Products
+      renderProducts(products);
 
-      cards.forEach(card => {
-        if (category === 'all' || card.getAttribute('data-cat') === category) {
-          card.style.display = 'flex';
+      // Auth State Observer
+      auth.onAuthStateChanged(user => {
+        state.user = user;
+        updateNavAuth();
+        if(user) {
+          loadUserData(user.uid);
         } else {
-          card.style.display = 'none';
+          document.getElementById('profileName').innerText = "Guest";
+          state.wishlist = [];
+          renderProducts(products); // Re-render to update hearts
         }
       });
-    }
+    });
 
-    // --- FAQ Accordion ---
-    function toggleFaq(element) {
-      const parent = element.parentElement;
-      parent.classList.toggle('open');
-    }
-
-    // --- Cart Logic (Simple) ---
-    let cart = [];
-    
-    function addToCart(itemName, price, imageUrl) {
-      cart.push({
-        name: itemName, 
-        price: price, 
-        image: imageUrl,
-        id: Date.now() // Unique ID for each item
-      });
-      updateCartUI();
-      alert('Berhasil masuk keranjang! ♡');
-    }
-
-    function removeFromCart(itemId) {
-      cart = cart.filter(item => item.id !== itemId);
-      updateCartUI();
-    }
-
-    function updateCartUI() {
-      const countSpan = document.getElementById('cart-count');
-      const container = document.getElementById('cart-container');
+    // --- 3. PRODUCT & WISHLIST LOGIC ---
+    function renderProducts(data, containerId = 'productGrid') {
+      const container = document.getElementById(containerId);
+      container.innerHTML = "";
       
-      countSpan.innerText = cart.length;
-
-      if(cart.length === 0) {
-        container.innerHTML = `
-          <div class="empty-cart">
-            <i class="fas fa-shopping-basket" style="font-size: 40px; color: #ddd; margin-bottom: 10px;"></i>
-            <p>Keranjang masih kosong.</p>
-            <button class="btn-buy" onclick="switchPage('portfolio')">Belanja Sekarang</button>
-          </div>`;
+      if(data.length === 0) {
+        container.innerHTML = "<p>Tidak ada produk ditemukan.</p>";
         return;
       }
 
-      let html = '';
-      let total = 0;
+      data.forEach(p => {
+        const isWishlisted = state.wishlist.includes(p.id);
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <div class="wishlist-icon ${isWishlisted ? 'active' : ''}" onclick="toggleWishlist(${p.id}, event)">
+            <i class="fas fa-heart"></i>
+          </div>
+          <div class="thumb" style="background-image:url('${p.img}')" onclick="openProductDetail(${p.id})"></div>
+          <div class="card-content">
+            <h3>${p.name}</h3>
+            <div class="rating"><i class="fas fa-star"></i> ${p.rating}</div>
+            <p>${p.desc}</p>
+            <div class="card-footer">
+              <span class="card-price">Rp ${p.price.toLocaleString()}</span>
+              <button class="btn-buy" onclick="addToCart(${p.id})">+ Keranjang</button>
+            </div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function toggleWishlist(pid, e) {
+      e.stopPropagation(); // Prevent opening modal
+      if(!state.user) {
+        alert("Silakan login untuk menyimpan wishlist!");
+        switchPage('auth');
+        return;
+      }
+
+      const idx = state.wishlist.indexOf(pid);
+      if(idx > -1) {
+        state.wishlist.splice(idx, 1);
+      } else {
+        state.wishlist.push(pid);
+      }
       
-      cart.forEach((item, index) => {
-        total += item.price;
+      // Update Firestore (Try-catch in case rules block it)
+      db.collection('users').doc(state.user.uid).set({ wishlist: state.wishlist }, { merge: true })
+        .catch(err => console.log("Firestore update skipped (Rules/Setup)"));
+
+      renderProducts(products); // Refresh UI
+      renderWishlist();
+    }
+
+    function renderWishlist() {
+      const wishProducts = products.filter(p => state.wishlist.includes(p.id));
+      renderProducts(wishProducts, 'wishlistGrid');
+    }
+
+    function filterPortfolio(cat, btn) {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      
+      const filtered = cat === 'all' ? products : products.filter(p => p.category === cat);
+      renderProducts(filtered);
+    }
+
+    // --- 4. PRODUCT DETAIL MODAL ---
+    function openProductDetail(pid) {
+      const p = products.find(x => x.id === pid);
+      if(!p) return;
+
+      const modal = document.getElementById('productModal');
+      const content = document.getElementById('modalDetailContent');
+      
+      content.innerHTML = `
+        <div class="detail-img" style="background-image:url('${p.img}')"></div>
+        <div class="detail-info">
+          <h2>${p.name}</h2>
+          <div class="rating" style="font-size:16px; margin-bottom:15px;"><i class="fas fa-star"></i> ${p.rating} / 5.0</div>
+          <p style="color:#666; margin-bottom:20px;">${p.detail}</p>
+          <p style="font-size:24px; font-weight:bold; color:var(--pink-strong);">Rp ${p.price.toLocaleString()}</p>
+          <div style="margin-top:30px;">
+            <button class="btn-submit" onclick="addToCart(${p.id}); closeModal('productModal')">Tambah ke Keranjang</button>
+          </div>
+          <hr style="margin:20px 0; border:0; border-top:1px solid #eee;">
+          <small>Estimasi pengerjaan: 2-3 Hari.</small>
+        </div>
+      `;
+      
+      modal.classList.add('active');
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('active');
+    }
+
+    // --- 5. SEARCH LOGIC ---
+    function setupSearch() {
+      const input = document.getElementById('searchInput');
+      input.addEventListener('input', (e) => {
+        const val = e.target.value.toLowerCase();
+        const filtered = products.filter(p => p.name.toLowerCase().includes(val) || p.category.includes(val));
+        
+        // If user is on portfolio, update grid. If on home, switch to portfolio.
+        if(!document.getElementById('portfolio').classList.contains('active')) {
+          switchPage('portfolio');
+        }
+        renderProducts(filtered);
+      });
+    }
+
+    // --- 6. CART & CHECKOUT ---
+    function addToCart(pid) {
+      const p = products.find(x => x.id === pid);
+      state.cart.push({ ...p, uid: Date.now() });
+      updateCartUI();
+      alert('Masuk keranjang!');
+    }
+
+    function removeFromCart(uid) {
+      state.cart = state.cart.filter(item => item.uid !== uid);
+      updateCartUI();
+    }
+
+    function applyCoupon() {
+      const code = document.getElementById('couponCode').value.toUpperCase();
+      if(coupons[code]) {
+        state.currentCoupon = { code: code, discount: coupons[code] };
+        alert(`Kupon ${code} berhasil! Diskon ${(coupons[code]*100)}%`);
+        updateCartUI();
+      } else {
+        alert("Kode kupon tidak valid.");
+      }
+    }
+
+    function updateCartUI() {
+      document.getElementById('cart-count').innerText = state.cart.length;
+      const container = document.getElementById('cart-container');
+      
+      if(state.cart.length === 0) {
+        container.innerHTML = `<div class="empty-cart"><i class="fas fa-shopping-basket" style="font-size:40px;color:#ddd;"></i><p>Kosong.</p></div>`;
+        return;
+      }
+
+      let subtotal = 0;
+      let html = '';
+      
+      state.cart.forEach(item => {
+        subtotal += item.price;
         html += `
           <div class="cart-item">
-            <div class="cart-thumb" style="background-image: url('${item.image}');"></div>
-            <div class="cart-info">
-              <h4 style="margin:0;">${item.name}</h4>
-              <p style="margin:0; color:#888;">ID: #${index+100}</p>
-            </div>
-            <div style="font-weight:bold;">Rp ${item.price.toLocaleString()}</div>
-            <button class="remove-item" onclick="removeFromCart(${item.id})">×</button>
+            <div class="cart-thumb" style="background-image:url('${item.img}')"></div>
+            <div class="cart-info"><h4>${item.name}</h4><p>Rp ${item.price.toLocaleString()}</p></div>
+            <button class="remove-item" onclick="removeFromCart(${item.uid})">×</button>
           </div>
         `;
       });
 
+      let discountAmount = 0;
+      if(state.currentCoupon) {
+        discountAmount = subtotal * state.currentCoupon.discount;
+      }
+      let total = subtotal - discountAmount;
+
       html += `
         <div class="cart-total">
-          <h3 style="margin:0;">Total: Rp ${total.toLocaleString()}</h3>
-          <button class="btn-submit" style="margin-top:15px; width:auto; padding:10px 40px;" onclick="checkout()">Checkout via WhatsApp</button>
+          <div class="coupon-box">
+            <input type="text" id="couponCode" placeholder="Kode Promo">
+            <button class="btn-apply" onclick="applyCoupon()">Pakai</button>
+          </div>
+          <p style="margin-top:15px;">Subtotal: Rp ${subtotal.toLocaleString()}</p>
+          ${state.currentCoupon ? `<p style="color:var(--green);">Diskon (${state.currentCoupon.code}): -Rp ${discountAmount.toLocaleString()}</p>` : ''}
+          <h3 style="margin-top:5px;">Total: Rp ${total.toLocaleString()}</h3>
+          <button class="btn-submit" onclick="checkout(${total})" style="margin-top:15px;">Checkout WhatsApp</button>
         </div>
       `;
-      
       container.innerHTML = html;
     }
 
-    function checkout() {
-      if (cart.length === 0) {
-        alert('Keranjang masih kosong!');
-        return;
+    function checkout(finalTotal) {
+      if(state.cart.length === 0) return;
+      
+      let msg = `Halo Cute Request, saya ingin pesan:\n\n`;
+      state.cart.forEach((item, i) => msg += `${i+1}. ${item.name} - Rp ${item.price.toLocaleString()}\n`);
+      
+      msg += `\nTotal Bayar: Rp ${finalTotal.toLocaleString()}`;
+      if(state.currentCoupon) msg += ` (Kode: ${state.currentCoupon.code})`;
+      msg += `\n\nMohon info pembayarannya.`;
+
+      // Simpan order ke Firestore (Tracking) jika login
+      if(state.user) {
+        db.collection('orders').add({
+          uid: state.user.uid,
+          items: state.cart,
+          total: finalTotal,
+          status: 'Menunggu Pembayaran',
+          date: firebase.firestore.FieldValue.serverTimestamp()
+        }).catch(e => console.log("Order tracking skipped"));
       }
-      
-      let message = 'Halo, saya ingin memesan:\n\n';
-      let total = 0;
-      
-      cart.forEach((item, index) => {
-        message += `${index + 1}. ${item.name} - Rp ${item.price.toLocaleString()}\n`;
-        total += item.price;
-      });
-      
-      message += `\nTotal: Rp ${total.toLocaleString()}\n\nMohon informasikan cara pembayaran dan proses selanjutnya. Terima kasih!`;
-      
-      const encodedMessage = encodeURIComponent(message);
-      const whatsappUrl = `https://wa.me/6285776614421?text=${encodedMessage}`;
-      
-      window.open(whatsappUrl, '_blank');
+
+      const url = `https://wa.me/6285880929319?text=${encodeURIComponent(msg)}`;
+      window.open(url, '_blank');
     }
 
-    // --- Floating Buttons Logic ---
-    const backToTopBtn = document.getElementById('backToTop');
-    const csMenu = document.getElementById('csMenu');
+    // --- 7. AUTH LOGIC ---
+    let isLoginMode = true;
+
+    function handleAuthClick() {
+      if(state.user) {
+        switchPage('profile');
+      } else {
+        switchPage('auth');
+      }
+    }
+
+    function toggleAuthMode() {
+      isLoginMode = !isLoginMode;
+      document.getElementById('authTitle').innerText = isLoginMode ? 'Login' : 'Daftar Akun';
+      document.getElementById('authSubmitBtn').innerText = isLoginMode ? 'Masuk' : 'Daftar';
+      document.getElementById('authSwitchText').innerText = isLoginMode ? 'Belum punya akun?' : 'Sudah punya akun?';
+    }
+
+    function handleAuthSubmit(e) {
+      e.preventDefault();
+      const email = document.getElementById('authEmail').value;
+      const pass = document.getElementById('authPass').value;
+
+      if(isLoginMode) {
+        auth.signInWithEmailAndPassword(email, pass)
+          .then(() => { alert("Login Berhasil!"); switchPage('home'); })
+          .catch(err => alert("Error: " + err.message));
+      } else {
+        auth.createUserWithEmailAndPassword(email, pass)
+          .then((cred) => {
+            // Create user doc
+            db.collection('users').doc(cred.user.uid).set({
+              email: email, wishlist: []
+            }).then(() => { alert("Daftar Berhasil!"); switchPage('home'); });
+          })
+          .catch(err => alert("Error: " + err.message));
+      }
+    }
+
+    function handleLogout() {
+      auth.signOut().then(() => {
+        alert("Logout berhasil.");
+        switchPage('home');
+      });
+    }
+
+    function updateNavAuth() {
+      const btn = document.getElementById('authBtn');
+      if(state.user) {
+        btn.innerText = "Akun";
+        btn.innerHTML = `<i class="fas fa-user-circle"></i>`;
+      } else {
+        btn.innerText = "Login";
+      }
+    }
+
+    function loadUserData(uid) {
+      // Load Wishlist & Profile
+      db.collection('users').doc(uid).get().then(doc => {
+        if(doc.exists) {
+          const data = doc.data();
+          state.wishlist = data.wishlist || [];
+          document.getElementById('profileEmail').innerText = data.email || state.user.email;
+          document.getElementById('profileName').innerText = (data.email || "User").split('@')[0];
+          renderProducts(products); // Update hearts
+          renderWishlist();
+        }
+      }).catch(e => console.log("Firestore read error (Check Rules)"));
+
+      // Load Orders (Dummy simulation if empty)
+      db.collection('orders').where('uid', '==', uid).orderBy('date', 'desc').get()
+        .then(snapshot => {
+          const container = document.getElementById('orderHistory');
+          if(snapshot.empty) {
+            container.innerHTML = "<p>Belum ada riwayat pesanan.</p>";
+            return;
+          }
+          let html = "";
+          snapshot.forEach(doc => {
+            const d = doc.data();
+            html += `
+              <div class="order-item ${d.status === 'Selesai' ? 'status-done' : 'status-process'}">
+                <div style="display:flex;justify-content:space-between;">
+                  <strong>Order #${doc.id.substring(0,6)}</strong>
+                  <span class="status-badge">${d.status}</span>
+                </div>
+                <p>Total: Rp ${d.total.toLocaleString()}</p>
+              </div>
+            `;
+          });
+          container.innerHTML = html;
+        }).catch(() => {
+           // Fallback UI
+           document.getElementById('orderHistory').innerHTML = `<p>Belum ada order (Mode Demo).</p>`;
+        });
+    }
+
+    // --- 8. FILE UPLOAD ---
+    function setupFileUpload() {
+      const zone = document.getElementById('dropZone');
+      const input = document.getElementById('fileInput');
+      const preview = document.getElementById('previewImg');
+
+      zone.addEventListener('click', () => input.click());
+      
+      zone.addEventListener('dragover', (e) => {
+        e.preventDefault(); zone.classList.add('dragover');
+      });
+      zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
+      
+      zone.addEventListener('drop', (e) => {
+        e.preventDefault(); zone.classList.remove('dragover');
+        if(e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
+      });
+
+      input.addEventListener('change', () => {
+        if(input.files.length) handleFile(input.files[0]);
+      });
+
+      function handleFile(file) {
+        if(file.size > 2 * 1024 * 1024) { alert("File terlalu besar (Max 2MB)"); return; }
+        if(!file.type.startsWith('image/')) { alert("Hanya file gambar!"); return; }
+        
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          preview.src = e.target.result;
+          preview.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function handleRequestSubmit(e) {
+      e.preventDefault();
+      alert("Request terkirim! Admin akan menghubungi via WA.");
+      // Logic to upload file to Firebase Storage would go here
+    }
+
+    // --- 9. UTILS & NAVIGATION ---
+    function setupMobileMenu() {
+      const btn = document.getElementById('hamburgerBtn');
+      const close = document.getElementById('closeMenuBtn');
+      const nav = document.getElementById('navLinks');
+      const overlay = document.getElementById('navOverlay');
+
+      function open() { nav.classList.add('active'); overlay.classList.add('active'); }
+      function shut() { nav.classList.remove('active'); overlay.classList.remove('active'); }
+
+      btn.onclick = open;
+      close.onclick = shut;
+      overlay.onclick = shut;
+      document.querySelectorAll('.nav-btn').forEach(b => b.onclick = () => { 
+        if(window.innerWidth <= 768) shut(); 
+      });
+    }
+
+    function switchPage(pid) {
+      document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active'));
+      const target = document.getElementById(pid);
+      if(target) {
+        target.classList.add('active');
+        window.scrollTo(0,0);
+      }
+      
+      // Update nav styling
+      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+      const activeBtn = document.querySelector(`.nav-btn[data-target="${pid}"]`);
+      if(activeBtn) activeBtn.classList.add('active');
+    }
+
+    function toggleFaq(el) {
+      el.parentElement.classList.toggle('open');
+    }
 
     window.addEventListener('scroll', () => {
-      if (window.scrollY > 300) {
-        backToTopBtn.classList.add('show');
-      } else {
-        backToTopBtn.classList.remove('show');
-      }
+      const btn = document.getElementById('backToTop');
+      if(window.scrollY > 300) btn.classList.add('show');
+      else btn.classList.remove('show');
     });
 
-    function scrollToTop() {
-      window.scrollTo({top: 0, behavior: 'smooth'});
-    }
-
-    function toggleCS() {
-      csMenu.classList.toggle('active');
-    }
-
-    // Close CS menu when clicking outside
-    document.addEventListener('click', function(event) {
-      const csWrapper = document.getElementById('csWrapper');
-      if (!csWrapper.contains(event.target)) {
-        csMenu.classList.remove('active');
-      }
-    });
-
-    // --- Event Listeners for Mobile Menu ---
-    document.addEventListener('DOMContentLoaded', function() {
-      // Get elements
-      const hamburgerBtn = document.getElementById('hamburgerBtn');
-      const closeMenuBtn = document.getElementById('closeMenuBtn');
-      const navOverlay = document.getElementById('navOverlay');
-      const navLinks = document.getElementById('navLinks');
-      
-      // Add event listeners
-      if (hamburgerBtn) {
-        hamburgerBtn.addEventListener('click', openMenu);
-      }
-      
-      if (closeMenuBtn) {
-        closeMenuBtn.addEventListener('click', closeMenu);
-      }
-      
-      if (navOverlay) {
-        navOverlay.addEventListener('click', function(event) {
-          if (event.target === navOverlay) {
-            closeMenu();
-          }
-        });
-      }
-      
-      if (navLinks) {
-        navLinks.addEventListener('click', function(event) {
-          event.stopPropagation();
-        });
-      }
-      
-      // Close menu when clicking on nav links
-      const navBtns = document.querySelectorAll('.nav-btn');
-      navBtns.forEach(link => {
-        link.addEventListener('click', closeMenu);
-      });
-      
-      // Close menu when pressing Escape key
-      document.addEventListener('keydown', function(event) {
-        if (event.key === 'Escape') {
-          closeMenu();
-        }
-      });
-    });
+    function scrollToTop() { window.scrollTo({top:0, behavior:'smooth'}); }
   </script>
 </body>
 </html>
