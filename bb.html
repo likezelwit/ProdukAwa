@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firebase Setup Wizard - Cute Request</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --pink: #EAC7D8;
+            --pink-strong: #e1a9bf;
+            --green: #D9E5C1;
+            --dark: #333;
+            --light: #fff;
+            --muted: #f7f7f7;
+            --card-shadow: 0 10px 20px rgba(21,21,21,0.06);
+            --round: 18px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--dark);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: var(--light);
+            border-radius: var(--round);
+            box-shadow: var(--card-shadow);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        .logo .mark {
+            width: 50px;
+            height: 50px;
+            border-radius: 14px;
+            background: linear-gradient(180deg, var(--pink), #f8e7ef);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 20px;
+            color: var(--light);
+        }
+
+        h1 {
+            color: var(--pink-strong);
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 16px;
+        }
+
+        .wizard-container {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .wizard-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .sidebar {
+            background: var(--light);
+            border-radius: var(--round);
+            padding: 25px;
+            box-shadow: var(--card-shadow);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .step-nav {
+            list-style: none;
+        }
+
+        .step-nav li {
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .step-nav li:hover {
+            background: var(--muted);
+        }
+
+        .step-nav li.active {
+            background: var(--pink);
+            color: white;
+        }
+
+        .step-number {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .step-nav li.active .step-number {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .content-area {
+            background: var(--light);
+            border-radius: var(--round);
+            padding: 30px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .step-content {
+            display: none;
+        }
+
+        .step-content.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 14px;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--pink);
+        }
+
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--pink);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s;
+        }
+
+        .copy-btn:hover {
+            background: var(--pink-strong);
+        }
+
+        .copy-btn.copied {
+            background: var(--green);
+        }
+
+        .btn {
+            background: var(--pink);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            background: var(--pink-strong);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: var(--muted);
+            color: var(--dark);
+        }
+
+        .btn-success {
+            background: var(--green);
+            color: var(--dark);
+        }
+
+        .warning-box {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .success-box {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .info-box {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .checklist {
+            list-style: none;
+            margin: 20px 0;
+        }
+
+        .checklist li {
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .checklist li:before {
+            content: "✓";
+            width: 25px;
+            height: 25px;
+            background: var(--green);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #eee;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--pink);
+            transition: width 0.5s;
+        }
+
+        .product-preview {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .product-card {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #eee;
+        }
+
+        .product-card h4 {
+            color: var(--pink-strong);
+            margin-bottom: 5px;
+        }
+
+        .product-card p {
+            font-size: 14px;
+            color: #666;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <div class="mark">★</div>
+                <h1 style="margin: 0; font-size: 24px;">Firebase Setup Wizard</h1>
+            </div>
+            <h1>Cute Request Backend Setup</h1>
+            <p class="subtitle">Tool untuk mengatur Firebase backend website Anda secara otomatis</p>
+        </header>
+
+        <div class="wizard-container">
+            <aside class="sidebar">
+                <ul class="step-nav">
+                    <li class="active" onclick="showStep(1)">
+                        <span class="step-number">1</span>
+                        <span>🔥 Firebase Config</span>
+                    </li>
+                    <li onclick="showStep(2)">
+                        <span class="step-number">2</span>
+                        <span>📊 Collections Setup</span>
+                    </li>
+                    <li onclick="showStep(3)">
+                        <span class="step-number">3</span>
+                        <span>🔒 Security Rules</span>
+                    </li>
+                    <li onclick="showStep(4)">
+                        <span class="step-number">4</span>
+                        <span>📦 Sample Data</span>
+                    </li>
+                    <li onclick="showStep(5)">
+                        <span class="step-number">5</span>
+                        <span>✅ Final Check</span>
+                    </li>
+                </ul>
+
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressBar" style="width: 20%"></div>
+                </div>
+            </aside>
+
+            <main class="content-area">
+                <!-- Step 1: Firebase Config -->
+                <div class="step-content active" id="step1">
+                    <h2>🔥 Konfigurasi Firebase</h2>
+                    <div class="info-box">
+                        <strong>Info:</strong> Dapatkan konfigurasi Firebase dari project Anda
+                    </div>
+
+                    <div class="form-group">
+                        <label>1. Buka <a href="https://console.firebase.google.com/" target="_blank">Firebase Console</a></label>
+                    </div>
+
+                    <div class="form-group">
+                        <label>2. Klik "Add project" atau pilih project yang sudah ada</label>
+                    </div>
+
+                    <div class="form-group">
+                        <label>3. Buka Project Settings → General → Your apps</label>
+                    </div>
+
+                    <div class="form-group">
+                        <label>4. Pilih Web App dan copy konfigurasi:</label>
+                        <textarea id="firebaseConfig" rows="8" placeholder="Paste Firebase configuration di sini..."></textarea>
+                    </div>
+
+                    <button class="btn" onclick="validateFirebaseConfig()">Validasi Konfigurasi</button>
+                    <div id="configStatus"></div>
+                </div>
+
+                <!-- Step 2: Collections Setup -->
+                <div class="step-content" id="step2">
+                    <h2>📊 Struktur Koleksi Database</h2>
+                    
+                    <h3>Koleksi yang akan dibuat:</h3>
+                    <ul class="checklist">
+                        <li><strong>users</strong> - Data pengguna dan wishlist</li>
+                        <li><strong>orders</strong> - Riwayat pesanan</li>
+                        <li><strong>requests</strong> - Request desain custom</li>
+                        <li><strong>products</strong> - Katalog produk</li>
+                        <li><strong>coupons</strong> - Data kupon diskon</li>
+                    </ul>
+
+                    <div class="form-group">
+                        <label>Generate Firestore Indexes:</label>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyToClipboard('indexesCode')">Copy</button>
+                            <pre id="indexesCode">indexes:
+  - collection: users
+    fields:
+      - fieldPath: uid
+        order: ASCENDING
+  - collection: orders
+    fields:
+      - fieldPath: uid
+        order: ASCENDING
+      - fieldPath: date
+        order: DESCENDING
+  - collection: requests
+    fields:
+      - fieldPath: uid
+        order: ASCENDING
+      - fieldPath: createdAt
+        order: DESCENDING</pre>
+                        </div>
+                    </div>
+
+                    <button class="btn" onclick="generateCollectionSetup()">Generate Setup Code</button>
+                    <div id="collectionCode"></div>
+                </div>
+
+                <!-- Step 3: Security Rules -->
+                <div class="step-content" id="step3">
+                    <h2>🔒 Security Rules</h2>
+                    <div class="warning-box">
+                        <strong>Penting:</strong> Security rules memastikan data pengguna aman dan hanya bisa diakses oleh pemiliknya
+                    </div>
+
+                    <h3>Firestore Rules:</h3>
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyToClipboard('firestoreRules')">Copy</button>
+                        <pre id="firestoreRules">rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Users can only read and write their own user document
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // Users can read their own orders and write new orders
+    match /orders/{orderId} {
+      allow read: if request.auth != null && resource.data.uid == request.auth.uid;
+      allow create: if request.auth != null && request.auth.uid == request.resource.data.uid;
+      allow update: if request.auth != null && request.auth.uid == resource.data.uid;
+    }
+    
+    // Users can manage their own requests
+    match /requests/{requestId} {
+      allow read: if request.auth != null && resource.data.uid == request.auth.uid;
+      allow create: if request.auth != null && request.auth.uid == request.resource.data.uid;
+      allow update: if request.auth != null && request.auth.uid == resource.data.uid;
+    }
+    
+    // Products can be read by everyone, written only by admin
+    match /products/{productId} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.token.admin == true;
+    }
+    
+    // Coupons can be read by everyone
+    match /coupons/{couponId} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.token.admin == true;
+    }
+  }
+}</pre>
+                    </div>
+
+                    <h3>Storage Rules:</h3>
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyToClipboard('storageRules')">Copy</button>
+                        <pre id="storageRules">rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Anyone can read public files
+    match /public/{allPaths=**} {
+      allow read;
+    }
+    
+    // Only authenticated users can upload to their own folder
+    match /users/{userId}/{allPaths=**} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // Request files
+    match /requests/{requestId}/{allPaths=**} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null;
+    }
+  }
+}</pre>
+                    </div>
+
+                    <button class="btn btn-success" onclick="markRulesCompleted()">Rules Sudah Diterapkan</button>
+                </div>
+
+                <!-- Step 4: Sample Data -->
+                <div class="step-content" id="step4">
+                    <h2>📦 Data Sampel</h2>
+                    
+                    <h3>Produk Sample:</h3>
+                    <div class="product-preview" id="productPreview">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+
+                    <div class="form-group">
+                        <label>Generate Data Script:</label>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyToClipboard('sampleDataCode')">Copy</button>
+                            <pre id="sampleDataCode">// Sample data untuk Firestore
+const sampleProducts = [
+  {
+    id: 1,
+    name: "Chibi Character",
+    price: 50000,
+    category: "portrait",
+    rating: 4.9,
+    desc: "Karakter imut dengan kepala besar",
+    img: "https://i.ibb.co/gMGWnB7S/Whats-App-Image-2025-12-01-at-19-58-07.jpg",
+    detail: "File PNG Transparan 2000px, Revisi 2x gratis",
+    featured: true,
+    createdAt: new Date()
+  },
+  {
+    id: 2,
+    name: "Product Pastel",
+    price: 75000,
+    category: "product",
+    rating: 4.8,
+    desc: "Ilustrasi produk dengan gaya estetik",
+    img: "https://i.ibb.co/pjT363g4/Whats-App-Image-2025-12-01-at-19-58-07-1.jpg",
+    detail: "Cocok untuk katalog Instagram/Shopee",
+    featured: true,
+    createdAt: new Date()
+  },
+  {
+    id: 3,
+    name: "Sticker Pack (5pcs)",
+    price: 30000,
+    category: "sticker",
+    rating: 5.0,
+    desc: "Paket stiker lucu untuk WhatsApp/Telegram",
+    img: "https://i.ibb.co/0pbLcy8q/Whats-App-Image-2025-12-01-at-19-58-07-2.jpg",
+    detail: "5 ekspresi berbeda, format WEBP/PNG",
+    featured: false,
+    createdAt: new Date()
+  }
+];
+
+const sampleCoupons = [
+  {
+    code: "PASTEL50",
+    discount: 0.5,
+    description: "Diskon 50% untuk pembelian pertama",
+    maxUses: 100,
+    usedCount: 0,
+    expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 hari
+    active: true
+  },
+  {
+    code: "WELCOME10",
+    discount: 0.1,
+    description: "Diskon 10% untuk member baru",
+    maxUses: 500,
+    usedCount: 0,
+    expiresAt: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000), // 60 hari
+    active: true
+  }
+];</pre>
+                        </div>
+                    </div>
+
+                    <button class="btn" onclick="generateDataImportScript()">Generate Import Script</button>
+                    <div id="importScript"></div>
+                </div>
+
+                <!-- Step 5: Final Check -->
+                <div class="step-content" id="step5">
+                    <h2>✅ Checklist Final</h2>
+                    
+                    <div class="checklist">
+                        <li>Firebase project sudah dibuat</li>
+                        <li>Authentication (Email/Password) sudah diaktifkan</li>
+                        <li>Firestore Database sudah dibuat</li>
+                        <li>Storage sudah diaktifkan</li>
+                        <li>Security rules sudah diterapkan</li>
+                        <li>Data sample sudah diimport</li>
+                    </div>
+
+                    <div class="success-box">
+                        <strong>Selamat! 🎉</strong><br>
+                        Firebase backend Anda sudah siap digunakan. Sekarang Anda bisa mengintegrasikan dengan website Cute Request Anda.
+                    </div>
+
+                    <h3>Integration Code:</h3>
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyToClipboard('integrationCode')">Copy</button>
+                        <pre id="integrationCode">// Tambahkan ini di file website Anda
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT_ID.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+const storage = firebase.storage();</pre>
+                    </div>
+
+                    <button class="btn btn-success" onclick="downloadCompleteSetup()">Download Complete Setup Guide</button>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        const totalSteps = 5;
+
+        // Sample data
+        const sampleProducts = [
+            {
+                id: 1,
+                name: "Chibi Character",
+                price: 50000,
+                category: "portrait",
+                rating: 4.9,
+                desc: "Karakter imut dengan kepala besar",
+                img: "https://i.ibb.co/gMGWnB7S/Whats-App-Image-2025-12-01-at-19-58-07.jpg",
+                detail: "File PNG Transparan 2000px, Revisi 2x gratis"
+            },
+            {
+                id: 2,
+                name: "Product Pastel",
+                price: 75000,
+                category: "product",
+                rating: 4.8,
+                desc: "Ilustrasi produk dengan gaya estetik",
+                img: "https://i.ibb.co/pjT363g4/Whats-App-Image-2025-12-01-at-19-58-07-1.jpg",
+                detail: "Cocok untuk katalog Instagram/Shopee"
+            },
+            {
+                id: 3,
+                name: "Sticker Pack (5pcs)",
+                price: 30000,
+                category: "sticker",
+                rating: 5.0,
+                desc: "Paket stiker lucu untuk WhatsApp/Telegram",
+                img: "https://i.ibb.co/0pbLcy8q/Whats-App-Image-2025-12-01-at-19-58-07-2.jpg",
+                detail: "5 ekspresi berbeda, format WEBP/PNG"
+            }
+        ];
+
+        function showStep(step) {
+            // Hide all steps
+            document.querySelectorAll('.step-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Remove active from all nav items
+            document.querySelectorAll('.step-nav li').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Show selected step
+            document.getElementById(`step${step}`).classList.add('active');
+            document.querySelectorAll('.step-nav li')[step - 1].classList.add('active');
+            
+            // Update progress bar
+            const progress = (step / totalSteps) * 100;
+            document.getElementById('progressBar').style.width = `${progress}%`;
+            
+            currentStep = step;
+
+            // Load product preview on step 4
+            if (step === 4) {
+                loadProductPreview();
+            }
+        }
+
+        function loadProductPreview() {
+            const preview = document.getElementById('productPreview');
+            preview.innerHTML = sampleProducts.map(product => `
+                <div class="product-card">
+                    <h4>${product.name}</h4>
+                    <p><strong>Harga:</strong> Rp ${product.price.toLocaleString()}</p>
+                    <p><strong>Kategori:</strong> ${product.category}</p>
+                    <p><strong>Rating:</strong> ⭐ ${product.rating}</p>
+                </div>
+            `).join('');
+        }
+
+        function validateFirebaseConfig() {
+            const config = document.getElementById('firebaseConfig').value;
+            const statusDiv = document.getElementById('configStatus');
+            
+            if (!config) {
+                statusDiv.innerHTML = '<div class="warning-box">Silakan paste konfigurasi Firebase terlebih dahulu</div>';
+                return;
+            }
+            
+            try {
+                // Check if it's valid JSON
+                const parsed = JSON.parse(config);
+                
+                // Check required fields
+                const requiredFields = ['apiKey', 'authDomain', 'projectId', 'appId'];
+                const missingFields = requiredFields.filter(field => !parsed[field]);
+                
+                if (missingFields.length > 0) {
+                    statusDiv.innerHTML = `<div class="warning-box">Field yang hilang: ${missingFields.join(', ')}</div>`;
+                } else {
+                    statusDiv.innerHTML = '<div class="success-box">✅ Konfigurasi Firebase valid!</div>';
+                }
+            } catch (e) {
+                statusDiv.innerHTML = '<div class="warning-box">Format konfigurasi tidak valid. Pastikan copy dari Firebase Console</div>';
+            }
+        }
+
+        function generateCollectionSetup() {
+            const code = `
+// Setup Collections untuk Cute Request
+// Jalankan di Firebase Console → Firestore → Data → Import JSON
+
+// 1. Koleksi "products"
+[
+  ${sampleProducts.map(p => JSON.stringify(p, null, 2)).join(',\n  )}
+]
+
+// 2. Koleksi "coupons"
+[
+  {
+    "code": "PASTEL50",
+    "discount": 0.5,
+    "description": "Diskon 50% untuk pembelian pertama",
+    "maxUses": 100,
+    "usedCount": 0,
+    "expiresAt": "${new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()}",
+    "active": true
+  },
+  {
+    "code": "WELCOME10",
+    "discount": 0.1,
+    "description": "Diskon 10% untuk member baru",
+    "maxUses": 500,
+    "usedCount": 0,
+    "expiresAt": "${new Date(Date.now() + 60 * 24 * 60 * 60 * 1000).toISOString()}",
+    "active": true
+  }
+]`;
+            
+            document.getElementById('collectionCode').innerHTML = `
+                <div class="success-box">✅ Kode setup telah digenerate!</div>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyToClipboard('collectionCode')">Copy</button>
+                    <pre>${code}</pre>
+                </div>
+            `;
+        }
+
+        function generateDataImportScript() {
+            const script = `
+// Firebase Data Import Script
+// Copy dan paste di browser console pada Firebase Console
+
+const products = ${JSON.stringify(sampleProducts, null, 2)};
+
+// Import products
+products.forEach(async (product) => {
+  await db.collection('products').add(product);
+  console.log('Product added:', product.name);
+});
+
+console.log('All products imported successfully!');`;
+            
+            document.getElementById('importScript').innerHTML = `
+                <div class="info-box">
+                    <strong>Cara menggunakan:</strong><br>
+                    1. Buka Firebase Console → Firestore<br>
+                    2. Buka browser console (F12)<br>
+                    3. Paste script di atas dan tekan Enter
+                </div>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyToClipboard('importScript')">Copy</button>
+                    <pre>${script}</pre>
+                </div>
+            `;
+        }
+
+        function markRulesCompleted() {
+            alert('Pastikan rules sudah diterapkan di Firebase Console!');
+            showStep(5);
+        }
+
+        function copyToClipboard(elementId) {
+            const element = document.getElementById(elementId);
+            const text = element.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = element.previousElementSibling;
+                btn.textContent = 'Copied!';
+                btn.classList.add('copied');
+                
+                setTimeout(() => {
+                    btn.textContent = 'Copy';
+                    btn.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        function downloadCompleteSetup() {
+            const setupGuide = `
+Cute Request Firebase Setup Guide
+==================================
+
+1. Firebase Configuration
+------------------------
+Copy konfigurasi dari Firebase Console dan paste di website Anda
+
+2. Enable Services
+------------------
+✓ Authentication (Email/Password)
+✓ Firestore Database
+✓ Storage
+
+3. Apply Security Rules
+-----------------------
+Copy rules dari step 3 dan paste di:
+- Firestore Rules
+- Storage Rules
+
+4. Import Sample Data
+--------------------
+Gunakan script dari step 4 untuk import data awal
+
+5. Integration
+--------------
+Tambahkan Firebase SDK ke website Anda
+
+Next Steps:
+- Test login/register functionality
+- Test product display
+- Test cart and checkout
+- Test file upload
+
+Support: hubungi developer jika ada masalah
+            `;
+            
+            const blob = new Blob([setupGuide], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'Cute-Request-Firebase-Setup.txt';
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            showStep(1);
+        });
+    </script>
+</body>
+</html>
