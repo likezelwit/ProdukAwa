@@ -254,37 +254,26 @@
     }
     .btn-buy:hover { background: var(--pink-hover); }
 
-    /* --- Detail Modal --- */
-    .modal-overlay {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.6); z-index: 2000;
-      display: none; align-items: center; justify-content: center;
-      padding: 20px;
+    /* --- PRODUCT DETAIL FULL PAGE --- */
+    .detail-container {
+      background: var(--light); border-radius: var(--round);
+      box-shadow: var(--card-shadow); overflow: hidden;
+      padding: 0;
     }
-    .modal-overlay.active { display: flex; }
-    
-    .modal-content {
-      background: white; width: 100%; max-width: 800px;
-      border-radius: 20px; overflow: hidden;
-      display: flex; flex-direction: column;
-      max-height: 90vh; overflow-y: auto;
-      position: relative; animation: slideUp 0.3s ease;
-    }
-    
-    @keyframes slideUp { from{transform: translateY(20px); opacity:0;} to{transform: translateY(0); opacity:1;} }
-    
-    .close-modal {
-      position: absolute; top: 15px; right: 20px;
-      font-size: 24px; cursor: pointer; color: #666; z-index: 10;
-    }
-    
     .detail-grid { display: grid; grid-template-columns: 1fr; }
     @media(min-width: 768px){ .detail-grid { grid-template-columns: 1fr 1fr; } }
     
-    .detail-img { height: 300px; background-size: cover; background-position: center; }
-    @media(min-width: 768px){ .detail-img { height: 100%; } }
+    .detail-img { height: 400px; background-size: cover; background-position: center; }
+    @media(min-width: 768px){ .detail-img { height: 100%; min-height: 500px; } }
     
-    .detail-info { padding: 30px; }
+    .detail-info { padding: 40px; }
+    
+    .back-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      margin-bottom: 20px; color: var(--pink-strong);
+      text-decoration: none; font-weight: 600; cursor: pointer;
+    }
+    .back-btn:hover { color: var(--pink); }
 
     /* --- Auth Forms --- */
     .auth-container { max-width: 400px; margin: 40px auto; text-align: center; }
@@ -421,16 +410,6 @@
   <!-- Overlay for Mobile Menu -->
   <div class="nav-overlay" id="navOverlay"></div>
 
-  <!-- Detail Modal -->
-  <div class="modal-overlay" id="productModal">
-    <div class="modal-content">
-      <div class="close-modal" onclick="closeModal('productModal')">&times;</div>
-      <div class="detail-grid" id="modalDetailContent">
-        <!-- Content injected by JS -->
-      </div>
-    </div>
-  </div>
-
   <!-- Navigation -->
   <nav>
     <div class="nav-container">
@@ -531,7 +510,21 @@
       </div>
     </div>
 
-    <!-- 3. REQUEST FORM (Updated) -->
+    <!-- 3. PRODUCT DETAIL (FULL PAGE) -->
+    <div id="product-detail" class="page-section">
+      <div class="detail-container">
+        <div style="padding: 20px;">
+          <div class="back-btn" onclick="switchPage('portfolio')">
+            <i class="fas fa-arrow-left"></i> Kembali ke Katalog
+          </div>
+          <div class="detail-grid" id="fullPageDetailContent">
+             <!-- Content Injected Here -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. REQUEST FORM (Updated) -->
     <div id="req" class="page-section">
       <header>
         <div>
@@ -572,7 +565,7 @@
       </div>
     </div>
 
-    <!-- 4. BLOG -->
+    <!-- 5. BLOG -->
     <div id="blog" class="page-section">
       <header>
         <div>
@@ -600,7 +593,7 @@
       </div>
     </div>
 
-    <!-- 5. AUTH (LOGIN/REGISTER) -->
+    <!-- 6. AUTH (LOGIN/REGISTER) -->
     <div id="auth" class="page-section">
       <div class="auth-container">
         <h1 id="authTitle">Login</h1>
@@ -624,7 +617,7 @@
       </div>
     </div>
 
-    <!-- 6. PROFILE & HISTORY -->
+    <!-- 7. PROFILE & HISTORY -->
     <div id="profile" class="page-section">
       <header>
         <div>
@@ -649,7 +642,7 @@
       </div>
     </div>
 
-    <!-- 7. WISHLIST -->
+    <!-- 8. WISHLIST -->
     <div id="wishlist" class="page-section">
       <header>
         <div>
@@ -662,7 +655,7 @@
       </div>
     </div>
 
-    <!-- 8. FAQ & COMPLAINT (Existing) -->
+    <!-- 9. FAQ & COMPLAINT -->
     <div id="faq" class="page-section">
       <header><h1>FAQ</h1></header>
       <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)">Berapa lama proses? <i class="fas fa-chevron-down"></i></div><div class="faq-answer">1-3 hari kerja.</div></div>
@@ -672,7 +665,7 @@
       <div class="form-box"><p>Silakan hubungi CS via WhatsApp untuk respon tercepat.</p></div>
     </div>
 
-    <!-- 9. CART -->
+    <!-- 10. CART -->
     <div id="cart" class="page-section">
       <header>
         <div>
@@ -735,22 +728,22 @@
       { 
         id: 1, name: "Chibi Character", price: 50000, category: "portrait", rating: 4.9, 
         desc: "Karakter imut kepala besar.", img: "https://i.ibb.co/gMGWnB7S/Whats-App-Image-2025-12-01-at-19-58-07.jpg",
-        detail: "File PNG Transparan 2000px, Revisi 2x." 
+        detail: "File PNG Transparan 2000px, Revisi 2x. Cocok untuk foto profil atau hadiah unik." 
       },
       { 
         id: 2, name: "Product Pastel", price: 75000, category: "product", rating: 4.8, 
         desc: "Ilustrasi produk estetik.", img: "https://i.ibb.co/pjT363g4/Whats-App-Image-2025-12-01-at-19-58-07-1.jpg",
-        detail: "Cocok untuk katalog Instagram/Shopee." 
+        detail: "Cocok untuk katalog Instagram/Shopee. Menonjolkan keunikan produk dengan gaya soft." 
       },
       { 
         id: 3, name: "Sticker Pack (5pcs)", price: 30000, category: "sticker", rating: 5.0, 
         desc: "Sticker WA/Telegram lucu.", img: "https://i.ibb.co/0pbLcy8q/Whats-App-Image-2025-12-01-at-19-58-07-2.jpg",
-        detail: "5 Ekspresi berbeda, format WEBP/PNG." 
+        detail: "5 Ekspresi berbeda, format WEBP/PNG. Ekspresikan dirimu dengan stiker custom." 
       },
       {
         id: 4, name: "Couple Portrait", price: 90000, category: "portrait", rating: 4.7,
         desc: "Gambar berdua dengan pasangan.", img: "https://via.placeholder.com/400x400/EAC7D8/ffffff?text=Couple",
-        detail: "Background sederhana gratis."
+        detail: "Background sederhana gratis. Abadikan momen spesial dengan gaya ilustrasi yang manis."
       }
     ];
 
@@ -821,7 +814,7 @@
     }
 
     function toggleWishlist(pid, e) {
-      e.stopPropagation(); // Prevent opening modal
+      e.stopPropagation(); // Prevent opening detail
       if(!state.user) {
         alert("Silakan login untuk menyimpan wishlist!");
         switchPage('auth');
@@ -835,11 +828,10 @@
         state.wishlist.push(pid);
       }
       
-      // Update Firestore (Try-catch in case rules block it)
       db.collection('users').doc(state.user.uid).set({ wishlist: state.wishlist }, { merge: true })
         .catch(err => console.log("Firestore update skipped (Rules/Setup)"));
 
-      renderProducts(products); // Refresh UI
+      renderProducts(products);
       renderWishlist();
     }
 
@@ -856,34 +848,42 @@
       renderProducts(filtered);
     }
 
-    // --- 4. PRODUCT DETAIL MODAL ---
+    // --- 4. PRODUCT DETAIL (FULL PAGE VERSION) ---
     function openProductDetail(pid) {
       const p = products.find(x => x.id === pid);
       if(!p) return;
 
-      const modal = document.getElementById('productModal');
-      const content = document.getElementById('modalDetailContent');
+      const container = document.getElementById('fullPageDetailContent');
       
-      content.innerHTML = `
+      container.innerHTML = `
         <div class="detail-img" style="background-image:url('${p.img}')"></div>
         <div class="detail-info">
-          <h2>${p.name}</h2>
-          <div class="rating" style="font-size:16px; margin-bottom:15px;"><i class="fas fa-star"></i> ${p.rating} / 5.0</div>
-          <p style="color:#666; margin-bottom:20px;">${p.detail}</p>
-          <p style="font-size:24px; font-weight:bold; color:var(--pink-strong);">Rp ${p.price.toLocaleString()}</p>
-          <div style="margin-top:30px;">
-            <button class="btn-submit" onclick="addToCart(${p.id}); closeModal('productModal')">Tambah ke Keranjang</button>
+          <h2 style="font-size:32px; margin-bottom:10px;">${p.name}</h2>
+          <div class="rating" style="font-size:18px; margin-bottom:20px; color:#f1c40f;">
+            <i class="fas fa-star"></i> ${p.rating} / 5.0
           </div>
-          <hr style="margin:20px 0; border:0; border-top:1px solid #eee;">
-          <small>Estimasi pengerjaan: 2-3 Hari.</small>
+          <p style="color:#555; margin-bottom:20px; font-size:16px; line-height:1.8;">${p.detail}</p>
+          <p style="font-size:28px; font-weight:bold; color:var(--pink-strong); margin-bottom:30px;">
+            Rp ${p.price.toLocaleString()}
+          </p>
+          <div style="display:flex; gap:10px;">
+            <button class="btn-submit" onclick="addToCart(${p.id})" style="flex:1;">
+              <i class="fas fa-cart-plus"></i> Tambah ke Keranjang
+            </button>
+            <button class="btn-submit" onclick="toggleWishlist(${p.id}, event)" style="background:var(--muted); color:var(--dark); width:auto;">
+              <i class="far fa-heart"></i>
+            </button>
+          </div>
+          <hr style="margin:30px 0; border:0; border-top:1px solid #eee;">
+          <div style="font-size:14px; color:#666;">
+            <p><i class="fas fa-clock"></i> Estimasi pengerjaan: 1-3 Hari</p>
+            <p><i class="fas fa-check-circle"></i> Revisi gratis: 2x Minor</p>
+            <p><i class="fas fa-file-image"></i> File: JPG & PNG High Res</p>
+          </div>
         </div>
       `;
       
-      modal.classList.add('active');
-    }
-
-    function closeModal(id) {
-      document.getElementById(id).classList.remove('active');
+      switchPage('product-detail');
     }
 
     // --- 5. SEARCH LOGIC ---
@@ -893,7 +893,6 @@
         const val = e.target.value.toLowerCase();
         const filtered = products.filter(p => p.name.toLowerCase().includes(val) || p.category.includes(val));
         
-        // If user is on portfolio, update grid. If on home, switch to portfolio.
         if(!document.getElementById('portfolio').classList.contains('active')) {
           switchPage('portfolio');
         }
@@ -906,7 +905,7 @@
       const p = products.find(x => x.id === pid);
       state.cart.push({ ...p, uid: Date.now() });
       updateCartUI();
-      alert('Masuk keranjang!');
+      alert('Berhasil masuk keranjang!');
     }
 
     function removeFromCart(uid) {
@@ -979,7 +978,6 @@
       if(state.currentCoupon) msg += ` (Kode: ${state.currentCoupon.code})`;
       msg += `\n\nMohon info pembayarannya.`;
 
-      // Simpan order ke Firestore (Tracking) jika login
       if(state.user) {
         db.collection('orders').add({
           uid: state.user.uid,
@@ -994,7 +992,7 @@
       window.open(url, '_blank');
     }
 
-    // --- 7. AUTH LOGIC ---
+    // --- 7. AUTH LOGIC & ERROR HANDLING ---
     let isLoginMode = true;
 
     function handleAuthClick() {
@@ -1020,17 +1018,47 @@
       if(isLoginMode) {
         auth.signInWithEmailAndPassword(email, pass)
           .then(() => { alert("Login Berhasil!"); switchPage('home'); })
-          .catch(err => alert("Error: " + err.message));
+          .catch(err => handleFirebaseError(err));
       } else {
         auth.createUserWithEmailAndPassword(email, pass)
           .then((cred) => {
-            // Create user doc
             db.collection('users').doc(cred.user.uid).set({
               email: email, wishlist: []
             }).then(() => { alert("Daftar Berhasil!"); switchPage('home'); });
           })
-          .catch(err => alert("Error: " + err.message));
+          .catch(err => handleFirebaseError(err));
       }
+    }
+
+    // --- Custom Error Handler (No Raw Code) ---
+    function handleFirebaseError(error) {
+      let msg = "Terjadi kesalahan. Silakan coba lagi.";
+      
+      switch(error.code) {
+        case 'auth/invalid-email':
+          msg = "Format email tidak valid.";
+          break;
+        case 'auth/user-disabled':
+          msg = "Akun ini telah dinonaktifkan.";
+          break;
+        case 'auth/user-not-found':
+          msg = "Email tidak terdaftar. Silakan daftar terlebih dahulu.";
+          break;
+        case 'auth/wrong-password':
+          msg = "Password salah. Coba lagi.";
+          break;
+        case 'auth/email-already-in-use':
+          msg = "Email sudah digunakan oleh akun lain.";
+          break;
+        case 'auth/weak-password':
+          msg = "Password terlalu lemah (min. 6 karakter).";
+          break;
+        case 'auth/network-request-failed':
+          msg = "Gagal terhubung. Periksa koneksi internet Anda.";
+          break;
+      }
+      
+      alert(msg);
     }
 
     function handleLogout() {
@@ -1051,19 +1079,17 @@
     }
 
     function loadUserData(uid) {
-      // Load Wishlist & Profile
       db.collection('users').doc(uid).get().then(doc => {
         if(doc.exists) {
           const data = doc.data();
           state.wishlist = data.wishlist || [];
           document.getElementById('profileEmail').innerText = data.email || state.user.email;
           document.getElementById('profileName').innerText = (data.email || "User").split('@')[0];
-          renderProducts(products); // Update hearts
+          renderProducts(products);
           renderWishlist();
         }
-      }).catch(e => console.log("Firestore read error (Check Rules)"));
+      }).catch(e => console.log("Firestore read error"));
 
-      // Load Orders (Dummy simulation if empty)
       db.collection('orders').where('uid', '==', uid).orderBy('date', 'desc').get()
         .then(snapshot => {
           const container = document.getElementById('orderHistory');
@@ -1086,8 +1112,7 @@
           });
           container.innerHTML = html;
         }).catch(() => {
-           // Fallback UI
-           document.getElementById('orderHistory').innerHTML = `<p>Belum ada order (Mode Demo).</p>`;
+           document.getElementById('orderHistory').innerHTML = `<p>Belum ada order.</p>`;
         });
     }
 
@@ -1129,7 +1154,6 @@
     function handleRequestSubmit(e) {
       e.preventDefault();
       alert("Request terkirim! Admin akan menghubungi via WA.");
-      // Logic to upload file to Firebase Storage would go here
     }
 
     // --- 9. UTILS & NAVIGATION ---
