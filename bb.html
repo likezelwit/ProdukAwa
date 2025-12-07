@@ -341,6 +341,42 @@
             color: #666;
             margin: 0;
         }
+
+        .config-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 60px;
+            height: 30px;
+            background: #ccc;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .toggle-switch.active {
+            background: var(--pink);
+        }
+
+        .toggle-slider {
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s;
+        }
+
+        .toggle-switch.active .toggle-slider {
+            transform: translateX(30px);
+        }
     </style>
 </head>
 <body>
@@ -389,24 +425,33 @@
                 <div class="step-content active" id="step1">
                     <h2>🔥 Konfigurasi Firebase</h2>
                     <div class="info-box">
-                        <strong>Info:</strong> Dapatkan konfigurasi Firebase dari project Anda
+                        <strong>Info:</strong> Konfigurasi Firebase sudah disediakan otomatis
                     </div>
 
-                    <div class="form-group">
-                        <label>1. Buka <a href="https://console.firebase.google.com/" target="_blank">Firebase Console</a></label>
+                    <div class="config-toggle">
+                        <label>Gunakan konfigurasi default:</label>
+                        <div class="toggle-switch active" id="useDefaultConfig" onclick="toggleConfigInput()">
+                            <div class="toggle-slider"></div>
+                        </div>
                     </div>
 
-                    <div class="form-group">
-                        <label>2. Klik "Add project" atau pilih project yang sudah ada</label>
-                    </div>
+                    <div id="configInputArea" style="display: none;">
+                        <div class="form-group">
+                            <label>1. Buka <a href="https://console.firebase.google.com/" target="_blank">Firebase Console</a></label>
+                        </div>
 
-                    <div class="form-group">
-                        <label>3. Buka Project Settings → General → Your apps</label>
-                    </div>
+                        <div class="form-group">
+                            <label>2. Klik "Add project" atau pilih project yang sudah ada</label>
+                        </div>
 
-                    <div class="form-group">
-                        <label>4. Pilih Web App dan copy konfigurasi:</label>
-                        <textarea id="firebaseConfig" rows="8" placeholder="Paste Firebase configuration di sini..."></textarea>
+                        <div class="form-group">
+                            <label>3. Buka Project Settings → General → Your apps</label>
+                        </div>
+
+                        <div class="form-group">
+                            <label>4. Pilih Web App dan copy konfigurasi:</label>
+                            <textarea id="firebaseConfig" rows="8" placeholder="Paste Firebase configuration di sini..."></textarea>
+                        </div>
                     </div>
 
                     <button class="btn" onclick="validateFirebaseConfig()">Validasi Konfigurasi</button>
@@ -632,12 +677,13 @@ const sampleCoupons = [
                         <button class="copy-btn" onclick="copyToClipboard('integrationCode')">Copy</button>
                         <pre id="integrationCode">// Tambahkan ini di file website Anda
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyB5tXCot1h83ZePjiX3kVvYfO0bDs8teSs",
+  authDomain: "dwellidoki-cb4cd.firebaseapp.com",
+  projectId: "dwellidoki-cb4cd",
+  storageBucket: "dwellidoki-cb4cd.firebasestorage.app",
+  messagingSenderId: "677449362018",
+  appId: "1:677449362018:web:834f81d2f55c27b139ff3b",
+  measurementId: "G-MLGPGY8Y1G"
 };
 
 // Initialize Firebase
@@ -656,6 +702,17 @@ const storage = firebase.storage();</pre>
     <script>
         let currentStep = 1;
         const totalSteps = 5;
+
+        // Default Firebase configuration
+        const defaultFirebaseConfig = {
+            apiKey: "AIzaSyB5tXCot1h83ZePjiX3kVvYfO0bDs8teSs",
+            authDomain: "dwellidoki-cb4cd.firebaseapp.com",
+            projectId: "dwellidoki-cb4cd",
+            storageBucket: "dwellidoki-cb4cd.firebasestorage.app",
+            messagingSenderId: "677449362018",
+            appId: "1:677449362018:web:834f81d2f55c27b139ff3b",
+            measurementId: "G-MLGPGY8Y1G"
+        };
 
         // Sample data
         const sampleProducts = [
@@ -730,31 +787,71 @@ const storage = firebase.storage();</pre>
             `).join('');
         }
 
-        function validateFirebaseConfig() {
-            const config = document.getElementById('firebaseConfig').value;
+        function toggleConfigInput() {
+            const toggle = document.getElementById('useDefaultConfig');
+            const inputArea = document.getElementById('configInputArea');
+            
+            toggle.classList.toggle('active');
+            
+            if (toggle.classList.contains('active')) {
+                inputArea.style.display = 'none';
+                // Auto-validate with default config
+                validateFirebaseConfig(true);
+            } else {
+                inputArea.style.display = 'block';
+            }
+        }
+
+        function validateFirebaseConfig(useDefault = false) {
+            let config;
             const statusDiv = document.getElementById('configStatus');
             
-            if (!config) {
-                statusDiv.innerHTML = '<div class="warning-box">Silakan paste konfigurasi Firebase terlebih dahulu</div>';
-                return;
+            if (useDefault) {
+                config = defaultFirebaseConfig;
+                // Pre-fill the textarea with default config
+                document.getElementById('firebaseConfig').value = JSON.stringify(config, null, 2);
+            } else {
+                const configText = document.getElementById('firebaseConfig').value;
+                
+                if (!configText) {
+                    statusDiv.innerHTML = '<div class="warning-box">Silakan paste konfigurasi Firebase terlebih dahulu</div>';
+                    return;
+                }
+                
+                try {
+                    config = JSON.parse(configText);
+                } catch (e) {
+                    statusDiv.innerHTML = '<div class="warning-box">Format konfigurasi tidak valid. Pastikan copy dari Firebase Console</div>';
+                    return;
+                }
             }
             
-            try {
-                // Check if it's valid JSON
-                const parsed = JSON.parse(config);
+            // Check required fields
+            const requiredFields = ['apiKey', 'authDomain', 'projectId', 'appId'];
+            const missingFields = requiredFields.filter(field => !config[field]);
+            
+            if (missingFields.length > 0) {
+                statusDiv.innerHTML = `<div class="warning-box">Field yang hilang: ${missingFields.join(', ')}</div>`;
+            } else {
+                statusDiv.innerHTML = '<div class="success-box">✅ Konfigurasi Firebase valid!</div>';
                 
-                // Check required fields
-                const requiredFields = ['apiKey', 'authDomain', 'projectId', 'appId'];
-                const missingFields = requiredFields.filter(field => !parsed[field]);
-                
-                if (missingFields.length > 0) {
-                    statusDiv.innerHTML = `<div class="warning-box">Field yang hilang: ${missingFields.join(', ')}</div>`;
-                } else {
-                    statusDiv.innerHTML = '<div class="success-box">✅ Konfigurasi Firebase valid!</div>';
-                }
-            } catch (e) {
-                statusDiv.innerHTML = '<div class="warning-box">Format konfigurasi tidak valid. Pastikan copy dari Firebase Console</div>';
+                // Update integration code with the valid config
+                updateIntegrationCode(config);
             }
+        }
+
+        function updateIntegrationCode(config) {
+            const integrationCode = `
+// Tambahkan ini di file website Anda
+const firebaseConfig = ${JSON.stringify(config, null, 2)};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+const storage = firebase.storage();`;
+            
+            document.getElementById('integrationCode').textContent = integrationCode;
         }
 
         function generateCollectionSetup() {
@@ -855,7 +952,10 @@ Cute Request Firebase Setup Guide
 
 1. Firebase Configuration
 ------------------------
-Copy konfigurasi dari Firebase Console dan paste di website Anda
+Konfigurasi Firebase sudah disediakan otomatis:
+- Project ID: dwellidoki-cb4cd
+- Auth Domain: dwellidoki-cb4cd.firebaseapp.com
+- Storage Bucket: dwellidoki-cb4cd.firebasestorage.app
 
 2. Enable Services
 ------------------
@@ -897,6 +997,12 @@ Support: hubungi developer jika ada masalah
 
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
+            // Set default config in textarea
+            document.getElementById('firebaseConfig').value = JSON.stringify(defaultFirebaseConfig, null, 2);
+            
+            // Auto-validate with default config
+            validateFirebaseConfig(true);
+            
             showStep(1);
         });
     </script>
