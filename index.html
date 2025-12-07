@@ -91,13 +91,14 @@
       font-family: inherit; font-weight: 600; font-size: 15px;
       cursor: pointer; padding: 5px 0; position: relative;
       transition: var(--transition);
+      white-space: nowrap;
     }
-    .nav-links button:not(.btn-icon)::after {
+    .nav-links button:not(.btn-icon):not(.cart-btn-nav)::after {
       content: ''; position: absolute; bottom: -2px; left: 0;
       width: 0; height: 3px; background: var(--pink);
       border-radius: 2px; transition: width 0.3s;
     }
-    .nav-links button:not(.btn-icon):hover::after,
+    .nav-links button:not(.btn-icon):not(.cart-btn-nav):hover::after,
     .nav-links button.active::after { width: 100%; }
     .nav-links button.active { color: var(--pink-strong); }
 
@@ -114,7 +115,6 @@
       width: auto !important; height: auto !important;
     }
     .cart-btn-nav:hover { background: var(--pink-hover) !important; transform: translateY(-2px); }
-    .cart-btn-nav::after { display: none; }
 
     .hamburger-btn {
       display: none; background: none; border: none;
@@ -386,6 +386,12 @@
         <button onclick="switchPage('blog')" class="nav-btn" data-target="blog">Blog</button>
         <button onclick="switchPage('req')" class="nav-btn" data-target="req">Request</button>
         
+        <!-- MENU BARU DI HAMBURGER -->
+        <button onclick="switchPage('profile')" class="nav-btn" data-target="profile">Riwayat Pesanan</button>
+        <button onclick="switchPage('tracking')" class="nav-btn" data-target="tracking">Status Pengerjaan</button>
+        <button onclick="switchPage('complaint')" class="nav-btn" data-target="complaint">Keluhan</button>
+        <button onclick="switchPage('faq')" class="nav-btn" data-target="faq">FAQ</button>
+
         <button onclick="switchPage('wishlist')" class="nav-btn btn-icon" title="Wishlist">
           <i class="fas fa-heart"></i>
         </button>
@@ -510,7 +516,8 @@
           <div class="back-btn" onclick="switchPage('portfolio')">
             <i class="fas fa-arrow-left"></i> Batal
           </div>
-          <h2>Konfirmasi Pembelian</h2>
+          <h2>Konfirmasi & Detail Pesanan</h2>
+          <p style="color:#666; margin-bottom:20px;">Mohon isi detail agar kami bisa langsung memproses pesananmu.</p>
           <div id="directCheckoutContent">
             <!-- Details injected by JS -->
           </div>
@@ -621,7 +628,27 @@
       </div>
     </div>
 
-    <!-- 9. WISHLIST -->
+    <!-- 9. STATUS PENGERJAAN (TRACKING) -->
+    <div id="tracking" class="page-section">
+      <header>
+        <div>
+          <h1>Cek Status Pengerjaan</h1>
+          <p class="subtitle">Masukkan ID pesananmu.</p>
+        </div>
+      </header>
+      <div class="form-box">
+        <div class="form-group">
+          <label>Order ID (Contoh: 8a7d9f...)</label>
+          <input type="text" id="trackingId" placeholder="Masukkan Order ID...">
+        </div>
+        <button class="btn-submit" onclick="trackOrder()">Lacak Pesanan</button>
+        <div id="trackingResult" style="margin-top:30px; padding:20px; background:#f9f9f9; border-radius:12px; display:none;">
+          <!-- Result Here -->
+        </div>
+      </div>
+    </div>
+
+    <!-- 10. WISHLIST -->
     <div id="wishlist" class="page-section">
       <header>
         <div>
@@ -634,17 +661,24 @@
       </div>
     </div>
 
-    <!-- 10. FAQ & COMPLAINT -->
+    <!-- 11. FAQ -->
     <div id="faq" class="page-section">
       <header><h1>FAQ</h1></header>
-      <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)">Berapa lama proses? <i class="fas fa-chevron-down"></i></div><div class="faq-answer">1-3 hari kerja.</div></div>
-    </div>
-    <div id="complaint" class="page-section">
-      <header><h1>Keluhan</h1></header>
-      <div class="form-box"><p>Silakan hubungi CS via WhatsApp untuk respon tercepat.</p></div>
+      <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)">Berapa lama proses pengerjaan? <i class="fas fa-chevron-down"></i></div><div class="faq-answer">Estimasi 1-3 hari kerja tergantung antrian dan tingkat kesulitan.</div></div>
+      <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)">Apakah ada revisi? <i class="fas fa-chevron-down"></i></div><div class="faq-answer">Ya, kami menyediakan 2x revisi minor gratis.</div></div>
+      <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)">File apa yang saya dapat? <i class="fas fa-chevron-down"></i></div><div class="faq-answer">File high-resolution dalam format JPG dan PNG Transparan.</div></div>
     </div>
 
-    <!-- 11. CART -->
+    <!-- 12. COMPLAINT -->
+    <div id="complaint" class="page-section">
+      <header><h1>Keluhan</h1></header>
+      <div class="form-box">
+        <p>Jika ada masalah dengan pesanan, silakan hubungi kami langsung via WhatsApp untuk respon tercepat.</p>
+        <a href="https://wa.me/6285880929319" target="_blank" class="btn-submit" style="display:block; text-align:center; text-decoration:none; margin-top:20px;">Hubungi CS via WhatsApp</a>
+      </div>
+    </div>
+
+    <!-- 13. CART -->
     <div id="cart" class="page-section">
       <header>
         <div>
@@ -935,7 +969,7 @@
       }).catch(err => alert("Gagal kirim: " + err.message));
     }
 
-    // --- 5. BUY NOW LOGIC (DIRECT CHECKOUT) ---
+    // --- 5. BUY NOW LOGIC (DIRECT CHECKOUT WITH DETAILS) ---
     function buyNow(pid) {
       const p = state.products.find(x => x.id === pid);
       if(!p) return;
@@ -949,29 +983,88 @@
             <p style="color:var(--pink-strong); font-weight:bold;">Rp ${p.price.toLocaleString()}</p>
           </div>
         </div>
+        
+        <h4 style="margin-bottom:10px;">Isi Detail Pesanan (Untuk Admin Panel)</h4>
+        
+        <div class="form-group">
+          <label>Ukuran Canvas / Rasio</label>
+          <input type="text" id="orderSize" placeholder="Contoh: 1:1 (Persegi), A4, 1080x1920">
+        </div>
+        
+        <div class="form-group">
+          <label>Detail Karakter</label>
+          <textarea id="orderChar" rows="3" placeholder="Rambut pendek pink, mata biru, baju sekolah..."></textarea>
+        </div>
+        
+        <div class="form-group">
+          <label>Detail Background</label>
+          <input type="text" id="orderBg" placeholder="Warna solid pastel, taman, atau transparan?">
+        </div>
+
         <div class="form-group">
           <label>Catatan Tambahan (Opsional)</label>
-          <textarea id="directNote" rows="3" placeholder="Misal: Tambah tulisan nama..."></textarea>
+          <textarea id="directNote" rows="2" placeholder="Misal: Tolong kirim draft sketsa dulu..."></textarea>
         </div>
-        <div style="text-align:right; font-size:18px; margin-bottom:20px;">
-          Total: <b>Rp ${p.price.toLocaleString()}</b>
+        
+        <div style="text-align:right; font-size:18px; margin-bottom:20px; border-top:1px solid #eee; padding-top:15px;">
+          Total Pembayaran: <b style="color:var(--pink-strong); font-size:24px;">Rp ${p.price.toLocaleString()}</b>
         </div>
-        <button class="btn-submit" onclick="processDirectCheckout('${p.id}', ${p.price})">Lanjut ke WhatsApp</button>
+        <button class="btn-submit" onclick="processDirectCheckout('${p.id}', ${p.price})">Konfirmasi & WhatsApp</button>
       `;
       switchPage('checkout-page');
     }
 
     function processDirectCheckout(pid, price) {
       const p = state.products.find(x => x.id === pid);
-      const note = document.getElementById('directNote').value;
       
-      let msg = `Halo Cute Request, saya mau beli langsung:\n\n`;
-      msg += `1. ${p.name} - Rp ${price.toLocaleString()}\n`;
-      if(note) msg += `Catatan: ${note}\n`;
-      msg += `\nTotal: Rp ${price.toLocaleString()}\nMohon info pembayaran.`;
+      // Ambil data dari form detail
+      const size = document.getElementById('orderSize').value;
+      const char = document.getElementById('orderChar').value;
+      const bg = document.getElementById('orderBg').value;
+      const note = document.getElementById('directNote').value;
 
-      const url = `https://wa.me/6285880929319?text=${encodeURIComponent(msg)}`;
-      window.open(url, '_blank');
+      if(!size || !char) {
+        alert("Mohon isi Ukuran dan Detail Karakter!");
+        return;
+      }
+      
+      let msg = `Halo Cute Request, saya mau order:\n`;
+      msg += `📦 Produk: ${p.name}\n`;
+      msg += `💰 Harga: Rp ${price.toLocaleString()}\n\n`;
+      msg += `📝 *Detail Request:*\n`;
+      msg += `- Ukuran: ${size}\n`;
+      msg += `- Karakter: ${char}\n`;
+      msg += `- Background: ${bg || '-'}\n`;
+      if(note) msg += `- Catatan: ${note}\n`;
+      msg += `\nMohon info pembayaran.`;
+
+      // Simpan ke Firestore (Persiapan Admin Panel)
+      // Walaupun guest, kita simpan data ordernya.
+      db.collection('orders').add({
+        userId: state.user ? state.user.uid : 'guest',
+        userName: state.user ? document.getElementById('profileName').innerText : 'Guest',
+        items: [{
+          productId: pid,
+          name: p.name,
+          price: price,
+          details: { size, char, bg, note }
+        }],
+        total: price,
+        status: 'Menunggu Pembayaran',
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      }).then((docRef) => {
+        console.log("Order recorded with ID: ", docRef.id);
+        // Tambahkan ID order ke pesan WA agar mudah dilacak
+        msg += `\n(Order ID: ${docRef.id.substring(0,6)})`;
+        
+        const url = `https://wa.me/6285880929319?text=${encodeURIComponent(msg)}`;
+        window.open(url, '_blank');
+      }).catch(err => {
+        console.error("Error saving order: ", err);
+        // Fallback jika database error, tetap buka WA
+        const url = `https://wa.me/6285880929319?text=${encodeURIComponent(msg)}`;
+        window.open(url, '_blank');
+      });
     }
 
     // --- 6. CART & CHECKOUT ---
@@ -1043,7 +1136,54 @@
       window.open(url, '_blank');
     }
 
-    // --- 7. GENERAL UTILS ---
+    // --- 7. TRACKING ORDER ---
+    function trackOrder() {
+      const id = document.getElementById('trackingId').value.trim();
+      const res = document.getElementById('trackingResult');
+      
+      if(!id) { alert("Masukkan ID dulu!"); return; }
+      
+      // Mencari parsial ID karena user mungkin cuma punya 6 digit depan
+      // Firestore tidak support substring search native, jadi kita ambil logic client side sederhana
+      // ATAU: user harus input full ID. Untuk kemudahan, kita coba get langsung doc ID.
+      
+      // Coba akses langsung dokumen (jika user punya Full ID)
+      // Jika user punya short ID, kita perlu query manual (agak berat jika data banyak, tapi oke untuk skala kecil)
+      
+      res.style.display = 'block';
+      res.innerHTML = "Mencari...";
+
+      // Kita coba cari di koleksi orders
+      // Note: Di produksi, simpan shortID sebagai field khusus. Di sini kita coba ambil semua (limit) lalu filter
+      
+      db.collection('orders').get().then(snap => {
+        let found = null;
+        snap.forEach(doc => {
+          if(doc.id.startsWith(id)) {
+            found = doc.data();
+            found.id = doc.id;
+          }
+        });
+
+        if(found) {
+          let date = found.date ? new Date(found.date.seconds * 1000).toLocaleDateString() : "-";
+          let itemsHtml = found.items.map(i => `<li>${i.name} (Rp ${i.price})</li>`).join('');
+          
+          res.innerHTML = `
+            <h3 style="color:var(--green);"><i class="fas fa-check-circle"></i> Pesanan Ditemukan!</h3>
+            <p><b>Status:</b> <span class="status-badge" style="background:var(--pink);color:white;">${found.status}</span></p>
+            <p><b>Tanggal:</b> ${date}</p>
+            <p><b>Total:</b> Rp ${found.total.toLocaleString()}</p>
+            <hr>
+            <ul style="padding-left:20px; margin:10px 0;">${itemsHtml}</ul>
+          `;
+        } else {
+          res.innerHTML = `<p style="color:red;">Pesanan dengan ID "${id}" tidak ditemukan.</p>`;
+        }
+      });
+    }
+
+    // --- 8. GENERAL UTILS ---
     function toggleCSMenu() {
       const menu = document.getElementById('csMenu');
       menu.classList.toggle('active');
@@ -1094,7 +1234,7 @@
       alert("Request terkirim! Admin akan menghubungi via WA.");
     }
 
-    // --- 8. AUTH & USER ---
+    // --- 9. AUTH & USER ---
     let isLoginMode = true;
     function handleAuthClick() {
       if(state.user) switchPage('profile');
@@ -1147,23 +1287,37 @@
       });
     }
 
-    // --- 9. UTILS ---
+    // --- 10. UTILS ---
     function setupMobileMenu() {
       const btn = document.getElementById('hamburgerBtn');
       const close = document.getElementById('closeMenuBtn');
       const nav = document.getElementById('navLinks');
       const overlay = document.getElementById('navOverlay');
+      
+      // Hapus event listener lama agar bersih
+      const newBtn = btn.cloneNode(true);
+      btn.parentNode.replaceChild(newBtn, btn);
+      
+      // Fungsi buka tutup
       function open() { nav.classList.add('active'); overlay.classList.add('active'); }
       function shut() { nav.classList.remove('active'); overlay.classList.remove('active'); }
-      btn.onclick = open; close.onclick = shut; overlay.onclick = shut;
+
+      newBtn.onclick = open;
+      close.onclick = shut;
+      overlay.onclick = shut;
     }
+
     function switchPage(pid) {
       document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active'));
       const target = document.getElementById(pid);
       if(target) { target.classList.add('active'); window.scrollTo(0,0); }
+      
       document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-      const activeBtn = document.querySelector(`.nav-btn[data-target="${pid}"]`);
-      if(activeBtn) activeBtn.classList.add('active');
+      // Find active buttons safely
+      const activeBtns = document.querySelectorAll(`.nav-btn[data-target="${pid}"]`);
+      activeBtns.forEach(btn => btn.classList.add('active'));
+
+      // Close menu automatically on mobile
       if(window.innerWidth <= 768) {
         document.getElementById('navLinks').classList.remove('active');
         document.getElementById('navOverlay').classList.remove('active');
@@ -1175,7 +1329,7 @@
       const preview = document.getElementById('previewImg');
       zone.addEventListener('click', () => input.click());
       zone.addEventListener('dragover', (e) => { e.preventDefault(); zone.classList.add('dragover'); });
-      zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
+      zone.addEventListener('dragleave', () => zone.classList.remove('dragover'); });
       zone.addEventListener('drop', (e) => {
         e.preventDefault(); zone.classList.remove('dragover');
         if(e.dataTransfer.files.length) { preview.src = URL.createObjectURL(e.dataTransfer.files[0]); preview.style.display = 'block'; }
