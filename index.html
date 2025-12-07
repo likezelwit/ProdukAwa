@@ -120,6 +120,7 @@
       font-size: 24px;
       color: var(--pink-strong);
       cursor: pointer;
+      z-index: 1003; /* Ensure it's above other elements */
     }
 
     .close-menu-btn {
@@ -128,6 +129,9 @@
       font-size: 24px;
       color: #888;
       margin-bottom: 20px;
+      cursor: pointer;
+      background: none;
+      border: none;
     }
 
     .nav-overlay {
@@ -496,7 +500,7 @@
 <body>
 
   <!-- Overlay for Mobile Menu -->
-  <div class="nav-overlay" id="navOverlay" onclick="closeMenu()"></div>
+  <div class="nav-overlay" id="navOverlay"></div>
 
   <!-- Navigation -->
   <nav>
@@ -509,13 +513,13 @@
       </div>
       
       <!-- Hamburger Button (Mobile Only) -->
-      <button class="hamburger-btn" onclick="openMenu()">
+      <button class="hamburger-btn" id="hamburgerBtn">
         <i class="fas fa-bars"></i>
       </button>
 
       <div class="nav-links" id="navLinks">
         <!-- Close Button (Mobile Only) -->
-        <button class="close-menu-btn" onclick="closeMenu()">
+        <button class="close-menu-btn" id="closeMenuBtn">
           <i class="fas fa-times"></i>
         </button>
 
@@ -813,11 +817,13 @@
     function openMenu() {
       document.getElementById('navLinks').classList.add('active');
       document.getElementById('navOverlay').classList.add('active');
+      document.body.style.overflow = 'hidden'; // Prevent scrolling when menu is open
     }
 
     function closeMenu() {
       document.getElementById('navLinks').classList.remove('active');
       document.getElementById('navOverlay').classList.remove('active');
+      document.body.style.overflow = ''; // Restore scrolling
     }
 
     // --- Page Switching Logic (SPA) ---
@@ -949,6 +955,32 @@
       }
     });
 
+    // --- Event Listeners for Mobile Menu ---
+    document.addEventListener('DOMContentLoaded', function() {
+      // Get elements
+      const hamburgerBtn = document.getElementById('hamburgerBtn');
+      const closeMenuBtn = document.getElementById('closeMenuBtn');
+      const navOverlay = document.getElementById('navOverlay');
+      
+      // Add event listeners
+      if (hamburgerBtn) {
+        hamburgerBtn.addEventListener('click', openMenu);
+      }
+      
+      if (closeMenuBtn) {
+        closeMenuBtn.addEventListener('click', closeMenu);
+      }
+      
+      if (navOverlay) {
+        navOverlay.addEventListener('click', closeMenu);
+      }
+      
+      // Close menu when clicking on nav links
+      const navLinks = document.querySelectorAll('.nav-btn');
+      navLinks.forEach(link => {
+        link.addEventListener('click', closeMenu);
+      });
+    });
   </script>
 </body>
 </html>
