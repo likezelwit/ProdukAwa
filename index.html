@@ -1169,9 +1169,7 @@
       btn.onclick = open;
       close.onclick = shut;
       overlay.onclick = shut;
-      document.querySelectorAll('.nav-btn').forEach(b => b.onclick = () => { 
-        if(window.innerWidth <= 768) shut(); 
-      });
+      // Perbaikan: Hapus kode yang menimpa onclick di sini
     }
 
     function switchPage(pid) {
@@ -1186,6 +1184,12 @@
       document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
       const activeBtn = document.querySelector(`.nav-btn[data-target="${pid}"]`);
       if(activeBtn) activeBtn.classList.add('active');
+
+      // Perbaikan: Tutup menu otomatis jika di mobile
+      if(window.innerWidth <= 768) {
+        document.getElementById('navLinks').classList.remove('active');
+        document.getElementById('navOverlay').classList.remove('active');
+      }
     }
 
     function toggleFaq(el) {
