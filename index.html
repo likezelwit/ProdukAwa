@@ -45,7 +45,8 @@
       padding: 15px 0;
       position: sticky;
       top: 0;
-      z-index: 1000;
+      /* PERBAIKAN: Z-index dibuat paling tinggi agar di atas overlay */
+      z-index: 1100;
       box-shadow: 0 2px 10px rgba(0,0,0,0.05);
     }
 
@@ -120,11 +121,18 @@
       font-size: 24px;
       color: var(--pink-strong);
       cursor: pointer;
-      z-index: 1003; /* Ensure it's above other elements */
+      z-index: 1102; /* Ensure it's reachable */
+      padding: 5px;
+      border-radius: 5px;
+      transition: var(--transition);
+    }
+    
+    .hamburger-btn:hover {
+      background: rgba(225, 169, 191, 0.1);
     }
 
     .close-menu-btn {
-      display: none; /* Hidden on desktop */
+      display: none;
       align-self: flex-end;
       font-size: 24px;
       color: #888;
@@ -132,13 +140,22 @@
       cursor: pointer;
       background: none;
       border: none;
+      padding: 5px;
+      border-radius: 5px;
+      transition: var(--transition);
+    }
+    
+    .close-menu-btn:hover {
+      background: rgba(0, 0, 0, 0.05);
+      color: var(--pink-strong);
     }
 
+    /* PERBAIKAN: Overlay diatur z-indexnya lebih rendah dari nav (1100) tapi tinggi dari konten lain */
     .nav-overlay {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(0,0,0,0.5);
-      z-index: 1001;
+      z-index: 1050; 
       display: none;
       opacity: 0;
       transition: opacity 0.3s;
@@ -310,6 +327,9 @@
       align-items: center;
       background: #fff;
     }
+    .faq-question i {
+      transition: transform 0.3s ease;
+    }
     .faq-answer {
       padding: 0 20px 20px;
       color: #666;
@@ -333,6 +353,24 @@
     .cart-info { flex: 1; }
     .cart-total { padding: 30px; text-align: right; background: #fff; }
     .empty-cart { padding: 50px; text-align: center; color: #888; }
+    .remove-item {
+      background: #ff5252;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 12px;
+      transition: var(--transition);
+    }
+    .remove-item:hover {
+      background: #ff1744;
+      transform: scale(1.1);
+    }
 
     /* --- Footer --- */
     footer {
@@ -371,7 +409,8 @@
       display: flex;
       flex-direction: column;
       gap: 15px;
-      z-index: 2000;
+      /* PERBAIKAN: z-index diturunkan (1000) agar tertutup overlay (1050) saat menu buka */
+      z-index: 1000;
       align-items: center;
     }
 
@@ -441,14 +480,18 @@
 
     /* --- MOBILE RESPONSIVE & HAMBURGER --- */
     @media (max-width: 768px) {
-      .hamburger-btn { display: block; }
-      .close-menu-btn { display: block; }
-
+      .hamburger-btn { 
+        display: block;
+      }
+      .close-menu-btn { 
+        display: block;
+      }
+      
       .nav-links {
         position: fixed;
         top: 0;
-        right: -100%; /* Hidden by default */
-        width: 250px;
+        right: -100%;
+        width: 280px;
         height: 100vh;
         background: white;
         flex-direction: column;
@@ -456,11 +499,12 @@
         padding: 20px;
         box-shadow: -5px 0 20px rgba(0,0,0,0.1);
         transition: right 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-        z-index: 1002;
+        /* PERBAIKAN: Tidak perlu z-index disini karena induk 'nav' sudah 1100 */
+        overflow-y: auto;
       }
       
       .nav-links.active {
-        right: 0; /* Slide in */
+        right: 0;
       }
 
       .nav-links button {
@@ -469,6 +513,8 @@
         padding: 12px 15px;
         font-size: 16px;
         border-bottom: 1px solid #f0f0f0;
+        border-radius: 0;
+        margin-bottom: 0;
       }
       
       .nav-links button:last-child {
@@ -476,7 +522,9 @@
         margin-top: 10px;
       }
 
-      .nav-links button::after { display: none; } /* Remove underline effect on mobile */
+      .nav-links button::after { 
+        display: none;
+      }
       
       .nav-links button.active {
         color: var(--pink);
@@ -485,7 +533,6 @@
         border-bottom: none;
       }
 
-      /* Adjust cart button on mobile */
       .cart-btn-nav {
         text-align: center !important;
         background: var(--pink) !important;
@@ -494,6 +541,14 @@
       }
 
       .filter-section { justify-content: center; }
+      
+      .hamburger-btn i {
+        transition: transform 0.3s ease;
+      }
+      
+      .hamburger-btn.active i {
+        transform: rotate(90deg);
+      }
     }
   </style>
 </head>
@@ -513,13 +568,13 @@
       </div>
       
       <!-- Hamburger Button (Mobile Only) -->
-      <button class="hamburger-btn" id="hamburgerBtn">
+      <button class="hamburger-btn" id="hamburgerBtn" aria-label="Menu">
         <i class="fas fa-bars"></i>
       </button>
 
       <div class="nav-links" id="navLinks">
         <!-- Close Button (Mobile Only) -->
-        <button class="close-menu-btn" id="closeMenuBtn">
+        <button class="close-menu-btn" id="closeMenuBtn" aria-label="Close Menu">
           <i class="fas fa-times"></i>
         </button>
 
@@ -587,10 +642,10 @@
       </header>
 
       <div class="filter-section">
-        <button class="filter-btn active" onclick="filterPortfolio('all')">Semua</button>
-        <button class="filter-btn" onclick="filterPortfolio('portrait')">Portrait</button>
-        <button class="filter-btn" onclick="filterPortfolio('product')">Product</button>
-        <button class="filter-btn" onclick="filterPortfolio('sticker')">Sticker</button>
+        <button class="filter-btn active" onclick="filterPortfolio('all', this)">Semua</button>
+        <button class="filter-btn" onclick="filterPortfolio('portrait', this)">Portrait</button>
+        <button class="filter-btn" onclick="filterPortfolio('product', this)">Product</button>
+        <button class="filter-btn" onclick="filterPortfolio('sticker', this)">Sticker</button>
       </div>
 
       <div class="grid">
@@ -601,7 +656,7 @@
             <p>Karakter imut dengan kepala besar, cocok untuk profil.</p>
             <div class="card-footer">
               <span class="card-price">Rp 50.000</span>
-              <button class="btn-buy" onclick="addToCart('Chibi Character', 50000)">+ Keranjang</button>
+              <button class="btn-buy" onclick="addToCart('Chibi Character', 50000, 'https://i.ibb.co/gMGWnB7S/Whats-App-Image-2025-12-01-at-19-58-07.jpg')">+ Keranjang</button>
             </div>
           </div>
         </div>
@@ -612,7 +667,7 @@
             <p>Ilustrasi produk jualanmu dengan gaya estetik.</p>
             <div class="card-footer">
               <span class="card-price">Rp 75.000</span>
-              <button class="btn-buy" onclick="addToCart('Product Pastel', 75000)">+ Keranjang</button>
+              <button class="btn-buy" onclick="addToCart('Product Pastel', 75000, 'https://i.ibb.co/pjT363g4/Whats-App-Image-2025-12-01-at-19-58-07-1.jpg')">+ Keranjang</button>
             </div>
           </div>
         </div>
@@ -623,7 +678,7 @@
             <p>Paket stiker lucu untuk WhatsApp atau Telegram.</p>
             <div class="card-footer">
               <span class="card-price">Rp 30.000</span>
-              <button class="btn-buy" onclick="addToCart('Sticker Pack', 30000)">+ Keranjang</button>
+              <button class="btn-buy" onclick="addToCart('Sticker Pack', 30000, 'https://i.ibb.co/0pbLcy8q/Whats-App-Image-2025-12-01-at-19-58-07-2.jpg')">+ Keranjang</button>
             </div>
           </div>
         </div>
@@ -817,12 +872,14 @@
     function openMenu() {
       document.getElementById('navLinks').classList.add('active');
       document.getElementById('navOverlay').classList.add('active');
+      document.getElementById('hamburgerBtn').classList.add('active');
       document.body.style.overflow = 'hidden'; // Prevent scrolling when menu is open
     }
 
     function closeMenu() {
       document.getElementById('navLinks').classList.remove('active');
       document.getElementById('navOverlay').classList.remove('active');
+      document.getElementById('hamburgerBtn').classList.remove('active');
       document.body.style.overflow = ''; // Restore scrolling
     }
 
@@ -853,12 +910,12 @@
     }
 
     // --- Portfolio Filter ---
-    function filterPortfolio(category) {
+    function filterPortfolio(category, btnElement) {
       const cards = document.querySelectorAll('.card');
       const buttons = document.querySelectorAll('.filter-btn');
       
       buttons.forEach(btn => btn.classList.remove('active'));
-      event.target.classList.add('active');
+      btnElement.classList.add('active');
 
       cards.forEach(card => {
         if (category === 'all' || card.getAttribute('data-cat') === category) {
@@ -878,10 +935,20 @@
     // --- Cart Logic (Simple) ---
     let cart = [];
     
-    function addToCart(itemName, price) {
-      cart.push({name: itemName, price: price});
+    function addToCart(itemName, price, imageUrl) {
+      cart.push({
+        name: itemName, 
+        price: price, 
+        image: imageUrl,
+        id: Date.now() // Unique ID for each item
+      });
       updateCartUI();
       alert('Berhasil masuk keranjang! ♡');
+    }
+
+    function removeFromCart(itemId) {
+      cart = cart.filter(item => item.id !== itemId);
+      updateCartUI();
     }
 
     function updateCartUI() {
@@ -907,12 +974,13 @@
         total += item.price;
         html += `
           <div class="cart-item">
-            <div class="cart-thumb" style="background-color: var(--pink);"></div>
+            <div class="cart-thumb" style="background-image: url('${item.image}');"></div>
             <div class="cart-info">
               <h4 style="margin:0;">${item.name}</h4>
               <p style="margin:0; color:#888;">ID: #${index+100}</p>
             </div>
             <div style="font-weight:bold;">Rp ${item.price.toLocaleString()}</div>
+            <button class="remove-item" onclick="removeFromCart(${item.id})">×</button>
           </div>
         `;
       });
@@ -920,11 +988,33 @@
       html += `
         <div class="cart-total">
           <h3 style="margin:0;">Total: Rp ${total.toLocaleString()}</h3>
-          <button class="btn-submit" style="margin-top:15px; width:auto; padding:10px 40px;">Checkout via WhatsApp</button>
+          <button class="btn-submit" style="margin-top:15px; width:auto; padding:10px 40px;" onclick="checkout()">Checkout via WhatsApp</button>
         </div>
       `;
       
       container.innerHTML = html;
+    }
+
+    function checkout() {
+      if (cart.length === 0) {
+        alert('Keranjang masih kosong!');
+        return;
+      }
+      
+      let message = 'Halo, saya ingin memesan:\n\n';
+      let total = 0;
+      
+      cart.forEach((item, index) => {
+        message += `${index + 1}. ${item.name} - Rp ${item.price.toLocaleString()}\n`;
+        total += item.price;
+      });
+      
+      message += `\nTotal: Rp ${total.toLocaleString()}\n\nMohon informasikan cara pembayaran dan proses selanjutnya. Terima kasih!`;
+      
+      const encodedMessage = encodeURIComponent(message);
+      const whatsappUrl = `https://wa.me/6285776614421?text=${encodedMessage}`;
+      
+      window.open(whatsappUrl, '_blank');
     }
 
     // --- Floating Buttons Logic ---
@@ -961,6 +1051,7 @@
       const hamburgerBtn = document.getElementById('hamburgerBtn');
       const closeMenuBtn = document.getElementById('closeMenuBtn');
       const navOverlay = document.getElementById('navOverlay');
+      const navLinks = document.getElementById('navLinks');
       
       // Add event listeners
       if (hamburgerBtn) {
@@ -972,13 +1063,30 @@
       }
       
       if (navOverlay) {
-        navOverlay.addEventListener('click', closeMenu);
+        navOverlay.addEventListener('click', function(event) {
+          if (event.target === navOverlay) {
+            closeMenu();
+          }
+        });
+      }
+      
+      if (navLinks) {
+        navLinks.addEventListener('click', function(event) {
+          event.stopPropagation();
+        });
       }
       
       // Close menu when clicking on nav links
-      const navLinks = document.querySelectorAll('.nav-btn');
-      navLinks.forEach(link => {
+      const navBtns = document.querySelectorAll('.nav-btn');
+      navBtns.forEach(link => {
         link.addEventListener('click', closeMenu);
+      });
+      
+      // Close menu when pressing Escape key
+      document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+          closeMenu();
+        }
       });
     });
   </script>
